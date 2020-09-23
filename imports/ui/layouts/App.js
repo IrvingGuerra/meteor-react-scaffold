@@ -1,5 +1,4 @@
-import { Meteor } from 'meteor/meteor';
-import React, { createRef } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import AlertMessage from '../components/Utilities/Alerts/AlertMessage';
 import { createBrowserHistory } from 'history';
@@ -12,8 +11,8 @@ const App = () => {
 	return (
 		<Router history={history}>
 			<Switch>
-				<Route exact path="/" render={(props) => <Login {...props} />} />
-				<Route path="/admin" render={(props) => <Admin {...props} />} />
+				<Route exact path="/" component={Login} />
+				<Route path="/admin" component={Admin} />
 			</Switch>
 			<AlertMessage />
 		</Router>
