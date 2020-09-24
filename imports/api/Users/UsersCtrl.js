@@ -4,7 +4,6 @@ import { ResponseMessage } from '../../startup/server/BusinessClass/ResponseMess
 import {check, Match} from 'meteor/check'
 import UsersServ from './UsersServ';
 
-// Permissions
 import Permissions from "../../startup/server/Permissions";
 
 export const saveUserMethod = new ValidatedMethod({
@@ -12,7 +11,6 @@ export const saveUserMethod = new ValidatedMethod({
 	mixins: [MethodHooks],
 	permissions: [Permissions.USERS.CREATE.VALUE, Permissions.USERS.UPDATE.VALUE],
 	validate ({user}) {
-		console.log("Entra");
 		try {
 			check(user, {
 				_id: Match.OneOf(String, null),

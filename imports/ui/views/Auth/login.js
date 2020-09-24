@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -13,6 +13,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { setAlert } from '../../components/Utilities/Alerts/AlertMessage';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginWithPassword } from '../../../redux/actions';
 
 function Copyright() {
 	return (
@@ -59,6 +61,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Login(props) {
+	const dispatch = useDispatch();
+	const user = useSelector(state => state.user);
 	const classes = useStyles();
 	const [isLogin, setIsLogin] = useState(true);
 	const [form, setForm] = useState({
@@ -67,16 +71,22 @@ export default function Login(props) {
 		password: ''
 	});
 
+	useEffect(() => {
+		if(user.profile){
+			props.history.push(`/${user.profile.profile}`);
+		}
+	}, []);
+
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		const { email, password } = form;
-		Meteor.loginWithPassword(email, password, (error) => {
-			if (error) {
-				setAlert('Error', 'Credenciales incorrectas', 'error');
-				return;
-			}
-			props.history.push(`/${Meteor.user().profile.profile}`);
-		});
+		dispatch(
+			loginWithPassword(form.email, form.password, (response) => {
+				if(!response){
+					setAlert('Error', 'Credenciales incorrectas', 'error');
+				}
+				props.history.push(`/${response}`);
+			})
+		);
 	};
 
 	const handleSubmitRegister = (e) => {
@@ -91,7 +101,6 @@ export default function Login(props) {
 			return;
 		});
 	};
-
 	return (
 		<Grid container component="main" className={ classes.root }>
 			<CssBaseline/>

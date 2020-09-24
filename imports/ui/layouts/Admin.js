@@ -1,5 +1,5 @@
 import React, { createRef, useEffect } from 'react';
-import { Switch, Route, Redirect } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 import PerfectScrollbar from "perfect-scrollbar";
 import "perfect-scrollbar/css/perfect-scrollbar.css";
 import { makeStyles } from "@material-ui/core/styles";
@@ -8,6 +8,7 @@ import Footer from "../components/Footer/Footer.js";
 import Sidebar from "../components/Sidebar/Sidebar.js";
 import routes from "../routes.js";
 import styles from "../components/constants/styles/layouts/adminStyle";
+import { useSelector } from 'react-redux';
 
 const switchRoutes = (
 	<Switch>
@@ -28,8 +29,9 @@ const switchRoutes = (
 );
 const useStyles = makeStyles(styles);
 
-export default function Admin({ ...rest }) {
+export default function Admin(props) {
 	const classes = useStyles();
+	const user = useSelector(state => state.user);
 	const mainPanel = createRef();
 	const [color, setColor] = React.useState("blue");
 	const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -57,6 +59,13 @@ export default function Admin({ ...rest }) {
 			window.removeEventListener("resize", resizeFunction);
 		};
 	}, [mainPanel]);
+
+	useEffect(() => {
+		if(!user.profile){
+			props.history.push('/');
+		}
+	}, []);
+
 	return (
 		<div className={classes.wrapper}>
 			<Sidebar
@@ -65,13 +74,12 @@ export default function Admin({ ...rest }) {
 				handleDrawerToggle={handleDrawerToggle}
 				open={mobileOpen}
 				color={color}
-				{...rest}
 			/>
 			<div className={classes.mainPanel} ref={mainPanel}>
 				<Navbar
 					routes={routes}
 					handleDrawerToggle={handleDrawerToggle}
-					{...rest}
+					history={props.history}
 				/>
 				{getRoute() ? (
 					<div className={classes.content}>

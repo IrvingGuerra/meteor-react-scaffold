@@ -21,12 +21,12 @@ const AlertMessage = () => {
 	const classes = useStyles();
 
 	const [state, setState] = useState({
-		title: 'Titulo',
-		message: 'Message',
+		title: 'Bienvenido',
+		message: 'Labvetanaliza!',
 		severity: 'success',
 		transition: 'Slide',
 		transitionComponent: SlideTransition,
-		open: false
+		open: true
 	});
 
 	export const setAlert = (title, message, severity = 'success', transition = 'Slide') => {

@@ -38,7 +38,7 @@ export default function Header(props) {
           </Button>
         </div>
         <Hidden smDown implementation="css">
-          <AdminNavbarLinks />
+          <AdminNavbarLinks history={props.history} />
         </Hidden>
         <Hidden mdUp implementation="css">
           <IconButton
