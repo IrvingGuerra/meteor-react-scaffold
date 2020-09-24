@@ -16,7 +16,7 @@ import { setAlert } from '../../components/Utilities/Alerts/AlertMessage';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginWithPassword } from '../../../redux/actions';
 
-function Copyright() {
+export function Copyright() {
 	return (
 		<Typography variant="body2" color="textSecondary" align="center">
 			{ 'Copyright © ' }

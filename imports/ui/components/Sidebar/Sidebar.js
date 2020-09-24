@@ -1,122 +1,104 @@
 import React from "react";
-import classNames from "classnames";
-import {NavLink} from "react-router-dom";
-import {makeStyles} from "@material-ui/core/styles";
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from "@material-ui/core/Drawer";
-import Hidden from "@material-ui/core/Hidden";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import Icon from "@material-ui/core/Icon";
-import AdminNavbarLinks from "../Navbars/AdminNavbarLinks.js";
+import IconButton from '@material-ui/core/IconButton';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import Divider from '@material-ui/core/Divider';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import InboxIcon from '@material-ui/icons/MoveToInbox';
+import MailIcon from '@material-ui/icons/Mail';
+import Typography from '@material-ui/core/Typography';
+import { NavLink } from 'react-router-dom';
+import { Icon } from '@material-ui/core';
 
-import styles from "../constants/styles/components/sidebarStyle.js";
+export const drawerWidth = 240;
 
-const useStyles = makeStyles(styles);
+const useStyles = makeStyles((theme) => ({
+    grow: {
+        flexGrow: 1
+    },
+    appBar: {
+        transition: theme.transitions.create(['margin', 'width'], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+        }),
+    },
+    appBarShift: {
+        width: `calc(100% - ${drawerWidth}px)`,
+        marginLeft: drawerWidth,
+        transition: theme.transitions.create(['margin', 'width'], {
+            easing: theme.transitions.easing.easeOut,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+    },
+    menuButton: {
+        marginRight: theme.spacing(2),
+    },
+    hide: {
+        display: 'none',
+    },
+    drawer: {
+        width: drawerWidth,
+        flexShrink: 0,
+    },
+    drawerPaper: {
+        width: drawerWidth,
+    },
+    drawerHeader: {
+        display: 'flex',
+        alignItems: 'center',
+        padding: theme.spacing(0, 1),
+        ...theme.mixins.toolbar,
+        justifyContent: 'flex-end'
+    }
+}));
 
 export default function Sidebar(props) {
     const classes = useStyles();
-    function activeRoute(routeName) {
-        return window.location.href.indexOf(routeName) > -1 ? true : false;
-    }
-    const {color, logoText, routes} = props;
-    const links = (
-        <List className={classes.list}>
-            {routes.map((prop, key) => {
-                let listItemClasses;
-                listItemClasses = classNames({
-                    [" " + classes[color]]: activeRoute(prop.layout + prop.path)
-                });
-                const whiteFontClasses = classNames({
-                    [" " + classes.whiteFont]: activeRoute(prop.layout + prop.path)
-                });
-                return (
-                    <NavLink
-                        to={prop.layout + prop.path}
-                        className={classes.item}
-                        activeClassName="active"
-                        key={key}
-                    >
-                        <ListItem button className={classes.itemLink + listItemClasses}>
-                            {typeof prop.icon === "string" ? (
-                                <Icon
-                                    className={classNames(classes.itemIcon, whiteFontClasses)}
-                                >
-                                    {prop.icon}
-                                </Icon>
-                            ) : (
-                                <prop.icon
-                                    className={classNames(classes.itemIcon, whiteFontClasses)}
-                                />
-                            )}
-                            <ListItemText
-                                primary={prop.name}
-                                className={classNames(classes.itemText, whiteFontClasses)}
-                                disableTypography={true}
-                            />
-                        </ListItem>
-                    </NavLink>
-                );
-            })}
-        </List>
-    );
-    const brand = (
-        <div className={classes.logo}>
-            <a
-                href="#"
-                className={classes.logoLink}
-                target="_blank"
-            >
-                <div className={classes.logoImage}>
-                    <img src="/img/reactlogo.png" alt="logo" className={classes.img}/>
-                </div>
-                {logoText}
-            </a>
-        </div>
-    );
+    const theme = useTheme();
+
     return (
-        <div>
-            <Hidden mdUp implementation="css">
-                <Drawer
-                    variant="temporary"
-                    anchor="right"
-                    open={props.open}
-                    classes={{
-                        paper: classNames(classes.drawerPaper)
-                    }}
-                    onClose={props.handleDrawerToggle}
-                    ModalProps={{
-                        keepMounted: true
-                    }}
-                >
-                    {brand}
-                    <div className={classes.sidebarWrapper}>
-                        <AdminNavbarLinks/>
-                        {links}
-                    </div>
-                    <div
-                        className={classes.background}
-                        style={{backgroundImage: "url(/img/sidebar-1.jpg)"}}
-                    />
-                </Drawer>
-            </Hidden>
-            <Hidden smDown implementation="css">
-                <Drawer
-                    anchor="left"
-                    variant="permanent"
-                    open
-                    classes={{
-                        paper: classNames(classes.drawerPaper)
-                    }}
-                >
-                    {brand}
-                    <div className={classes.sidebarWrapper}>{links}</div>
-                    <div
-                        className={classes.background}
-                        style={{backgroundImage: "url(/img/sidebar-1.jpg)"}}
-                    />
-                </Drawer>
-            </Hidden>
-        </div>
+        <Drawer
+            className={classes.drawer}
+            variant="persistent"
+            anchor="left"
+            open={props.open}
+            classes={{
+                paper: classes.drawerPaper,
+            }}
+        >
+            <div className={classes.drawerHeader}>
+                <Typography variant="h6" noWrap>
+                    ANALIZA
+                </Typography>
+                <IconButton onClick={props.handleDrawerToggle}>
+                    {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+                </IconButton>
+            </div>
+            <Divider />
+            <List>
+                {props.routes.map((prop, key) => (
+                    <ListItem
+                        button
+                        key={key}
+                        component={NavLink}
+                        to={prop.layout + prop.path}
+                        activeClassName="Mui-selected" exact
+                    >
+                        <ListItemIcon>
+                            <prop.icon/>
+                        </ListItemIcon>
+                        <ListItemText
+                            primary={prop.name}
+                        />
+                    </ListItem>
+                ))}
+            </List>
+            <Divider />
+        </Drawer>
     );
 }

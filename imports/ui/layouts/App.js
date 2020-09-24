@@ -16,22 +16,22 @@ const persistedState = loadState();
 const store = createStore(
 	reducer,
 	persistedState,
-	composeEnhancers(applyMiddleware(reduxThunk)),
+	composeEnhancers(applyMiddleware(reduxThunk))
 );
 store.subscribe(() => {
 	saveState(store.getState());
 });
 
 const App = () => (
-	<Provider store={store}>
-		<Router history={history}>
+	<Provider store={ store }>
+		<Router history={ history }>
 			<Switch>
-				<Route exact path="/" component={Login} />
-				<Route path="/admin" component={Admin} />
+				<Route exact path="/" component={ Login }/>
+				<Route path="/admin" component={ Admin }/>
 			</Switch>
-			<AlertMessage />
+			<AlertMessage/>
 		</Router>
 	</Provider>
-)
+);
 
 export default App;

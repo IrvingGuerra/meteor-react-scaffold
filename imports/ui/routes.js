@@ -23,7 +23,8 @@ import BubbleChart from "@material-ui/icons/BubbleChart";
 import LocationOn from "@material-ui/icons/LocationOn";
 import Notifications from "@material-ui/icons/Notifications";
 // core components/views for Admin layout
-import Dashboard from "./views/Dashboard/Dashboard.js";
+import Dashboard from "./views/Dashboard/Dashboard";
+import Generator from './views/Generator/Generator';
 //import UserProfile from "views/UserProfile/UserProfile.js";
 //import TableList from "views/TableList/TableList.js";
 //import Typography from "views/Typography/Typography.js";
@@ -37,6 +38,13 @@ const dashboardRoutes = [
     name: "Dashboard",
     icon: DashboardIcon,
     component: Dashboard,
+    layout: "/admin"
+  },
+  {
+    path: "/generator",
+    name: "Generador",
+    icon: Person,
+    component: Generator,
     layout: "/admin"
   },
     /*
