@@ -31,8 +31,11 @@ const useStyles = makeStyles((theme) => ({
 		marginLeft: drawerWidth,
 	},
 	main: {
-		marginTop: theme.spacing(8),
-		marginBottom: theme.spacing(2),
+		alignItems: 'center',
+		display: 'flex',
+		flexDirection: 'column',
+		marginTop: theme.spacing(5),
+		marginBottom: theme.spacing(5)
 	},
 	footer: {
 		padding: theme.spacing(3, 2),
@@ -75,7 +78,7 @@ export default function Admin(props) {
 		return window.location.pathname !== '/admin/maps';
 	};
 
-	const [open, setOpen] = React.useState(false);
+	const [open, setOpen] = React.useState(true);
 
 	const handleDrawerToggle = () => {
 		setOpen(!open);
@@ -99,7 +102,9 @@ export default function Admin(props) {
 						open={open}
 					/>
 					<CssBaseline />
-					<Container component="main" className={classes.main} maxWidth="sm">{ switchRoutes }</Container>
+					<Container component="main" className={classes.main}>
+						{ switchRoutes }
+					</Container>
 					<footer className={classes.footer}>
 						<Container maxWidth="sm">
 							<Typography variant="body1">My sticky footer can be found here.</Typography>

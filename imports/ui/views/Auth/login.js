@@ -72,7 +72,7 @@ export default function Login(props) {
 	});
 
 	useEffect(() => {
-		if(user.profile){
+		if(user && user.profile){
 			props.history.push(`/${user.profile.profile}`);
 		}
 	}, []);
@@ -83,6 +83,7 @@ export default function Login(props) {
 			loginWithPassword(form.email, form.password, (response) => {
 				if(!response){
 					setAlert('Error', 'Credenciales incorrectas', 'error');
+					return;
 				}
 				props.history.push(`/${response}`);
 			})

@@ -25,6 +25,7 @@ import Notifications from "@material-ui/icons/Notifications";
 // core components/views for Admin layout
 import Dashboard from "./views/Dashboard/Dashboard";
 import Generator from './views/Generator/Generator';
+import UserManager from './views/UserManager/UserManager';
 //import UserProfile from "views/UserProfile/UserProfile.js";
 //import TableList from "views/TableList/TableList.js";
 //import Typography from "views/Typography/Typography.js";
@@ -45,6 +46,13 @@ const dashboardRoutes = [
     name: "Generador",
     icon: Person,
     component: Generator,
+    layout: "/admin"
+  },
+  {
+    path: "/user.manager",
+    name: "User Manager",
+    icon: Person,
+    component: UserManager,
     layout: "/admin"
   },
     /*

@@ -13,13 +13,21 @@ export default {
 			throw new Meteor.Error("403", "El email ya se encuentra en uso");
 		}
 	},
-	createUser(userData){
+	createUser(user){
 		const responseMessage = new ResponseMessage();
-		const idUser = Accounts.createUser(userData);
-		if(idUser){
+		const idUser = Accounts.createUser({email: user.email,password: user.password});
+		if(idUser.id){
 			responseMessage.data = {idUser};
-			Accounts.sendEnrollmentEmail(idUser, userData.email);
+			Accounts.sendEnrollmentEmail(idUser, user.email);
 		}
+		Meteor.users.update(idUser, {
+			$set: {
+				"profile.firstname": user.firstname,
+				"profile.lastname": user.lastname,
+				"profile.username": user.username,
+				"profile.profile": user.profile,
+			}
+		});
 		responseMessage.isStatus = true;
 		responseMessage.message = "User created successful";
 		return responseMessage;
