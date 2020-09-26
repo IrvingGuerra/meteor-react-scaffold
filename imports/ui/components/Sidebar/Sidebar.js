@@ -81,22 +81,26 @@ export default function Sidebar(props) {
             </div>
             <Divider />
             <List>
-                {props.routes.map((prop, key) => (
-                    <ListItem
-                        button
-                        key={key}
-                        component={NavLink}
-                        to={prop.layout + prop.path}
-                        activeClassName="Mui-selected" exact
-                    >
-                        <ListItemIcon>
-                            <prop.icon/>
-                        </ListItemIcon>
-                        <ListItemText
-                            primary={prop.name}
-                        />
-                    </ListItem>
-                ))}
+                {props.routes.map((prop, key) => {
+                    if(prop.layout === '/'+props.profile){
+                        return(
+                            <ListItem
+                                button
+                                key={key}
+                                component={NavLink}
+                                to={prop.layout + prop.path}
+                                activeClassName="Mui-selected" exact
+                            >
+                                <ListItemIcon>
+                                    <prop.icon/>
+                                </ListItemIcon>
+                                <ListItemText
+                                    primary={prop.name}
+                                />
+                            </ListItem>
+                        )
+                    }
+                })}
             </List>
             <Divider />
         </Drawer>

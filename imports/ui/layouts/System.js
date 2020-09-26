@@ -65,7 +65,6 @@ const switchRoutes = (
 
 export default function System(props) {
 	const classes = useStyles();
-
 	const user = useSelector(state => state.user);
 
 	useEffect(() => {
@@ -73,10 +72,6 @@ export default function System(props) {
 			props.history.push('/');
 		}
 	}, []);
-
-	const getRoute = () => {
-		return window.location.pathname !== '/admin/maps';
-	};
 
 	const [open, setOpen] = React.useState(true);
 
@@ -90,31 +85,29 @@ export default function System(props) {
 				routes={routes}
 				open={open}
 				handleDrawerToggle={handleDrawerToggle}
+				profile={user.profile.profile}
 			/>
-			{ getRoute() ? (
-				<main
-					className={open ? classes.contentShift : classes.content}
-				>
-					<Navbar
-						routes={routes}
-						history={ props.history }
-						handleDrawerToggle={handleDrawerToggle}
-						open={open}
-					/>
-					<CssBaseline />
-					<Container component="main" className={classes.main}>
-						{ switchRoutes }
+			<main
+				className={open ? classes.contentShift : classes.content}
+			>
+				<Navbar
+					routes={routes}
+					history={ props.history }
+					handleDrawerToggle={handleDrawerToggle}
+					open={open}
+					profile={user.profile.profile}
+				/>
+				<CssBaseline />
+				<Container component="main" className={classes.main}>
+					{ switchRoutes }
+				</Container>
+				<footer className={classes.footer}>
+					<Container maxWidth="sm">
+						<Typography variant="body1">My sticky footer can be found here.</Typography>
+						<Copyright />
 					</Container>
-					<footer className={classes.footer}>
-						<Container maxWidth="sm">
-							<Typography variant="body1">My sticky footer can be found here.</Typography>
-							<Copyright />
-						</Container>
-					</footer>
-				</main>
-			) : (
-				<div></div>
-			) }
+				</footer>
+			</main>
 		</div>
 	);
 }

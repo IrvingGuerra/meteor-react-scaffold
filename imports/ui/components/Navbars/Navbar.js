@@ -81,8 +81,11 @@ export default function Navbar(props) {
 	function getTitle() {
 		let name;
 		props.routes.map(prop => {
-			if (window.location.href.indexOf(prop.layout + prop.path) !== -1) {
-				name = prop.name;
+			if(prop.layout === '/'+props.profile) {
+				console.log("Numero de comprobaciones");
+				if (window.location.href.indexOf(prop.layout + prop.path) !== -1) {
+					name = prop.name;
+				}
 			}
 			return null;
 		});
