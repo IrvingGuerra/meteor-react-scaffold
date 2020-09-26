@@ -19,13 +19,11 @@ ENV SCRIPTS_FOLDER /docker
 # Runtime dependencies; if your dependencies need compilation (native modules such as bcrypt) or you are using Meteor <1.8.1, use app-with-native-dependencies.dockerfile instead
 RUN apk update
 RUN apk upgrade
-RUN apk add --no-cache --virtual .gyp \
+RUN apk --no-cache add \
 		bash \
 		g++ \
 		make \
 		python
-    && npm install \
-    && apk del .gyp
 
 # Copy in entrypoint
 COPY --from=0 $SCRIPTS_FOLDER $SCRIPTS_FOLDER/

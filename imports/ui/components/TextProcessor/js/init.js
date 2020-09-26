@@ -1,4 +1,4 @@
-export const fabric = require("fabric").fabric;
+export const fabric = window.fabric;
 
 (function() {
     fabric.NewTextBox = fabric.util.createClass(fabric.Textbox, {
