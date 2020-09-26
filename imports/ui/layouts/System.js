@@ -45,24 +45,25 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const switchRoutes = (
-	<Switch>
-		{ routes.map((prop, key) => {
-			if (prop.layout === '/admin') {
-				return (
-					<Route
-						path={ prop.layout + prop.path }
-						component={ prop.component }
-						key={ key }
-					/>
-				);
-			}
-			return null;
-		}) }
-		<Redirect from="/admin" to="/admin/dashboard"/>
-	</Switch>
-);
-
+const SwitchRoutes = (props) => {
+	return(
+		<Switch>
+			{ routes.map((prop, key) => {
+				if (prop.layout === '/'+props.profile) {
+					return (
+						<Route
+							path={ prop.layout + prop.path }
+							component={ prop.component }
+							key={ key }
+						/>
+					);
+				}
+				return null;
+			}) }
+			<Redirect from="/admin" to="/admin/dashboard"/>
+		</Switch>
+	)
+}
 export default function System(props) {
 	const classes = useStyles();
 	const user = useSelector(state => state.user);
@@ -99,7 +100,7 @@ export default function System(props) {
 				/>
 				<CssBaseline />
 				<Container component="main" className={classes.main}>
-					{ switchRoutes }
+					<SwitchRoutes profile={user.profile.profile} />
 				</Container>
 				<footer className={classes.footer}>
 					<Container maxWidth="sm">
