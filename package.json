@@ -1,9 +1,16 @@
 {
   "name": "meteor-react-scaffold",
+  "version": "1.0.0",
+  "description": "Scaffold with Meteor and React",
+  "author": "IrvingGuerra",
+  "license": "MIT",
   "private": true,
   "scripts": {
     "start": "meteor run",
+    "run:mac": "MONGO_URL=mongodb://localhost:27017/scaffold meteor --settings ./settings/settings-development.json",
+    "run:windows": "SET MONGO_URL=mongodb://localhost:27017/scaffold& meteor --settings ./settings/settings-development.json",
     "test": "meteor test --once --driver-package meteortesting:mocha",
+    "desktop": "meteor-desktop",
     "test-app": "TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha",
     "visualize": "meteor --production --extra-packages bundle-visualizer"
   },
