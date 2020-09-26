@@ -82,13 +82,13 @@ export default function Sidebar(props) {
             <Divider />
             <List>
                 {props.routes.map((prop, key) => {
-                    if(prop.layout === '/'+props.profile){
+                    if(prop.layout.includes(props.profile)){
                         return(
                             <ListItem
                                 button
                                 key={key}
                                 component={NavLink}
-                                to={prop.layout + prop.path}
+                                to={'/'+props.profile + prop.path}
                                 activeClassName="Mui-selected" exact
                             >
                                 <ListItemIcon>

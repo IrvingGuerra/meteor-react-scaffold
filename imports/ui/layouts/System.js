@@ -14,21 +14,21 @@ const useStyles = makeStyles((theme) => ({
 	root: {
 		display: 'flex',
 		flexDirection: 'column',
-		minHeight: '100vh',
+		minHeight: '100vh'
 	},
 	content: {
 		flexGrow: 1,
 		transition: theme.transitions.create('margin', {
 			easing: theme.transitions.easing.sharp,
-			duration: theme.transitions.duration.leavingScreen,
+			duration: theme.transitions.duration.leavingScreen
 		})
 	},
 	contentShift: {
 		transition: theme.transitions.create('margin', {
 			easing: theme.transitions.easing.easeOut,
-			duration: theme.transitions.duration.enteringScreen,
+			duration: theme.transitions.duration.enteringScreen
 		}),
-		marginLeft: drawerWidth,
+		marginLeft: drawerWidth
 	},
 	main: {
 		alignItems: 'center',
@@ -41,18 +41,18 @@ const useStyles = makeStyles((theme) => ({
 		padding: theme.spacing(3, 2),
 		marginTop: 'auto',
 		backgroundColor:
-			theme.palette.type === 'light' ? theme.palette.grey[200] : theme.palette.grey[800],
-	},
+			theme.palette.type === 'light' ? theme.palette.grey[200] : theme.palette.grey[800]
+	}
 }));
 
 const SwitchRoutes = (props) => {
-	return(
+	return (
 		<Switch>
 			{ routes.map((prop, key) => {
-				if (prop.layout === '/'+props.profile) {
+				if (prop.layout.includes(props.profile)) {
 					return (
 						<Route
-							path={ prop.layout + prop.path }
+							path={ '/' + props.profile + prop.path }
 							component={ prop.component }
 							key={ key }
 						/>
@@ -60,17 +60,25 @@ const SwitchRoutes = (props) => {
 				}
 				return null;
 			}) }
-			<Redirect from="/admin" to="/admin/dashboard"/>
+			<Redirect from={ '/' + props.profile } to={'/' + props.profile + '/dashboard'}/>
 		</Switch>
-	)
-}
+	);
+};
 export default function System(props) {
 	const classes = useStyles();
 	const user = useSelector(state => state.user);
 
+	function hasPermissions(profile) {
+		return window.location.href.indexOf(profile) !== -1;
+
+	}
+
 	useEffect(() => {
 		if (!user.profile) {
 			props.history.push('/');
+		}
+		if(!hasPermissions(user.profile.profile)){
+			props.history.push('/'+user.profile.profile);
 		}
 	}, []);
 
@@ -81,31 +89,31 @@ export default function System(props) {
 	};
 
 	return (
-		<div className={classes.root}>
+		<div className={ classes.root }>
 			<Sidebar
-				routes={routes}
-				open={open}
-				handleDrawerToggle={handleDrawerToggle}
-				profile={user.profile.profile}
+				routes={ routes }
+				open={ open }
+				handleDrawerToggle={ handleDrawerToggle }
+				profile={ user.profile.profile }
 			/>
 			<main
-				className={open ? classes.contentShift : classes.content}
+				className={ open ? classes.contentShift : classes.content }
 			>
 				<Navbar
-					routes={routes}
+					routes={ routes }
 					history={ props.history }
-					handleDrawerToggle={handleDrawerToggle}
-					open={open}
-					profile={user.profile.profile}
+					handleDrawerToggle={ handleDrawerToggle }
+					open={ open }
+					profile={ user.profile.profile }
 				/>
-				<CssBaseline />
-				<Container component="main" className={classes.main}>
-					<SwitchRoutes profile={user.profile.profile} />
+				<CssBaseline/>
+				<Container component="main" className={ classes.main }>
+					<SwitchRoutes profile={ user.profile.profile }/>
 				</Container>
-				<footer className={classes.footer}>
+				<footer className={ classes.footer }>
 					<Container maxWidth="sm">
 						<Typography variant="body1">My sticky footer can be found here.</Typography>
-						<Copyright />
+						<Copyright/>
 					</Container>
 				</footer>
 			</main>

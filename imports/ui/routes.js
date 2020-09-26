@@ -11,21 +11,21 @@ const dashboardRoutes = [
 		name: 'Dashboard',
 		icon: DashboardIcon,
 		component: Dashboard,
-		layout: '/admin'
+		layout: ['admin', 'client', 'specialist', 'labworker']
 	},
 	{
 		path: '/generator',
 		name: 'Generador',
 		icon: Person,
 		component: Generator,
-		layout: '/admin'
+		layout: ['admin']
 	},
 	{
 		path: '/user.manager',
 		name: 'User Manager',
 		icon: Person,
 		component: UserManager,
-		layout: '/admin'
+		layout: ['admin']
 	}
 ];
 

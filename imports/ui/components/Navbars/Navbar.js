@@ -81,8 +81,8 @@ export default function Navbar(props) {
 	function getTitle() {
 		let name;
 		props.routes.map(prop => {
-			if(prop.layout === '/'+props.profile) {
-				if (window.location.href.indexOf(prop.layout + prop.path) !== -1) {
+			if(prop.layout.includes(props.profile)) {
+				if (window.location.href.indexOf('/'+props.profile + prop.path) !== -1) {
 					name = prop.name;
 				}
 			}

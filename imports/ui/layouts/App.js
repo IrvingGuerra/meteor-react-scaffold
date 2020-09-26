@@ -28,6 +28,9 @@ const App = () => (
 			<Switch>
 				<Route exact path="/" component={ Login }/>
 				<Route path="/admin" component={ System }/>
+				<Route path="/client" component={ System }/>
+				<Route path="/specialist" component={ System }/>
+				<Route path="/labworker" component={ System }/>
 			</Switch>
 			<AlertMessage/>
 		</Router>
