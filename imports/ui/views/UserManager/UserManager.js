@@ -1,20 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import Avatar from '@material-ui/core/Avatar';
+import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
 import Paper from '@material-ui/core/Paper';
-import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { setAlert } from '../../components/Utilities/Alerts/AlertMessage';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginWithPassword } from '../../../redux/actions';
 import { FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
@@ -66,7 +58,7 @@ export default function UserManager(props) {
 		<Grid item xs={ 6 }component={ Paper } elevation={ 6 } square>
 			<div className={ classes.card }>
 				<Typography gutterBottom component="h1" variant="h5">
-					Crear U suario
+					Crear Usuario
 				</Typography>
 				<form className={ classes.form } onSubmit={ handleSubmitForm }>
 					<Grid container spacing={ 2 }>
