@@ -3,7 +3,7 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import routes from '../routes.js';
 import { useSelector } from 'react-redux';
-import AdminNavbar from '../components/Navbars/AdminNavbar';
+import Navbar from '../components/Navbars/Navbar';
 import Sidebar, { drawerWidth } from '../components/Sidebar/Sidebar';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
@@ -63,7 +63,7 @@ const switchRoutes = (
 	</Switch>
 );
 
-export default function Admin(props) {
+export default function System(props) {
 	const classes = useStyles();
 
 	const user = useSelector(state => state.user);
@@ -95,7 +95,7 @@ export default function Admin(props) {
 				<main
 					className={open ? classes.contentShift : classes.content}
 				>
-					<AdminNavbar
+					<Navbar
 						routes={routes}
 						history={ props.history }
 						handleDrawerToggle={handleDrawerToggle}

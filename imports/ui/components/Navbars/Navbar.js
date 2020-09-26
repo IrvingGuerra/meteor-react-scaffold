@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-export default function AdminNavbar(props) {
+export default function Navbar(props) {
 	const classes = useStyles();
 	const dispatch = useDispatch();
 

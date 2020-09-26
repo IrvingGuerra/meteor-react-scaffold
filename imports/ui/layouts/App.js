@@ -6,7 +6,7 @@ import { Provider } from 'react-redux';
 import reduxThunk from 'redux-thunk';
 import reducer from '../../redux/reducers';
 import { loadState, saveState } from '../../utils/localStorage';
-import Admin from './Admin';
+import System from './System';
 import Login from '../views/Auth/login';
 import AlertMessage from '../components/Utilities/Alerts/AlertMessage';
 
@@ -27,7 +27,7 @@ const App = () => (
 		<Router history={ history }>
 			<Switch>
 				<Route exact path="/" component={ Login }/>
-				<Route path="/admin" component={ Admin }/>
+				<Route path="/admin" component={ System }/>
 			</Switch>
 			<AlertMessage/>
 		</Router>
