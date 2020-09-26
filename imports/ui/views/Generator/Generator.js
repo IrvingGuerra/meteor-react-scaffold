@@ -1,9 +1,10 @@
 import React from "react";
+import TextProcessor from '../../components/TextProcessor/TextProcessor';
 
 export default function Generator() {
     return (
         <div>
-            Hola
+            <TextProcessor></TextProcessor>
         </div>
     );
 }

@@ -66,7 +66,7 @@ export default function UserManager(props) {
 		<Grid item xs={ 6 }component={ Paper } elevation={ 6 } square>
 			<div className={ classes.card }>
 				<Typography gutterBottom component="h1" variant="h5">
-					Crear Usuario
+					Crear U suario
 				</Typography>
 				<form className={ classes.form } onSubmit={ handleSubmitForm }>
 					<Grid container spacing={ 2 }>

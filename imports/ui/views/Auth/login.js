@@ -71,6 +71,16 @@ export default function Login(props) {
 		password: ''
 	});
 
+	const [formSignUp, setFormSignUp] = useState({
+		_id: null,
+		firstname: '',
+		lastname: '',
+		username: '',
+		email: '',
+		password: '',
+		profile: 'client'
+	});
+
 	useEffect(() => {
 		if(user && user.profile){
 			props.history.push(`/${user.profile.profile}`);
@@ -92,13 +102,12 @@ export default function Login(props) {
 
 	const handleSubmitRegister = (e) => {
 		e.preventDefault();
-		const { _id, email, password } = form;
-		Meteor.call('user.save', { user: { _id, email, password } }, (error, response) => {
+		Meteor.call('user.save', { user: formSignUp }, (error, response) => {
 			if (error) {
 				setAlert('Error', error.reason, 'error');
 				return;
 			}
-			setAlert('Éxito', response.message);
+			setAlert('Éxito', response._message);
 			return;
 		});
 	};
@@ -178,10 +187,46 @@ export default function Login(props) {
 							<LockOutlinedIcon/>
 						</Avatar>
 						<Typography component="h1" variant="h5">
-							Sign up
+							Registro
 						</Typography>
 						<form className={ classes.form } onSubmit={ handleSubmitRegister }>
 							<Grid container spacing={ 2 }>
+								<Grid item xs={ 6 }>
+									<TextField
+										variant="outlined"
+										required
+										fullWidth
+										id="firstname"
+										label="Nombre"
+										name="firstname"
+										value={ formSignUp.firstname }
+										onChange={ e => setFormSignUp({ ...formSignUp, firstname: e.target.value }) }
+									/>
+								</Grid>
+								<Grid item xs={ 6 }>
+									<TextField
+										variant="outlined"
+										required
+										fullWidth
+										id="lastname"
+										label="Apellidos"
+										name="lastname"
+										value={ formSignUp.lastname }
+										onChange={ e => setFormSignUp({ ...formSignUp, lastname: e.target.value }) }
+									/>
+								</Grid>
+								<Grid item xs={ 12 }>
+									<TextField
+										variant="outlined"
+										required
+										fullWidth
+										id="username"
+										label="Nombre de usuario"
+										name="username"
+										value={ formSignUp.username }
+										onChange={ e => setFormSignUp({ ...formSignUp, username: e.target.value }) }
+									/>
+								</Grid>
 								<Grid item xs={ 12 }>
 									<TextField
 										variant="outlined"
@@ -191,8 +236,8 @@ export default function Login(props) {
 										label="Email Address"
 										name="email"
 										autoComplete="email"
-										value={ form.email }
-										onChange={ e => setForm({ ...form, email: e.target.value }) }
+										value={ formSignUp.email }
+										onChange={ e => setFormSignUp({ ...formSignUp, email: e.target.value }) }
 									/>
 								</Grid>
 								<Grid item xs={ 12 }>
@@ -205,8 +250,8 @@ export default function Login(props) {
 										type="password"
 										id="password"
 										autoComplete="current-password"
-										value={ form.password }
-										onChange={ e => setForm({ ...form, password: e.target.value }) }
+										value={ formSignUp.password }
+										onChange={ e => setFormSignUp({ ...formSignUp, password: e.target.value }) }
 									/>
 								</Grid>
 							</Grid>
