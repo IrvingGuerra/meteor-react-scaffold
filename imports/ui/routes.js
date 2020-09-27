@@ -18,7 +18,7 @@ const dashboardRoutes = [
 		name: 'Generador',
 		icon: Person,
 		component: Generator,
-		layout: ['admin']
+		layout: []
 	},
 	{
 		path: '/user.manager',

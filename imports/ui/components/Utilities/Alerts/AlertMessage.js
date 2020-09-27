@@ -22,7 +22,7 @@ const AlertMessage = () => {
 
 	const [state, setState] = useState({
 		title: 'Bienvenido',
-		message: 'Labvetanaliza!',
+		message: 'Meteor React Scaffold!',
 		severity: 'success',
 		transition: 'Slide',
 		transitionComponent: SlideTransition,
