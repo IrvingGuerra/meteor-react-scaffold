@@ -10,9 +10,9 @@ services:
     build:
       context: .
       dockerfile: dockerfile
-    ports:
-      - 80:8080
     env_file: docker.env
+    ports:
+      - 80:3000
     volumes:
       - $PWD/.uploads:/opt/scaffold-files
     networks:
@@ -25,6 +25,9 @@ services:
     restart: always
     ports:
       - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root123
     volumes:
       - $PWD/data:/data/db
       - $PWD/database:/opt/database
