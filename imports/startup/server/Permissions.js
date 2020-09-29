@@ -1,6 +1,5 @@
 import { Meteor } from 'meteor/meteor';
 
-
 const Permissions = {
 	PERMISSIONS: {
 		LIST: { VALUE: 'permissions-view', TEXT: 'Listar permisos' }
