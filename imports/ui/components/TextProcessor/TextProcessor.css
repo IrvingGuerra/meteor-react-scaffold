@@ -13,20 +13,29 @@
 .headerTextProcessor{
     padding: 0 !important;
 }
+.iconSave{
+    border-radius: 5px;
+    color: white;
+    font-size: 20px;
+    padding: 4px;
+    margin: 0px;
+}
+.iconSave:hover{
+    color: black;
+    background-color: #BDD5F1;
+}
 .text-align-center{
     text-align: center;
-}
-.textProcessorHeader{
-    background-color: white;
-    padding: 0 !important;
 }
 .textProcessorBar{
     margin: 0 !important;
 }
 .textProcessorBody{
     background-color: lightgray;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
 }
 .textProcessorHeaderTitleContainer{
     background-color: #2178DF;
@@ -43,7 +52,7 @@
     color: white;
     text-align: center;
     font-size: 16px;
-    width: 100%;
+    width: 93%;
 }
 .textProcessorHeaderTitleText::placeholder{
     color: white;

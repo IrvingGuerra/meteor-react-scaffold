@@ -3,6 +3,15 @@ export const fabric = window.fabric;
 (function() {
     fabric.NewTextBox = fabric.util.createClass(fabric.Textbox, {
         type: 'NewTextBox',
+        initialize: function (text, options) {
+            this.text = text;
+            this.callSuper("initialize", text, options);
+        },
+        toObject: function() {
+            return fabric.util.object.extend(this.callSuper('toObject'), {
+                text: this.get('text'),
+            });
+        },
         _getNonTransformedDimensions() { // Object dimensions
             return new fabric.Point(this.width - this.padding, this.height).scalarAdd(this.padding);
         },
@@ -69,4 +78,11 @@ export const fabric = window.fabric;
             ctx.restore();
         },
     });
+    fabric.NewTextBox.fromObject = function (object, callback) {
+        fabric.util.enlivenObjects(object.objects, function (enlivenedObjects) {
+            delete object.objects;
+            callback && callback(new fabric.NewTextBox(enlivenedObjects, object));
+        });
+    };
+    fabric.NewTextBox.async = true;
 })();

@@ -14,7 +14,7 @@ const useStylesBootstrap = makeStyles((theme) => ({
     },
 }));
 
-function BootstrapTooltip(props) {
+export function BootstrapTooltip(props) {
     const classes = useStylesBootstrap();
     return <Tooltip arrow classes={classes} {...props} />;
 }
@@ -22,29 +22,27 @@ function BootstrapTooltip(props) {
 export default function TabFont(props) {
     const { document } = props;
     return (
-        <Grid container direction="row" xs={12}>
-            <Grid item xs={12} className="text-align-center">
-                <Select
-                    native
-                >
-                    <option value="Times New Roman">Times New Roman</option>
-                    <option value="Pacifico">Pacifico</option>
-                </Select>
-                <BootstrapTooltip title={STRINGS.font.plus}>
-                    <button type="button" className="noButton" onClick={() => changeSize(document,'plus')}>
-                        <i className="fa fa-font icoFont">
-                            <i className="up" />
-                        </i>
-                    </button>
-                </BootstrapTooltip>
-                <BootstrapTooltip title={STRINGS.font.less}>
-                    <button type="button" className="noButton" onClick={() => changeSize(document,'less')}>
-                        <i className="fa fa-font icoFont">
-                            <i className="down" />
-                        </i>
-                    </button>
-                </BootstrapTooltip>
-            </Grid>
-        </Grid>
+        <div>
+            <Select
+                native
+            >
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Pacifico">Pacifico</option>
+            </Select>
+            <BootstrapTooltip title={STRINGS.font.plus}>
+                <button type="button" className="noButton" onClick={() => changeSize(document,'plus')}>
+                    <i className="fa fa-font icoFont">
+                        <i className="up" />
+                    </i>
+                </button>
+            </BootstrapTooltip>
+            <BootstrapTooltip title={STRINGS.font.less}>
+                <button type="button" className="noButton" onClick={() => changeSize(document,'less')}>
+                    <i className="fa fa-font icoFont">
+                        <i className="down" />
+                    </i>
+                </button>
+            </BootstrapTooltip>
+        </div>
     )
 }

@@ -16,6 +16,12 @@ const Permissions = {
 		UPDATE: { VALUE: 'profiles-edit', TEXT: 'Actualizar perfil' },
 		DELETE: { VALUE: 'profiles-delete', TEXT: 'Eliminar perfil' }
 	},
+	TEMPLATES: {
+		LIST: { VALUE: 'templates-view', TEXT: 'Listar plantillas' },
+		CREATE: { VALUE: 'templates-create', TEXT: 'Crear plantilla' },
+		UPDATE: { VALUE: 'templates-edit', TEXT: 'Actualizar plantilla' },
+		DELETE: { VALUE: 'templates-delete', TEXT: 'Eliminar plantilla' }
+	},
 }
 
 export const permissionsArray = Object.keys(Permissions).reduce((accumulator, systemModuleName) => {

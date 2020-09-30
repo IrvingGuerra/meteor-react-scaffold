@@ -18,6 +18,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
 import { useSelector } from 'react-redux';
+import { Template } from '../../../api/Templates/Template';
+import { setAlert } from '../../components/Utilities/Alerts/AlertMessage';
 
 const useStyles = makeStyles((theme) => ({
 	card: {
@@ -28,14 +30,24 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-const ListUsers = (props) => {
+const ListTemplates = (props) => {
 	const classes = useStyles();
-	const user = useSelector(state => state.user);
 
-	const users = useTracker(() => {
-		Meteor.subscribe('users');
-		return Meteor.users.find({ _id: { $ne: Meteor.userId() } }).fetch();
+	const templates = useTracker(() => {
+		Meteor.subscribe('templates');
+		return Template.find({}).fetch();
 	}, []);
+
+	const deleteTemplate = (idTemplate) => {
+		Meteor.call('template.delete', idTemplate, (error, response) => {
+			if (error) {
+				setAlert('Error', error.reason, 'error');
+				return;
+			}
+			setAlert('Éxito', response._message);
+			return;
+		});
+	}
 
 	return (
 		<Card className={ classes.card } elevation={ 6 }>
@@ -48,32 +60,33 @@ const ListUsers = (props) => {
 						<AddIcon/>
 					</Fab>
 				}
-				title="Usuarios Registrados"
+				title="Plantillas creadas"
 			/>
 			<CardContent>
 				<TableContainer>
 					<Table aria-label="simple table">
 						<TableHead>
 							<TableRow>
-								<TableCell>Nombre de usuario</TableCell>
-								<TableCell>Correo eléctronico</TableCell>
-								<TableCell>Perfil</TableCell>
+								<TableCell>Nombre de la plantilla</TableCell>
 								<TableCell>Configuracion</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							{ users.map((user) => (
-								<TableRow key={ user._id }>
+							{ templates.map((template) => (
+								<TableRow key={ template._id }>
 									<TableCell component="th" scope="row">
-										{ user.profile.username }
+										{ template.title}
 									</TableCell>
-									<TableCell>{ user.emails[0].address }</TableCell>
-									<TableCell>{ user.profile.profile }</TableCell>
 									<TableCell>
-										<IconButton>
+										<IconButton onClick={() => {
+											props.history.push({
+												pathname: props.history.location.pathname+'Edit',
+												state: { template }
+											});
+										}}>
 											<EditIcon/>
 										</IconButton>
-										<IconButton aria-label="delete">
+										<IconButton aria-label="delete" onClick={() => deleteTemplate(template._id)}>
 											<DeleteIcon/>
 										</IconButton>
 									</TableCell>
@@ -87,4 +100,4 @@ const ListUsers = (props) => {
 	);
 };
 
-export default ListUsers;
+export default ListTemplates;
