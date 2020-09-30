@@ -25,9 +25,14 @@ export default function TextProcessor(props) {
 				object.set('lockMovementY', true);
 				object.set('hoverCursor', 'text');
 			});
+			setDocument({
+				_id: props.location.state.template._id,
+				title: props.location.state.template.title,
+				margin: props.location.state.template.margin,
+				canvas: c
+			});
+			return;
 		}
-		c.freeDrawingBrush.color = 'black';
-		c.freeDrawingBrush.width = 2;
 		setDocument({
 			...document,
 			canvas: c
@@ -41,7 +46,7 @@ export default function TextProcessor(props) {
 		}
 		// Save as json
         const documentJson = {
-	        _id: null,
+	        _id: document._id,
 	        title: document.title,
 	        margin: document.margin,
 	        canvas: JSON.stringify(document.canvas)
@@ -64,7 +69,7 @@ export default function TextProcessor(props) {
 					</button>
 				</BootstrapTooltip>
 				<input
-					value={ document.name }
+					value={ document.title }
 					className="textProcessorHeaderTitleText"
 					placeholder="Trámite 1"
 					type="text"

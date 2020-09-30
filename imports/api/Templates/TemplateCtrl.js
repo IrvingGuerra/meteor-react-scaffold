@@ -35,9 +35,19 @@ export const saveUserMethod = new ValidatedMethod({
 				throw new Meteor.Error('500', 'Error al crear la plantilla');
 			}
 		} else {
-			//This is just for editing in a panel
-			console.log(template._id);
-			console.log('Existe');
+			try {
+				Template.update(template._id, {
+					$set: {
+						title: template.title,
+						margin: template.margin,
+						canvas: template.canvas
+					}
+				});
+				responseMessage.create(true, 'Se ha actualizado la plantilla.');
+			} catch (err) {
+				console.error('Error updating template: ', err);
+				throw new Meteor.Error('500', 'Error al actualizar la plantilla');
+			}
 		}
 		return responseMessage;
 	}
