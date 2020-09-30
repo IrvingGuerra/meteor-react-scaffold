@@ -4,12 +4,15 @@ export const fabric = window.fabric;
     fabric.NewTextBox = fabric.util.createClass(fabric.Textbox, {
         type: 'NewTextBox',
         initialize: function (text, options) {
+            console.log(options);
             this.text = text;
+            this.padding = options.padding;
             this.callSuper("initialize", text, options);
         },
         toObject: function() {
             return fabric.util.object.extend(this.callSuper('toObject'), {
                 text: this.get('text'),
+                padding: this.get('padding'),
             });
         },
         _getNonTransformedDimensions() { // Object dimensions

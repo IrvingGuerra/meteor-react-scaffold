@@ -20,10 +20,7 @@ export default function TextProcessor(props) {
 		const c = new fabric.Canvas('doc');
 		if(props.location.state !== undefined){
 			c.loadFromJSON(props.location.state.template.canvas, c.renderAll.bind(c), (o, object) => {
-				object.set('hasControls', false);
-				object.set('lockMovementX', true);
-				object.set('lockMovementY', true);
-				object.set('hoverCursor', 'text');
+				object.set('hasControls', true);
 			});
 			setDocument({
 				_id: props.location.state.template._id,
