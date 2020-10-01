@@ -4,7 +4,6 @@ export const fabric = window.fabric;
     fabric.NewTextBox = fabric.util.createClass(fabric.Textbox, {
         type: 'NewTextBox',
         initialize: function (text, options) {
-            console.log(options);
             this.text = text;
             this.padding = options.padding;
             this.callSuper("initialize", text, options);

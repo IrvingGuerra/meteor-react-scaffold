@@ -57,7 +57,7 @@ export const addTitle = (document) => {
         borderBottomLeftRadius: 25,
         borderTopLeftRadius: 25,
         backgroundColor: 'black',
-        padding: 20
+        padding: 25
     });
     document.canvas.add(eje);
 }
