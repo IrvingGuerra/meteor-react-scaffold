@@ -13,7 +13,8 @@ export default function TextProcessor(props) {
 		_id: null,
 		title: '',
 		margin: DOC_MARGIN.md,
-		canvas: null
+		canvas: null,
+		lastElementSelected: null
 	});
 
 	useEffect(() => {
@@ -61,15 +62,27 @@ export default function TextProcessor(props) {
 	const _handleKeyDown = (event) => {
 		if(event.keyCode == 46) {
 			const obj = document.canvas.getActiveObject();
-			if(obj === undefined) return;
+			if(obj === undefined || obj === null) return;
 			document.canvas.remove(obj);
 		}
 	}
 
+	const _handleClickDown = (event) => {
+		if(event.target.tagName !== 'CANVAS') return;
+		const obj = document.canvas.getActiveObject();
+		if(obj === undefined || obj === null) return;
+		setDocument({
+			...document,
+			lastElementSelected: obj
+		});
+	}
+
 	useEffect(() => {
 		window.addEventListener('keyup', _handleKeyDown);
+		window.addEventListener("mouseup", _handleClickDown);
 		return () => {
 			window.removeEventListener('keyup', _handleKeyDown);
+			window.removeEventListener("mouseup", _handleClickDown);
 		};
 	}, [document.canvas])
 

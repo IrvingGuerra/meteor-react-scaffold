@@ -7,16 +7,32 @@
     cursor: pointer;
 }
 .icoFont{
+    color: #757575;
+    font-size: 18px;
+    margin-left: 5px;
     margin-right: 5px;
-    padding: 4px;
-    padding-right: 10px;
+    padding: 5px 10px 5px 5px;
     border-radius: 5px;
 }
 .icoFont:hover{
     background-color: #BDD5F1;
 }
+.ico{
+    color: #757575;
+    font-size: 20px;
+    margin-left: 5px;
+    margin-right: 5px;
+    padding: 5px;
+    border-radius: 5px;
+}
+.ico:hover{
+    background-color: #BDD5F1;
+}
+.select{
+    background-color: #A0C3EC;
+}
 .up {
-    border: solid blue;
+    border: solid cadetblue;
     border-width: 0 2px 2px 0;
     display: inline-block;
     padding: 2px;
@@ -25,7 +41,7 @@
     position: absolute;
 }
 .down {
-    border: solid blue;
+    border: solid cadetblue;
     border-width: 0 2px 2px 0;
     display: inline-block;
     padding: 2px;
