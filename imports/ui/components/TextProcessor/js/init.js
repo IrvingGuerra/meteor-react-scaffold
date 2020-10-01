@@ -12,6 +12,11 @@ export const fabric = window.fabric;
             return fabric.util.object.extend(this.callSuper('toObject'), {
                 text: this.get('text'),
                 padding: this.get('padding'),
+                borderRadius: this.get('borderRadius'),
+                borderTopRightRadius: this.get('borderTopRightRadius'),
+                borderBottomRightRadius: this.get('borderBottomRightRadius'),
+                borderBottomLeftRadius: this.get('borderBottomLeftRadius'),
+                borderTopLeftRadius: this.get('borderTopLeftRadius')
             });
         },
         _getNonTransformedDimensions() { // Object dimensions
