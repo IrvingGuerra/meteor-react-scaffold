@@ -18,7 +18,7 @@ export default function TextProcessor(props) {
 
 	useEffect(() => {
 		const c = new fabric.Canvas('doc');
-		if(props.location.state !== undefined){
+		if (props.location.state !== undefined) {
 			c.loadFromJSON(props.location.state.template.canvas, c.renderAll.bind(c), (o, object) => {
 				object.set('hasControls', true);
 			});
@@ -38,16 +38,16 @@ export default function TextProcessor(props) {
 
 	const save = (document) => {
 		if (document.title === '') {
-            setAlert('Error al guardar', 'Debes ponerle un nombre al documento', 'error');
-            return;
+			setAlert('Error al guardar', 'Debes ponerle un nombre al documento', 'error');
+			return;
 		}
 		// Save as json
-        const documentJson = {
-	        _id: document._id,
-	        title: document.title,
-	        margin: document.margin,
-	        canvas: JSON.stringify(document.canvas)
-        };
+		const documentJson = {
+			_id: document._id,
+			title: document.title,
+			margin: document.margin,
+			canvas: JSON.stringify(document.canvas)
+		};
 		Meteor.call('template.save', documentJson, (err, res) => {
 			if (err) {
 				setAlert('Error', err.reason, 'error');
@@ -56,6 +56,22 @@ export default function TextProcessor(props) {
 			setAlert('Éxito', res._message);
 		});
 	};
+
+
+	const _handleKeyDown = (event) => {
+		if(event.keyCode == 46) {
+			const obj = document.canvas.getActiveObject();
+			if(obj === undefined) return;
+			document.canvas.remove(obj);
+		}
+	}
+
+	useEffect(() => {
+		window.addEventListener('keyup', _handleKeyDown);
+		return () => {
+			window.removeEventListener('keyup', _handleKeyDown);
+		};
+	}, [document.canvas])
 
 	return (
 		<Card elevation={ 6 }>
