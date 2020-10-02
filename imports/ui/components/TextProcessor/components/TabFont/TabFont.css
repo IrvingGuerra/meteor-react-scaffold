@@ -17,6 +17,18 @@
 .icoFont:hover{
     background-color: #BDD5F1;
 }
+.icoFontColor{
+    color: #757575;
+    font-size: 18px;
+    margin-left: 5px;
+    margin-right: 5px;
+    padding: 5px 5px 10px 5px;
+    border-radius: 5px;
+    position: relative;
+}
+.icoFontColor:hover{
+    background-color: #BDD5F1;
+}
 .ico{
     color: #757575;
     font-size: 20px;
@@ -26,6 +38,17 @@
     border-radius: 5px;
 }
 .ico:hover{
+    background-color: #BDD5F1;
+}
+.icoMaterialUi{
+    color: #757575;
+    font-size: 20px;
+    margin-left: 5px;
+    margin-right: 5px;
+    padding: 1px 5px 1px 5px;
+    border-radius: 5px;
+}
+.icoMaterialUi:hover{
     background-color: #BDD5F1;
 }
 .select{

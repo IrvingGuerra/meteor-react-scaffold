@@ -33,7 +33,7 @@ const setStyle = (object, styleName, value) => {
 	return object;
 }
 
-const getStyle = (object, styleName) => {
+export const getStyle = (object, styleName) => {
 	return (object.getSelectionStyles && object.isEditing)
 		? object.getSelectionStyles()[styleName]
 		: object[styleName];
@@ -46,14 +46,20 @@ export const changeStyle = (doc, style) => {
 		case 'bold':
 			const isBold = (getStyle(obj, 'fontWeight') || '').indexOf('bold') > -1;
 			setStyle(obj, 'fontWeight', isBold ? 'normal' : 'bold');
+			isBold ? document.getElementById('bold').className = 'fa fa-bold ico'
+			: document.getElementById('bold').className = 'fa fa-bold ico select';
 			break;
 		case 'italic':
 			const isItalic = (getStyle(obj, 'fontStyle') || '').indexOf('italic') > -1;
 			setStyle(obj, 'fontStyle', isItalic ? 'normal' : 'italic');
+			isItalic ? document.getElementById('italic').className = 'fa fa-italic ico'
+				: document.getElementById('italic').className = 'fa fa-italic ico select';
 			break;
 		case 'underline':
 			const isUnderline = (getStyle(obj, 'textDecoration') || '').indexOf('underline') > -1;
 			setStyle(obj, 'textDecoration', isUnderline ? '' : 'underline');
+			isUnderline ? document.getElementById('underline').className = 'fa fa-underline ico'
+				: document.getElementById('underline').className = 'fa fa-underline ico select';
 			break;
 	}
 	doc.canvas.renderAll();

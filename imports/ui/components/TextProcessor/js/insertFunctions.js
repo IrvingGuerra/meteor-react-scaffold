@@ -49,7 +49,7 @@ export const addTitle = (document) => {
         fontFamily: 'Arial',
         fontSize: 30,
         fontWeight: 'bold',
-        fill: 'white',
+        fill: '#ffffff',
         textAlign: 'center',
         //borderRadius: 25,
         borderTopRightRadius: 25,

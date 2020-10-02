@@ -1,22 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Grid, Tooltip, makeStyles, Select, FormControl, InputLabel, MenuItem } from '@material-ui/core';
+import { Grid, Tooltip, makeStyles, Select, FormControl, InputLabel, MenuItem, IconButton } from '@material-ui/core';
 import {
 	changeAlign,
-	changeItalic,
 	changeSize,
 	changeStyle,
-	changeUnderline,
-	changeWeight
+	getStyle
 } from '../../js/fontFunctions';
 import './TabFont.css';
 import { STRINGS } from '../../constants/strings';
-import FormatAlignLeftIcon from '@material-ui/icons/FormatAlignLeft';
-import FormatAlignCenterIcon from '@material-ui/icons/FormatAlignCenter';
-import FormatAlignRightIcon from '@material-ui/icons/FormatAlignRight';
-import FormatBoldIcon from '@material-ui/icons/FormatBold';
-import FormatItalicIcon from '@material-ui/icons/FormatItalic';
-import FormatUnderlinedIcon from '@material-ui/icons/FormatUnderlined';
 import Divider from '@material-ui/core/Divider';
+import 'rc-color-picker/assets/index.css';
+import ColorPicker from 'rc-color-picker';
 
 const useStylesBootstrap = makeStyles((theme) => ({
 	arrow: {
@@ -56,20 +50,50 @@ export function BootstrapTooltip(props) {
 
 export default function TabFont(props) {
 	const classes = useStyles();
-	const { document } = props;
+	const doc = props.document;
 	const [actualObjectFont, setActualObjectFont] = useState('');
+	const [actualColorFont, setActualColorFont] = useState('#ffffff');
 
 	useEffect(() => {
-		if (document.lastElementSelected === undefined || document.lastElementSelected === null) return;
-		setActualObjectFont(document.lastElementSelected.get('fontFamily'));
-		changeAlign(document, document.lastElementSelected.get('textAlign'))
-	}, [document.lastElementSelected]);
+		// Cuando detecta que le da click a algo
+		if (doc.lastElementSelected === undefined || doc.lastElementSelected === null) return;
+		let obj = doc.canvas.getActiveObject();
+		if (obj === undefined || obj === null) return;
+		setActualObjectFont(doc.lastElementSelected.get('fontFamily'));
+		changeAlign(doc, doc.lastElementSelected.get('textAlign'));
+		// Update icons styles
+		const isBold = (getStyle(obj, 'fontWeight') || '').indexOf('bold') > -1;
+		isBold ? document.getElementById('bold').className = 'fa fa-bold ico select'
+			: document.getElementById('bold').className = 'fa fa-bold ico';
+		const isItalic = (getStyle(obj, 'fontStyle') || '').indexOf('italic') > -1;
+		isItalic ? document.getElementById('italic').className = 'fa fa-italic ico select'
+			: document.getElementById('italic').className = 'fa fa-italic ico';
+		const isUnderline = (getStyle(obj, 'textDecoration') || '').indexOf('underline') > -1;
+		isUnderline ? document.getElementById('underline').className = 'fa fa-underline ico select'
+			: document.getElementById('underline').className = 'fa fa-underline ico';
+		// Update Color Font
+		setActualColorFont(obj.get('fill'));
+	}, [doc.lastElementSelected]);
 
 	useEffect(() => {
-		if (document.lastElementSelected === undefined || document.lastElementSelected === null) return;
-		document.canvas.getActiveObject().set('fontFamily', actualObjectFont);
-		document.canvas.renderAll();
+		if (doc.lastElementSelected === undefined || doc.lastElementSelected === null) return;
+		const obj = doc.canvas.getActiveObject();
+		if (obj === undefined || obj === null) return;
+		obj.set('fontFamily', actualObjectFont);
+		doc.canvas.renderAll();
 	}, [actualObjectFont]);
+
+	useEffect(() => {
+		if (doc.lastElementSelected === undefined || doc.lastElementSelected === null) return;
+		const obj = doc.canvas.getActiveObject();
+		if (obj === undefined || obj === null) return;
+		obj.set('fill', actualColorFont);
+		doc.canvas.renderAll();
+	}, [actualColorFont]);
+
+	const changeFontColor = (colors) => {
+		setActualColorFont(colors.color);
+	};
 
 	return (
 		<Grid container alignItems="center" justify="center">
@@ -89,53 +113,81 @@ export default function TabFont(props) {
 					</Select>
 				</FormControl>
 				<BootstrapTooltip title={ STRINGS.font.plus }>
-					<button type="button" className="noButton" onClick={ () => changeSize(document, 'plus') }>
+					<button type="button" className="noButton" onClick={ () => changeSize(doc, 'plus') }>
 						<i className="fa fa-font icoFont">
 							<i className="up"/>
 						</i>
 					</button>
 				</BootstrapTooltip>
 				<BootstrapTooltip title={ STRINGS.font.less }>
-					<button type="button" className="noButton" onClick={ () => changeSize(document, 'less') }>
+					<button type="button" className="noButton" onClick={ () => changeSize(doc, 'less') }>
 						<i className="fa fa-font icoFont">
 							<i className="down"/>
 						</i>
 					</button>
 				</BootstrapTooltip>
+
+
+				<BootstrapTooltip title={ STRINGS.font.less }>
+					<button type="button" className="noButton" onClick={ () => {
+						document.getElementById('colorPicker').click();
+					} }>
+						<i className="fa fa-font icoFontColor">
+							<i style={ {
+								borderRight: 'solid',
+								borderRightColor: actualColorFont,
+								borderRightWidth: '20px',
+								padding: '2px',
+								position: 'absolute',
+								bottom: '5px',
+								left: 0
+							} }/>
+						</i>
+					</button>
+				</BootstrapTooltip>
+
+				<ColorPicker
+					animation="slide-up"
+					color={ actualColorFont }
+					onChange={ changeFontColor }
+				>
+					<span id="colorPicker"/>
+				</ColorPicker>
+
 				<Divider orientation="vertical" flexItem/>
 				<BootstrapTooltip title={ STRINGS.align.left }>
-					<button type="button" className="noButton" onClick={ () => changeAlign(document, 'left') }>
+					<button type="button" className="noButton" onClick={ () => changeAlign(doc, 'left') }>
 						<i id='left' className="fa fa-align-left ico"/>
 					</button>
 				</BootstrapTooltip>
 				<BootstrapTooltip title={ STRINGS.align.left }>
-					<button type="button" className="noButton" onClick={ () => changeAlign(document, 'center') }>
+					<button type="button" className="noButton" onClick={ () => changeAlign(doc, 'center') }>
 						<i id='center' className="fa fa-align-center ico"/>
 					</button>
 				</BootstrapTooltip>
 				<BootstrapTooltip title={ STRINGS.align.left }>
-					<button type="button" className="noButton" onClick={ () => changeAlign(document, 'right') }>
+					<button type="button" className="noButton" onClick={ () => changeAlign(doc, 'right') }>
 						<i id='right' className="fa fa-align-right ico"/>
 					</button>
 				</BootstrapTooltip>
 				<BootstrapTooltip title={ STRINGS.align.left }>
-					<button type="button" className="noButton" onClick={ () => changeAlign(document, 'justify') }>
+					<button type="button" className="noButton" onClick={ () => changeAlign(doc, 'justify') }>
 						<i id='justify' className="fa fa-align-justify ico"/>
 					</button>
 				</BootstrapTooltip>
 				<Divider orientation="vertical" flexItem/>
 				<BootstrapTooltip title={ STRINGS.font.bold }>
-					<button type="button" className="noButton" onClick={ () => changeStyle(document, 'bold') }>
+					<button type="button" className="noButton" onClick={ () => changeStyle(doc, 'bold') }>
 						<i id='bold' className="fa fa-bold ico"/>
 					</button>
 				</BootstrapTooltip>
 				<BootstrapTooltip title={ STRINGS.font.italic }>
-					<button type="button" className="noButton" onClick={ () => changeStyle(document, 'italic') }>
+					<button type="button" className="noButton" onClick={ () => changeStyle(doc, 'italic') }>
 						<i id='italic' className="fa fa-italic ico"/>
 					</button>
 				</BootstrapTooltip>
 				<BootstrapTooltip title={ STRINGS.font.underline }>
-					<button type="button" className="noButton" onClick={ () => changeStyle(document, 'underline') }>
+					<button type="button" className="noButton" onClick={ () => changeStyle(doc, 'underline') }>
 						<i id='underline' className="fa fa-underline ico"/>
 					</button>
 				</BootstrapTooltip>
