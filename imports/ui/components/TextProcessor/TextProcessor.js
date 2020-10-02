@@ -9,7 +9,7 @@ import { BootstrapTooltip } from './components/TabFont/TabFont';
 import { setAlert } from '../Utilities/Alerts/AlertMessage';
 
 export default function TextProcessor(props) {
-	const [document, setDocument] = useState({
+	const [doc, setDoc] = useState({
 		_id: null,
 		title: '',
 		margin: DOC_MARGIN.md,
@@ -23,7 +23,7 @@ export default function TextProcessor(props) {
 			c.loadFromJSON(props.location.state.template.canvas, c.renderAll.bind(c), (o, object) => {
 				object.set('hasControls', true);
 			});
-			setDocument({
+			setDoc({
 				_id: props.location.state.template._id,
 				title: props.location.state.template.title,
 				margin: props.location.state.template.margin,
@@ -31,25 +31,25 @@ export default function TextProcessor(props) {
 			});
 			return;
 		}
-		setDocument({
-			...document,
+		setDoc({
+			...doc,
 			canvas: c
 		});
 	}, []);
 
-	const save = (document) => {
-		if (document.title === '') {
-			setAlert('Error al guardar', 'Debes ponerle un nombre al documento', 'error');
+	const save = (doc) => {
+		if (doc.title === '') {
+			setAlert('Error al guardar', 'Debes ponerle un nombre al doco', 'error');
 			return;
 		}
 		// Save as json
-		const documentJson = {
-			_id: document._id,
-			title: document.title,
-			margin: document.margin,
-			canvas: JSON.stringify(document.canvas)
+		const docJson = {
+			_id: doc._id,
+			title: doc.title,
+			margin: doc.margin,
+			canvas: JSON.stringify(doc.canvas)
 		};
-		Meteor.call('template.save', documentJson, (err, res) => {
+		Meteor.call('template.save', docJson, (err, res) => {
 			if (err) {
 				setAlert('Error', err.reason, 'error');
 				return;
@@ -61,18 +61,18 @@ export default function TextProcessor(props) {
 
 	const _handleKeyDown = (event) => {
 		if(event.keyCode == 46) {
-			const obj = document.canvas.getActiveObject();
+			const obj = doc.canvas.getActiveObject();
 			if(obj === undefined || obj === null) return;
-			document.canvas.remove(obj);
+			doc.canvas.remove(obj);
 		}
 	}
 
 	const _handleClickDown = (event) => {
 		if(event.target.tagName !== 'CANVAS') return;
-		const obj = document.canvas.getActiveObject();
+		const obj = doc.canvas.getActiveObject();
 		if(obj === undefined || obj === null) return;
-		setDocument({
-			...document,
+		setDoc({
+			...doc,
 			lastElementSelected: obj
 		});
 	}
@@ -84,25 +84,39 @@ export default function TextProcessor(props) {
 			window.removeEventListener('keyup', _handleKeyDown);
 			window.removeEventListener("mouseup", _handleClickDown);
 		};
-	}, [document.canvas])
+	}, [doc.canvas])
+
+	const modeSignature = () => {
+		doc.canvas.isDrawingMode = !doc.canvas.isDrawingMode;
+		if (doc.canvas.isDrawingMode) {
+			document.getElementById('pencil').className = 'fa fa-pencil iconSave select';
+		} else {
+			document.getElementById('pencil').className = 'fa fa-pencil iconSave';
+		}
+	}
 
 	return (
 		<Card elevation={ 6 }>
 			<div className="textProcessorHeaderTitleContainer">
 				<BootstrapTooltip title={ STRINGS.save }>
-					<button type="button" className="noButton" onClick={ () => save(document) }>
+					<button type="button" className="noButton" onClick={ () => save(doc) }>
 						<i className="fa fa-floppy-o iconSave"/>
 					</button>
 				</BootstrapTooltip>
 				<input
-					value={ document.title }
+					value={ doc.title }
 					className="textProcessorHeaderTitleText"
 					placeholder="Trámite 1"
 					type="text"
-					onChange={ (value) => setDocument({ ...document, title: value.target.value }) }
+					onChange={ (value) => setDoc({ ...doc, title: value.target.value }) }
 				/>
+				<BootstrapTooltip title={ STRINGS.signature }>
+					<button type="button" className="noButton" onClick={ () => modeSignature() }>
+						<i id="pencil" className="fa fa-pencil iconSave"/>
+					</button>
+				</BootstrapTooltip>
 			</div>
-			<TextProcessorTabs document={ document }/>
+			<TextProcessorTabs doc={ doc }/>
 			<div className="textProcessorBody">
 				<div className="docPaper">
 					<canvas id='doc' className='doc' width={ 816.37795276 } height={ 1054.488189 }/>

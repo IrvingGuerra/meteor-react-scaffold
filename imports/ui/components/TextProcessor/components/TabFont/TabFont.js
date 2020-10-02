@@ -50,7 +50,7 @@ export function BootstrapTooltip(props) {
 
 export default function TabFont(props) {
 	const classes = useStyles();
-	const doc = props.document;
+	const { doc } = props;
 	const [actualObjectFont, setActualObjectFont] = useState('');
 	const [actualColorFont, setActualColorFont] = useState('#ffffff');
 
@@ -59,6 +59,7 @@ export default function TabFont(props) {
 		if (doc.lastElementSelected === undefined || doc.lastElementSelected === null) return;
 		let obj = doc.canvas.getActiveObject();
 		if (obj === undefined || obj === null) return;
+		if (obj.strokeWidth) return; // Is drawing
 		setActualObjectFont(doc.lastElementSelected.get('fontFamily'));
 		changeAlign(doc, doc.lastElementSelected.get('textAlign'));
 		// Update icons styles

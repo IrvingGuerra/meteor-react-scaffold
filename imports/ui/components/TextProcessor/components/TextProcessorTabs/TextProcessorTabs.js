@@ -46,7 +46,7 @@ const styles = {
 const useStyles = makeStyles(styles);
 
 export default function TextProcessorTabs(props) {
-    const { document } = props;
+    const { doc } = props;
     const classes = useStyles();
     const [value, setValue] = useState(0);
     const handleChange = (event, newValue) => {
@@ -68,10 +68,10 @@ export default function TextProcessorTabs(props) {
                 </Tabs>
             </AppBar>
             <TabPanel value={value} index={0}>
-                <TabFont document={document}/>
+                <TabFont doc={doc}/>
             </TabPanel>
             <TabPanel value={value} index={1}>
-                <TabInsert document={document}/>
+                <TabInsert doc={doc}/>
             </TabPanel>
             <TabPanel value={value} index={2}>
                 3

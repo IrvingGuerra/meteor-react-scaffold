@@ -12,5 +12,6 @@ export const STRINGS = {
         center: 'Centrar texto',
         right: 'Alinear a la derecha',
         justify: 'Justificar texto'
-    }
+    },
+    signature: 'Active o desactive modo firma'
 }
