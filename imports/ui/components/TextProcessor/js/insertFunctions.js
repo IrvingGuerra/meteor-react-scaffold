@@ -1,21 +1,19 @@
 import {fabric} from "./init";
 
 export const addText = (doc) => {
-    const itext = new fabric.Textbox('Escriba titulo de doco', {
+    const newTextBox = new fabric.NewTextBox('Label', {
         left: doc.pages[doc.actualPage].margin,
         top: doc.pages[doc.actualPage].margin,
         width: doc.pages[doc.actualPage].canvas.width - doc.pages[doc.actualPage].margin * 2,
-        fontSize: 15,
-        fill: '#000000',
         fontFamily: 'Arial',
+        fontSize: 15,
         fontWeight: 'normal',
+        fill: '#000000', //Font Color
         textAlign: 'left',
-        hasControls: true,
-        lockMovementX: false,
-        lockMovementY: false,
-        hoverCursor: 'text',
+        backgroundColor: 'white',
+        padding: 0
     });
-    doc.pages[doc.actualPage].canvas.add(itext);
+    doc.pages[doc.actualPage].canvas.add(newTextBox);
 }
 
 export const addTitle = (doc) => {
