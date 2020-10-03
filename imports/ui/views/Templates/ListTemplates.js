@@ -1,6 +1,5 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-
 import {
 	TableContainer,
 	Table,
@@ -10,23 +9,24 @@ import {
 	TableBody,
 	IconButton,
 	Card,
-	CardHeader, CardContent,
-	Button, Fab
+	CardHeader,
+	CardContent,
+	Fab
 } from '@material-ui/core';
 import { useTracker } from 'react-meteor-hooks';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
-import { useSelector } from 'react-redux';
 import { Template } from '../../../api/Templates/Template';
 import { setAlert } from '../../components/Utilities/Alerts/AlertMessage';
 
 const useStyles = makeStyles((theme) => ({
 	card: {
-		marginTop: theme.spacing(5)
+		marginTop: theme.spacing(5),
+		minWidth: 500
 	},
 	heading: {
-		padding: theme.spacing(4,4,0,4)
+		padding: theme.spacing(4, 4, 0, 4)
 	}
 }));
 
@@ -45,18 +45,17 @@ const ListTemplates = (props) => {
 				return;
 			}
 			setAlert('Éxito', response._message);
-			return;
 		});
-	}
+	};
 
 	return (
 		<Card className={ classes.card } elevation={ 6 }>
 			<CardHeader
 				className={ classes.heading }
 				action={
-					<Fab color="primary" aria-label="add" onClick={() => {
-						props.history.push(props.history.location.pathname+'Create');
-					}}>
+					<Fab color="primary" aria-label="add" onClick={ () => {
+						props.history.push(props.history.location.pathname + 'Create');
+					} }>
 						<AddIcon/>
 					</Fab>
 				}
@@ -68,25 +67,25 @@ const ListTemplates = (props) => {
 						<TableHead>
 							<TableRow>
 								<TableCell>Nombre de la plantilla</TableCell>
-								<TableCell>Configuracion</TableCell>
+								<TableCell align="right">Configuracion</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>
 							{ templates.map((template) => (
 								<TableRow key={ template._id }>
 									<TableCell component="th" scope="row">
-										{ template.title}
+										{ template.title }
 									</TableCell>
-									<TableCell>
-										<IconButton onClick={() => {
+									<TableCell align="right">
+										<IconButton onClick={ () => {
 											props.history.push({
-												pathname: props.history.location.pathname+'Edit',
-												state: { template }
+												pathname: props.history.location.pathname + 'Edit',
+												state: { template, canEdit: true }
 											});
-										}}>
+										} }>
 											<EditIcon/>
 										</IconButton>
-										<IconButton aria-label="delete" onClick={() => deleteTemplate(template._id)}>
+										<IconButton aria-label="delete" onClick={ () => deleteTemplate(template._id) }>
 											<DeleteIcon/>
 										</IconButton>
 									</TableCell>

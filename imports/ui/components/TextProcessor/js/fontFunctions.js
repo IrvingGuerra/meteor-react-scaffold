@@ -1,14 +1,14 @@
 export const changeSize = (doc, size) => {
-	const obj = doc.canvas.getActiveObject();
+	const obj = doc.pages[doc.actualPage].canvas.getActiveObject();
 	if (obj === undefined || obj === null) return;
 	obj.setSelectionStyles({
 		fontSize: size === 'plus' ? (obj.fontSize += 1) : (obj.fontSize -= 1)
 	});
-	doc.canvas.renderAll();
+	doc.pages[doc.actualPage].canvas.renderAll();
 };
 
 export const changeAlign = (doc, align) => {
-	const obj = doc.canvas.getActiveObject();
+	const obj = doc.pages[doc.actualPage].canvas.getActiveObject();
 	if (obj === undefined || obj === null) return;
 	document.getElementById('left').className = 'fa fa-align-left ico';
 	document.getElementById('center').className = 'fa fa-align-center ico';
@@ -18,7 +18,7 @@ export const changeAlign = (doc, align) => {
 		`${ align }`
 	).className = `fa fa-align-${ align } ico select`;
 	obj.textAlign = align;
-	doc.canvas.renderAll();
+	doc.pages[doc.actualPage].canvas.renderAll();
 };
 
 const setStyle = (object, styleName, value) => {
@@ -40,7 +40,7 @@ export const getStyle = (object, styleName) => {
 }
 
 export const changeStyle = (doc, style) => {
-	let obj = doc.canvas.getActiveObject();
+	let obj = doc.pages[doc.actualPage].canvas.getActiveObject();
 	if (obj === undefined || obj === null) return;
 	switch (style){
 		case 'bold':
@@ -62,5 +62,5 @@ export const changeStyle = (doc, style) => {
 				: document.getElementById('underline').className = 'fa fa-underline ico select';
 			break;
 	}
-	doc.canvas.renderAll();
+	doc.pages[doc.actualPage].canvas.renderAll();
 }

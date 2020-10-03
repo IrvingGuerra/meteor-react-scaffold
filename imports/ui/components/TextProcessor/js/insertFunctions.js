@@ -1,12 +1,12 @@
 import {fabric} from "./init";
 
-export const addText = (document) => {
-    const itext = new fabric.Textbox('Escriba titulo de documento', {
-        left: document.margin,
-        top: document.margin,
-        width: document.canvas.width - document.margin * 2,
+export const addText = (doc) => {
+    const itext = new fabric.Textbox('Escriba titulo de doco', {
+        left: doc.pages[doc.actualPage].margin,
+        top: doc.pages[doc.actualPage].margin,
+        width: doc.pages[doc.actualPage].canvas.width - doc.pages[doc.actualPage].margin * 2,
         fontSize: 15,
-        fill: 'black',
+        fill: '#000000',
         fontFamily: 'Arial',
         fontWeight: 'normal',
         textAlign: 'left',
@@ -15,37 +15,14 @@ export const addText = (document) => {
         lockMovementY: false,
         hoverCursor: 'text',
     });
-    document.canvas.add(itext);
+    doc.pages[doc.actualPage].canvas.add(itext);
 }
 
-export const addTitle = (document) => {
-    /*
-    const itext = new window.fabric.Text('Escriba titulo de documento', {
-        left: document.margin,
-        top: document.margin,
-        width: document.canvas.width - document.margin * 2,
-        fontSize: 24,
-        fill: 'white',
-        rx: 10,
-        backgroundColor: 'black',
-        borderColor: 'red',
-        borderRadius: 15,
-        borderWidth: 10,
-        fontFamily: 'Arial',
-        fontWeight: 'normal',
-        textAlign: 'left',
-        hasControls: true,
-        hasRotatingPoint: false,
-        lockMovementX: false,
-        lockMovementY: false,
-        hoverCursor: 'text',
-    });
-
-     */
+export const addTitle = (doc) => {
     const eje = new fabric.NewTextBox('Titulo', {
-        left: document.margin,
-        top: document.margin,
-        width: document.canvas.width - document.margin * 2,
+        left: doc.pages[doc.actualPage].margin,
+        top: doc.pages[doc.actualPage].margin,
+        width: doc.pages[doc.actualPage].canvas.width - doc.pages[doc.actualPage].margin * 2,
         fontFamily: 'Arial',
         fontSize: 30,
         fontWeight: 'bold',
@@ -59,5 +36,5 @@ export const addTitle = (document) => {
         backgroundColor: 'black',
         padding: 25
     });
-    document.canvas.add(eje);
+    doc.pages[doc.actualPage].canvas.add(eje);
 }

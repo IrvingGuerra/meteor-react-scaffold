@@ -1,21 +1,11 @@
 export const DOC_MARGIN = {
-    xs: 5,
-    sm: 10,
-    md: 15,
-    lg: 20,
-    xl: 25
+    xs: 15,
+    sm: 20,
+    md: 25,
+    lg: 30,
+    xl: 35
 }
 
 export const DOC_COLORS = {
     blue: '#2178DF'
-}
-
-export const documentNewTextBoxLabel = {
-    fontFamily: 'Arial',
-    fontSize: 15,
-    fontWeight: 'normal',
-}
-
-export const controlsLocked = {
-
 }

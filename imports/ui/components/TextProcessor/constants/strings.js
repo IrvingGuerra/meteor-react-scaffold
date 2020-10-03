@@ -13,5 +13,9 @@ export const STRINGS = {
         right: 'Alinear a la derecha',
         justify: 'Justificar texto'
     },
-    signature: 'Active o desactive modo firma'
+    signature: 'Active o desactive modo firma',
+    insert: {
+        label: 'Insertar campo de texto',
+        title: 'Insertar titulo'
+    }
 }

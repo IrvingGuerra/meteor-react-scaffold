@@ -25,6 +25,7 @@ const useStylesBootstrap = makeStyles((theme) => ({
 const useStyles = makeStyles((theme) => ({
 	section: {
 		width: 'fit-content',
+		minHeight: 80,
 		border: `1px solid ${ theme.palette.divider }`,
 		borderRadius: theme.shape.borderRadius,
 		backgroundColor: theme.palette.background.paper,
@@ -57,9 +58,9 @@ export default function TabFont(props) {
 	useEffect(() => {
 		// Cuando detecta que le da click a algo
 		if (doc.lastElementSelected === undefined || doc.lastElementSelected === null) return;
-		let obj = doc.canvas.getActiveObject();
+		let obj = doc.pages[doc.actualPage].canvas.getActiveObject();
 		if (obj === undefined || obj === null) return;
-		if (obj.strokeWidth) return; // Is drawing
+		if (obj.type === 'path') return; // Is drawing
 		setActualObjectFont(doc.lastElementSelected.get('fontFamily'));
 		changeAlign(doc, doc.lastElementSelected.get('textAlign'));
 		// Update icons styles
@@ -78,18 +79,18 @@ export default function TabFont(props) {
 
 	useEffect(() => {
 		if (doc.lastElementSelected === undefined || doc.lastElementSelected === null) return;
-		const obj = doc.canvas.getActiveObject();
+		const obj = doc.pages[doc.actualPage].canvas.getActiveObject();
 		if (obj === undefined || obj === null) return;
 		obj.set('fontFamily', actualObjectFont);
-		doc.canvas.renderAll();
+		doc.pages[doc.actualPage].canvas.renderAll();
 	}, [actualObjectFont]);
 
 	useEffect(() => {
 		if (doc.lastElementSelected === undefined || doc.lastElementSelected === null) return;
-		const obj = doc.canvas.getActiveObject();
+		const obj = doc.pages[doc.actualPage].canvas.getActiveObject();
 		if (obj === undefined || obj === null) return;
 		obj.set('fill', actualColorFont);
-		doc.canvas.renderAll();
+		doc.pages[doc.actualPage].canvas.renderAll();
 	}, [actualColorFont]);
 
 	const changeFontColor = (colors) => {
@@ -127,8 +128,6 @@ export default function TabFont(props) {
 						</i>
 					</button>
 				</BootstrapTooltip>
-
-
 				<BootstrapTooltip title={ STRINGS.font.less }>
 					<button type="button" className="noButton" onClick={ () => {
 						document.getElementById('colorPicker').click();
@@ -146,7 +145,6 @@ export default function TabFont(props) {
 						</i>
 					</button>
 				</BootstrapTooltip>
-
 				<ColorPicker
 					animation="slide-up"
 					color={ actualColorFont }
@@ -154,7 +152,6 @@ export default function TabFont(props) {
 				>
 					<span id="colorPicker"/>
 				</ColorPicker>
-
 				<Divider orientation="vertical" flexItem/>
 				<BootstrapTooltip title={ STRINGS.align.left }>
 					<button type="button" className="noButton" onClick={ () => changeAlign(doc, 'left') }>
@@ -193,9 +190,6 @@ export default function TabFont(props) {
 					</button>
 				</BootstrapTooltip>
 			</Grid>
-
-			<Divider orientation="vertical" flexItem/>
-
 		</Grid>
 	);
 }

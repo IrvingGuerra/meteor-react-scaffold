@@ -15,8 +15,7 @@ export const saveUserMethod = new ValidatedMethod({
 			check(template, {
 				_id: Match.OneOf(String, null),
 				title: String,
-				margin: Number,
-				canvas: String
+				pages: [Object]
 			});
 		} catch (exception) {
 			console.log('La información introducida no es válida: ', exception);
