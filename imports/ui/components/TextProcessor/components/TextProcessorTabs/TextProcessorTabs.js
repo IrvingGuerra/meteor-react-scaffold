@@ -8,6 +8,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import TabFont from "../TabFont/TabFont";
 import TabInsert from "../TabInsert/TabInsert";
 import {DOC_COLORS} from "../../constants";
+import TabPage from '../TabPage/TabPage';
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -46,7 +47,7 @@ const styles = {
 const useStyles = makeStyles(styles);
 
 export default function TextProcessorTabs(props) {
-    const { doc } = props;
+    const { doc, _handleNewPage, _handlePrevPage, _handleNextPage } = props;
     const classes = useStyles();
     const [value, setValue] = useState(0);
     const handleChange = (event, newValue) => {
@@ -74,7 +75,7 @@ export default function TextProcessorTabs(props) {
                 <TabInsert doc={doc}/>
             </TabPanel>
             <TabPanel value={value} index={2}>
-                3
+                <TabPage doc={doc} _handleNewPage={_handleNewPage} _handlePrevPage={_handlePrevPage} _handleNextPage={_handleNextPage} />
             </TabPanel>
         </div>
     );

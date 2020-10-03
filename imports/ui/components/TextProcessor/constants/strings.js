@@ -17,5 +17,10 @@ export const STRINGS = {
     insert: {
         label: 'Insertar campo de texto',
         title: 'Insertar titulo'
+    },
+    page: {
+        addPage: 'Agregar una pagina nueva',
+        prevPage: 'Pagina anterior',
+        nextPage: 'Pagina siguiente'
     }
 }

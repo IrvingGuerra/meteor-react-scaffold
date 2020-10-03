@@ -15,20 +15,38 @@ export default function TextProcessor(props) {
 		pages: [
 			{
 				canvas: null,
-				margin: DOC_MARGIN.md,
+				margin: DOC_MARGIN.md
 			}
 		],
 		actualPage: 0,
 		lastElementSelected: null
 	});
 
+	const createCanvas = (number) => {
+		const canvas = document.createElement('CANVAS');
+		canvas.setAttribute('id', 'doc' + number);
+		canvas.setAttribute('width', '816.37795276');
+		canvas.setAttribute('height', '1054.488189');
+		canvas.setAttribute('style', 'border: 1px solid black');
+		document.getElementById('docPaper').append(canvas);
+	};
+
+	const hideCanvas = (number) => {
+		document.getElementById('doc' + number).parentNode.style.display = 'none';
+	};
+
+	const showCanvas = (number) => {
+		document.getElementById('doc' + number).parentNode.style.display = 'block';
+	};
+
 	useEffect(() => {
 		if (props.location.state) {
 			// Load all pages (template is in bd, here is doc)
 			const template = props.location.state.template;
 			const pagesArrayJsons = [];
-			let c = new fabric.Canvas('doc');
-			template.pages.forEach((page) => {
+			template.pages.forEach((page, i) => {
+				createCanvas(i);
+				let c = new fabric.Canvas('doc'+i);
 				c.loadFromJSON(page.canvas, c.renderAll.bind(c), (o, object) => {
 					if (!props.location.state.canEdit) {
 						object.set('selectable', false);
@@ -38,7 +56,7 @@ export default function TextProcessor(props) {
 					canvas: c,
 					margin: page.margin
 				});
-			})
+			});
 			setDoc({
 				_id: props.location.state.template._id,
 				title: props.location.state.template.title,
@@ -48,12 +66,14 @@ export default function TextProcessor(props) {
 			});
 			return;
 		}
+		createCanvas(doc.actualPage);
 		const copyPages = doc.pages;
-		copyPages[doc.actualPage].canvas = new fabric.Canvas('doc');
+		copyPages[doc.actualPage].canvas = new fabric.Canvas('doc' + doc.actualPage);
 		setDoc({
 			...doc,
 			pages: copyPages
 		});
+		//add listeners
 	}, []);
 
 	const save = (doc) => {
@@ -68,11 +88,11 @@ export default function TextProcessor(props) {
 				canvas: JSON.stringify(page.canvas),
 				margin: page.margin
 			});
-		})
+		});
 		const docJson = {
 			_id: doc._id,
 			title: doc.title,
-			pages: pagesArrayStrings,
+			pages: pagesArrayStrings
 		};
 		Meteor.call('template.save', docJson, (err, res) => {
 			if (err) {
@@ -92,12 +112,59 @@ export default function TextProcessor(props) {
 	};
 
 	const _handleClickDown = (event) => {
+		console.log('La pagina actual es: ' + doc.actualPage);
 		if (event.target.tagName !== 'CANVAS') return;
+		console.log(doc.pages[doc.actualPage].canvas);
 		const obj = doc.pages[doc.actualPage].canvas.getActiveObject();
 		if (obj === undefined || obj === null) return;
 		setDoc({
 			...doc,
 			lastElementSelected: obj
+		});
+	};
+
+	const modeSignature = () => {
+		doc.pages[doc.actualPage].canvas.isDrawingMode = !doc.pages[doc.actualPage].canvas.isDrawingMode;
+		if (doc.pages[doc.actualPage].canvas.isDrawingMode) {
+			document.getElementById('pencil').className = 'fa fa-pencil iconSave select';
+		} else {
+			document.getElementById('pencil').className = 'fa fa-pencil iconSave';
+		}
+	};
+
+	const _handleNewPage = () => {
+		const nextPage = doc.actualPage + 1;
+		hideCanvas(doc.actualPage);
+		createCanvas(nextPage);
+		const copyPages = doc.pages;
+		copyPages.push({
+			canvas: new fabric.Canvas('doc' + nextPage),
+			margin: DOC_MARGIN.md
+		});
+		setDoc({
+			...doc,
+			pages: copyPages,
+			actualPage: nextPage
+		});
+	};
+
+	const _handleNextPage = () => {
+		const nextPage = doc.actualPage + 1;
+		hideCanvas(doc.actualPage);
+		showCanvas(nextPage);
+		setDoc({
+			...doc,
+			actualPage: nextPage
+		});
+	};
+
+	const _handlePrevPage = () => {
+		const prevPage = doc.actualPage - 1;
+		hideCanvas(doc.actualPage);
+		showCanvas(prevPage);
+		setDoc({
+			...doc,
+			actualPage: prevPage
 		});
 	};
 
@@ -108,17 +175,7 @@ export default function TextProcessor(props) {
 			document.removeEventListener('keyup', _handleKeyDown);
 			document.removeEventListener('mouseup', _handleClickDown);
 		};
-
-	}, [doc.pages[doc.actualPage].canvas]);
-
-	const modeSignature = () => {
-		doc.pages[doc.actualPage].canvas.isDrawingMode = !doc.pages[doc.actualPage].canvas.isDrawingMode;
-		if (doc.pages[doc.actualPage].canvas.isDrawingMode) {
-			document.getElementById('pencil').className = 'fa fa-pencil iconSave select';
-		} else {
-			document.getElementById('pencil').className = 'fa fa-pencil iconSave';
-		}
-	};
+	}, [doc.actualPage]);
 
 	return (
 		<Card elevation={ 6 }>
@@ -141,11 +198,14 @@ export default function TextProcessor(props) {
 					</button>
 				</BootstrapTooltip>
 			</div>
-			<TextProcessorTabs doc={ doc }/>
+			<TextProcessorTabs
+				doc={ doc }
+				_handleNewPage={ _handleNewPage }
+				_handlePrevPage={ _handlePrevPage }
+				_handleNextPage={ _handleNextPage }
+			/>
 			<div className="textProcessorBody">
-				<div className="docPaper">
-					<canvas id='doc' className='doc' width={ 816.37795276 } height={ 1054.488189 }/>
-				</div>
+				<div id="docPaper" className="docPaper"/>
 			</div>
 		</Card>
 	);

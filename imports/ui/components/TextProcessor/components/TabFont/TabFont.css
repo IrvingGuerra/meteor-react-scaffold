@@ -40,16 +40,13 @@
 .ico:hover{
     background-color: #BDD5F1;
 }
-.icoMaterialUi{
+.icoDisabled{
     color: #757575;
     font-size: 20px;
     margin-left: 5px;
     margin-right: 5px;
-    padding: 1px 5px 1px 5px;
+    padding: 5px;
     border-radius: 5px;
-}
-.icoMaterialUi:hover{
-    background-color: #BDD5F1;
 }
 .select{
     background-color: #A0C3EC;
