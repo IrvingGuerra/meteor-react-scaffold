@@ -95,6 +95,7 @@ export default function TextProcessor(props) {
 			title: doc.title,
 			pages: pagesArrayStrings
 		};
+		console.log("Guardaremos " + docJson.pages);
 		Meteor.call('template.save', docJson, (err, res) => {
 			if (err) {
 				setAlert('Error', err.reason, 'error');
@@ -113,9 +114,7 @@ export default function TextProcessor(props) {
 	};
 
 	const _handleClickDown = (event) => {
-		console.log('La pagina actual es: ' + doc.actualPage);
 		if (event.target.tagName !== 'CANVAS') return;
-		console.log(doc.pages[doc.actualPage].canvas);
 		const obj = doc.pages[doc.actualPage].canvas.getActiveObject();
 		if (obj === undefined || obj === null) return;
 		setDoc({
@@ -134,7 +133,7 @@ export default function TextProcessor(props) {
 	};
 
 	const _handleNewPage = () => {
-		const nextPage = doc.actualPage + 1;
+		const nextPage = doc.pages.length;
 		hideCanvas(doc.actualPage);
 		createCanvas(nextPage);
 		const copyPages = doc.pages;
@@ -176,7 +175,7 @@ export default function TextProcessor(props) {
 			document.removeEventListener('keyup', _handleKeyDown);
 			document.removeEventListener('mouseup', _handleClickDown);
 		};
-	}, [doc.actualPage]);
+	}, [doc.pages[doc.actualPage].canvas]);
 
 	return (
 		<Card elevation={ 6 }>

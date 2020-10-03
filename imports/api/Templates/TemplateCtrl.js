@@ -38,8 +38,7 @@ export const saveUserMethod = new ValidatedMethod({
 				Template.update(template._id, {
 					$set: {
 						title: template.title,
-						margin: template.margin,
-						canvas: template.canvas
+						pages: template.pages
 					}
 				});
 				responseMessage.create(true, 'Se ha actualizado la plantilla.');
