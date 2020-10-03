@@ -47,6 +47,7 @@ export default function TextProcessor(props) {
 			template.pages.forEach((page, i) => {
 				createCanvas(i);
 				let c = new fabric.Canvas('doc'+i);
+				if(i !== 0) hideCanvas(i);
 				c.loadFromJSON(page.canvas, c.renderAll.bind(c), (o, object) => {
 					if (!props.location.state.canEdit) {
 						object.set('selectable', false);
