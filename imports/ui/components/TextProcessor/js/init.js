@@ -16,7 +16,8 @@ export const fabric = window.fabric;
                 borderTopRightRadius: this.get('borderTopRightRadius'),
                 borderBottomRightRadius: this.get('borderBottomRightRadius'),
                 borderBottomLeftRadius: this.get('borderBottomLeftRadius'),
-                borderTopLeftRadius: this.get('borderTopLeftRadius')
+                borderTopLeftRadius: this.get('borderTopLeftRadius'),
+                id: this.get('id')
             });
         },
         _getNonTransformedDimensions() { // Object dimensions

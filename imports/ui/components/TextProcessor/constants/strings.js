@@ -16,7 +16,8 @@ export const STRINGS = {
     signature: 'Active o desactive modo firma',
     insert: {
         label: 'Insertar campo de texto',
-        title: 'Insertar titulo'
+        title: 'Insertar titulo',
+        input: 'Insertar input'
     },
     page: {
         addPage: 'Agregar una pagina nueva',

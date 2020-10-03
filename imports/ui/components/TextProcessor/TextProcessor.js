@@ -50,7 +50,14 @@ export default function TextProcessor(props) {
 				if(i !== 0) hideCanvas(i);
 				c.loadFromJSON(page.canvas, c.renderAll.bind(c), (o, object) => {
 					if (!props.location.state.canEdit) {
-						object.set('selectable', false);
+						// Just can edit id label
+						if(object.id === 'input'){
+							object.set('selectable', true);
+							object.set('lockMovementX', true);
+							object.set('lockMovementY', true);
+						}else{
+							object.set('selectable', false);
+						}
 					}
 				});
 				pagesArrayJsons.push({
