@@ -37,6 +37,7 @@ select{
     padding-bottom: 15px;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
+    text-align: center;
 }
 .textProcessorHeaderTitleContainer{
     background-color: #2178DF;
@@ -53,7 +54,7 @@ select{
     color: white;
     text-align: center;
     font-size: 16px;
-    width: 92%;
+    width: 90%;
 }
 .textProcessorHeaderTitleText::placeholder{
     color: white;

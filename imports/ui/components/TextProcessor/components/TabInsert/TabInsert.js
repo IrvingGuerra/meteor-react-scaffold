@@ -42,12 +42,10 @@ export default function TabInsert(props) {
 				</BootstrapTooltip>
 				<BootstrapTooltip title={ STRINGS.insert.input }>
 					<button type="button" className="noButton" onClick={ () => addInput(doc) }>
-						<i id='bold' className="fa fa-keyboard-o ico"/>
+						<i id='bold' className="fa fa-keyboard ico"/>
 					</button>
 				</BootstrapTooltip>
-
 				<input type="file" id="addImage" name="image" onChange={() => addImage(doc)} />
-
 				<Divider orientation="vertical" flexItem/>
 			</Grid>
 		</Grid>

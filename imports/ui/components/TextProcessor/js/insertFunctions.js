@@ -4,13 +4,13 @@ export const addText = (doc) => {
     const newTextBox = new fabric.NewTextBox('Label', {
         left: doc.pages[doc.actualPage].margin,
         top: doc.pages[doc.actualPage].margin,
-        width: doc.pages[doc.actualPage].canvas.width - doc.pages[doc.actualPage].margin * 2,
+        width: 100,
         fontFamily: 'Arial',
-        fontSize: 15,
+        fontSize: 16,
         fontWeight: 'normal',
         fill: '#000000', //Font Color
         textAlign: 'left',
-        backgroundColor: 'white',
+        backgroundColor: '#ffffff',
         padding: 0,
         id: 'label'
     });
@@ -32,7 +32,7 @@ export const addTitle = (doc) => {
         borderBottomRightRadius: 25,
         borderBottomLeftRadius: 25,
         borderTopLeftRadius: 25,
-        backgroundColor: 'black',
+        backgroundColor: '#000000',
         padding: 25,
         id: 'title'
     });
@@ -49,7 +49,7 @@ export const addInput = (doc) => {
         fontWeight: 'normal',
         fill: '#000000', //Font Color
         textAlign: 'left',
-        backgroundColor: 'white',
+        backgroundColor: '#ffffff',
         padding: 0,
         id: 'input'
     });

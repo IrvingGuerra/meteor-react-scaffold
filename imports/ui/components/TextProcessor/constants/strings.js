@@ -5,13 +5,24 @@ export const STRINGS = {
         less: 'Disminuir tamaño de fuente',
         bold: 'Negrita',
         italic: 'Cursiva',
-        underline: 'Subrayado (U)'
+        underline: 'Subrayado (U)',
+        backgroundColor: 'Color de fondo'
+    },
+    border: {
+        topRight: 'Borde superior derecho',
+        topLeft: 'Borde superior izquierdo',
+        bottomRight: 'Borde inferior derecho',
+        bottomLeft: 'Borde inferior izquierdo'
     },
     align: {
         left: 'Alinear a la izquierda',
         center: 'Centrar texto',
         right: 'Alinear a la derecha',
         justify: 'Justificar texto'
+    },
+    padding: {
+        expand: 'Expander padding',
+        compress: 'Comprimir padding'
     },
     signature: 'Active o desactive modo firma',
     insert: {
@@ -22,6 +33,7 @@ export const STRINGS = {
     page: {
         addPage: 'Agregar una pagina nueva',
         prevPage: 'Pagina anterior',
-        nextPage: 'Pagina siguiente'
+        nextPage: 'Pagina siguiente',
+        showGrid: 'Mostrar cuadricula'
     }
 }

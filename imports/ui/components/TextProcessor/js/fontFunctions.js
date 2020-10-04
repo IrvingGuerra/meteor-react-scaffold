@@ -7,6 +7,15 @@ export const changeSize = (doc, size) => {
 	doc.pages[doc.actualPage].canvas.renderAll();
 };
 
+export const changePadding = (doc, size) => {
+	const obj = doc.pages[doc.actualPage].canvas.getActiveObject();
+	if (obj === undefined || obj === null) return;
+	obj.setSelectionStyles({
+		padding: size === 'plus' ? (obj.padding += 1) : (obj.padding -= 1)
+	});
+	doc.pages[doc.actualPage].canvas.renderAll();
+};
+
 export const changeAlign = (doc, align) => {
 	const obj = doc.pages[doc.actualPage].canvas.getActiveObject();
 	if (obj === undefined || obj === null) return;
@@ -64,3 +73,36 @@ export const changeStyle = (doc, style) => {
 	}
 	doc.pages[doc.actualPage].canvas.renderAll();
 }
+
+export const changeBorder = (doc, position) => {
+	const obj = doc.pages[doc.actualPage].canvas.getActiveObject();
+	if (obj === undefined || obj === null) return;
+	// Get all borders
+	switch (position){
+		case 'topLeft':
+			const borderTopLeftRadius = getStyle(obj, 'borderTopLeftRadius');
+			setStyle(obj, 'borderTopLeftRadius', borderTopLeftRadius > 0 ? 0 : 10);
+			borderTopLeftRadius > 0 ? document.getElementById('topLeft').className = 'fa fa-border-style ico'
+				: document.getElementById('topLeft').className = 'fa fa-border-style ico select';
+			break;
+		case 'topRight':
+			const borderTopRightRadius = getStyle(obj, 'borderTopRightRadius');
+			setStyle(obj, 'borderTopRightRadius', borderTopRightRadius > 0 ? 0 : 10);
+			borderTopRightRadius > 0 ? document.getElementById('topRight').className = 'fa fa-border-style rotate90 ico'
+				: document.getElementById('topRight').className = 'fa fa-border-style rotate90 ico select';
+			break;
+		case 'bottomRight':
+			const borderBottomRightRadius = getStyle(obj, 'borderBottomRightRadius');
+			setStyle(obj, 'borderBottomRightRadius', borderBottomRightRadius > 0 ? 0 : 10);
+			borderBottomRightRadius > 0 ? document.getElementById('bottomRight').className = 'fa fa-border-style rotate180 ico'
+				: document.getElementById('bottomRight').className = 'fa fa-border-style rotate180 ico select';
+			break;
+		case 'bottomLeft':
+			const borderBottomLeftRadius = getStyle(obj, 'borderBottomLeftRadius');
+			setStyle(obj, 'borderBottomLeftRadius', borderBottomLeftRadius > 0 ? 0 : 10);
+			borderBottomLeftRadius > 0 ? document.getElementById('bottomLeft').className = 'fa fa-border-style rotate270 ico'
+				: document.getElementById('bottomLeft').className = 'fa fa-border-style rotate270 ico select';
+			break;
+	}
+	doc.pages[doc.actualPage].canvas.renderAll();
+};

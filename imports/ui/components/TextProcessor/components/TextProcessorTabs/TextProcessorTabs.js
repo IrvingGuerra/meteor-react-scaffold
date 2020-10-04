@@ -47,7 +47,7 @@ const styles = {
 const useStyles = makeStyles(styles);
 
 export default function TextProcessorTabs(props) {
-    const { doc, _handleNewPage, _handlePrevPage, _handleNextPage } = props;
+    const { doc, _handleNewPage, _handlePrevPage, _handleNextPage, _handleGrid } = props;
     const classes = useStyles();
     const [value, setValue] = useState(0);
     const handleChange = (event, newValue) => {
@@ -75,7 +75,13 @@ export default function TextProcessorTabs(props) {
                 <TabInsert doc={doc}/>
             </TabPanel>
             <TabPanel value={value} index={2}>
-                <TabPage doc={doc} _handleNewPage={_handleNewPage} _handlePrevPage={_handlePrevPage} _handleNextPage={_handleNextPage} />
+                <TabPage
+                    doc={doc}
+                    _handleNewPage={_handleNewPage}
+                    _handlePrevPage={_handlePrevPage}
+                    _handleNextPage={_handleNextPage}
+                    _handleGrid={_handleGrid}
+                />
             </TabPanel>
         </div>
     );

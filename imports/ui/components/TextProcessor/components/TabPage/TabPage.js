@@ -4,6 +4,7 @@ import Divider from '@material-ui/core/Divider';
 import { STRINGS } from '../../constants/strings';
 import { BootstrapTooltip } from '../TabFont/TabFont';
 import '../TabFont/TabFont.css';
+import { getStyle } from '../../js/fontFunctions';
 
 const useStyles = makeStyles((theme) => ({
 	section: {
@@ -25,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function TabPage(props) {
 	const classes = useStyles();
-	const { doc, _handleNewPage, _handlePrevPage, _handleNextPage } = props;
+	const { doc, _handleNewPage, _handlePrevPage, _handleNextPage, _handleGrid } = props;
 	return (
 		<Grid container alignItems="center" justify="center">
 			<Grid container alignItems="center" className={ classes.section }>
@@ -45,7 +46,7 @@ export default function TabPage(props) {
 				<Divider orientation="vertical" flexItem/>
 				<BootstrapTooltip title={ STRINGS.page.addPage }>
 					<button type="button" className="noButton" onClick={ _handleNewPage }>
-						<i id='bold' className="fa fa-plus-square-o ico"/>
+						<i id='bold' className="fa fa-plus-square ico"/>
 					</button>
 				</BootstrapTooltip>
 				<Divider orientation="vertical" flexItem/>
@@ -63,6 +64,20 @@ export default function TabPage(props) {
 						</button>
 					)
 				}
+
+				<Divider orientation="vertical" flexItem/>
+
+				<BootstrapTooltip title={ STRINGS.page.showGrid }>
+					<button type="button" className="noButton" onClick={ () => {
+						doc.showGrid ? document.getElementById('grid').className = 'fa fa-border-none ico'
+							: document.getElementById('grid').className = 'fa fa-border-none ico select';
+
+						_handleGrid();
+					} }>
+						<i id='grid' className="fa fa-border-none ico"/>
+					</button>
+				</BootstrapTooltip>
+
 			</Grid>
 		</Grid>
 	);

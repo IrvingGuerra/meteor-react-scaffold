@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Grid, Tooltip, makeStyles, Select, FormControl, InputLabel, MenuItem, IconButton } from '@material-ui/core';
 import {
-	changeAlign,
+	changeAlign, changeBorder, changePadding,
 	changeSize,
 	changeStyle,
 	getStyle
@@ -75,6 +75,19 @@ export default function TabFont(props) {
 			: document.getElementById('underline').className = 'fa fa-underline ico';
 		// Update Color Font
 		setActualColorFont(obj.get('fill'));
+		// Update borders
+		const borderTopLeftRadius = getStyle(obj, 'borderTopLeftRadius');
+		borderTopLeftRadius > 0 ? document.getElementById('topLeft').className = 'fa fa-border-style ico select'
+			: document.getElementById('topLeft').className = 'fa fa-border-style ico';
+		const borderTopRightRadius = getStyle(obj, 'borderTopRightRadius');
+		borderTopRightRadius > 0 ? document.getElementById('topRight').className = 'fa fa-border-style rotate90 ico select'
+			: document.getElementById('topRight').className = 'fa fa-border-style rotate90 ico';
+		const borderBottomRightRadius = getStyle(obj, 'borderBottomRightRadius');
+		borderBottomRightRadius > 0 ? document.getElementById('bottomRight').className = 'fa fa-border-style rotate180 ico select'
+			: document.getElementById('bottomRight').className = 'fa fa-border-style rotate180 ico';
+		const borderBottomLeftRadius = getStyle(obj, 'borderBottomLeftRadius');
+		borderBottomLeftRadius > 0 ? document.getElementById('bottomLeft').className = 'fa fa-border-style ico rotate270 select'
+			: document.getElementById('bottomLeft').className = 'fa fa-border-style rotate270 ico';
 	}, [doc.lastElementSelected]);
 
 	useEffect(() => {
@@ -95,6 +108,14 @@ export default function TabFont(props) {
 
 	const changeFontColor = (colors) => {
 		setActualColorFont(colors.color);
+	};
+
+	const changeBackGroundColor = (colors) => {
+		if (doc.lastElementSelected === undefined || doc.lastElementSelected === null) return;
+		const obj = doc.pages[doc.actualPage].canvas.getActiveObject();
+		if (obj === undefined || obj === null) return;
+		obj.set('backgroundColor', colors.color);
+		doc.pages[doc.actualPage].canvas.renderAll();
 	};
 
 	return (
@@ -130,7 +151,7 @@ export default function TabFont(props) {
 				</BootstrapTooltip>
 				<BootstrapTooltip title={ STRINGS.font.less }>
 					<button type="button" className="noButton" onClick={ () => {
-						document.getElementById('colorPicker').click();
+						document.getElementById('colorFontPicker').click();
 					} }>
 						<i className="fa fa-font icoFontColor">
 							<i style={ {
@@ -150,7 +171,7 @@ export default function TabFont(props) {
 					color={ actualColorFont }
 					onChange={ changeFontColor }
 				>
-					<span id="colorPicker"/>
+					<span id="colorFontPicker"/>
 				</ColorPicker>
 				<Divider orientation="vertical" flexItem/>
 				<BootstrapTooltip title={ STRINGS.align.left }>
@@ -189,6 +210,60 @@ export default function TabFont(props) {
 						<i id='underline' className="fa fa-underline ico"/>
 					</button>
 				</BootstrapTooltip>
+				<Divider orientation="vertical" flexItem/>
+				<BootstrapTooltip title={ STRINGS.font.backgroundColor }>
+					<button type="button" className="noButton" onClick={ () => {
+						document.getElementById('colorBackgroundPicker').click();
+					} }>
+						<i className="fa fa-fill-drip ico"/>
+					</button>
+				</BootstrapTooltip>
+				<ColorPicker
+					animation="slide-up"
+					color={ '#ffffff' }
+					onChange={ changeBackGroundColor }
+				>
+					<span id="colorBackgroundPicker"/>
+				</ColorPicker>
+
+				<BootstrapTooltip title={ STRINGS.border.topLeft }>
+					<button type="button" className="noButton" onClick={ () => changeBorder(doc, 'topLeft') }>
+						<i id='topLeft' className="fa fa-border-style ico"/>
+					</button>
+				</BootstrapTooltip>
+
+				<BootstrapTooltip title={ STRINGS.border.topRight }>
+					<button type="button" className="noButton" onClick={ () => changeBorder(doc, 'topRight') }>
+						<i id='topRight' className="fa fa-border-style rotate90 ico"/>
+					</button>
+				</BootstrapTooltip>
+
+				<BootstrapTooltip title={ STRINGS.border.bottomRight }>
+					<button type="button" className="noButton" onClick={ () => changeBorder(doc, 'bottomRight') }>
+						<i id='bottomRight' className="fa fa-border-style rotate180 ico"/>
+					</button>
+				</BootstrapTooltip>
+
+				<BootstrapTooltip title={ STRINGS.border.bottomLeft }>
+					<button type="button" className="noButton" onClick={ () => changeBorder(doc, 'bottomLeft') }>
+						<i id='bottomLeft' className="fa fa-border-style rotate270 ico"/>
+					</button>
+				</BootstrapTooltip>
+
+				<Divider orientation="vertical" flexItem/>
+
+				<BootstrapTooltip title={ STRINGS.padding.expand }>
+					<button type="button" className="noButton" onClick={ () => changePadding(doc, 'plus') }>
+						<i id='bottomLeft' className="fa fa-expand ico"/>
+					</button>
+				</BootstrapTooltip>
+
+				<BootstrapTooltip title={ STRINGS.padding.compress }>
+					<button type="button" className="noButton" onClick={ () => changePadding(doc, 'less') }>
+						<i id='bottomLeft' className="fa fa-compress ico"/>
+					</button>
+				</BootstrapTooltip>
+
 			</Grid>
 		</Grid>
 	);
