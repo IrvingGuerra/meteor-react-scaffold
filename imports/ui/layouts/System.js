@@ -45,22 +45,22 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-const SwitchRoutes = (props) => {
+const SwitchRoutes = ({ profile, props }) => {
 	return (
 		<Switch>
 			{ routes.map((prop, key) => {
-				if (prop.layout.includes(props.profile)) {
+				if (prop.layout.includes(profile)) {
 					return (
 						<Route
-							path={ '/' + props.profile + prop.path }
-							component={ prop.component }
+							path={ '/' + profile + prop.path }
+							render={ () => (<prop.component { ...props } />) }
 							key={ key }
 						/>
 					);
 				}
 				return null;
 			}) }
-			<Redirect from={ '/' + props.profile } to={'/' + props.profile + '/dashboard'}/>
+			<Redirect from={ '/' + profile } to={ '/' + profile + '/dashboard' }/>
 		</Switch>
 	);
 };
@@ -70,15 +70,14 @@ export default function System(props) {
 
 	function hasPermissions(profile) {
 		return window.location.href.indexOf(profile) !== -1;
-
 	}
 
 	useEffect(() => {
 		if (!user.profile) {
 			props.history.push('/');
 		}
-		if(!hasPermissions(user.profile.profile)){
-			props.history.push('/'+user.profile.profile);
+		if (!hasPermissions(user.profile.profile)) {
+			props.history.push('/' + user.profile.profile);
 		}
 	}, []);
 
@@ -108,7 +107,7 @@ export default function System(props) {
 				/>
 				<CssBaseline/>
 				<Container component="main" className={ classes.main }>
-					<SwitchRoutes profile={ user.profile.profile }/>
+					<SwitchRoutes profile={ user.profile.profile } props={ props }/>
 				</Container>
 				<footer className={ classes.footer }>
 					<Container maxWidth="sm">

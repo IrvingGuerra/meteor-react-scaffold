@@ -1,14 +1,9 @@
 import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import { setAlert } from '../../components/Utilities/Alerts/AlertMessage';
 import { FormControl, InputLabel, Select, MenuItem, Card, Fab, CardHeader, CardContent } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 const useStyles = makeStyles((theme) => ({
@@ -38,10 +33,10 @@ export default function CreateUser(props) {
 		e.preventDefault();
 		Meteor.call('user.save', { user: form }, (error, response) => {
 			if (error) {
-				setAlert('Error', error.reason, 'error');
+				props.alert.current.setAlert('Error', error.reason, 'error');
 				return;
 			}
-			setAlert('Éxito', response._message);
+			props.alert.current.setAlert('Éxito', response._message);
 			return;
 		});
 	};

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { forwardRef, useImperativeHandle, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Snackbar, Fade, Slide, Grow } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-const AlertMessage = () => {
+export const AlertMessage = forwardRef((props, ref) => {
 	const classes = useStyles();
 
 	const [state, setState] = useState({
@@ -26,43 +26,45 @@ const AlertMessage = () => {
 		severity: 'success',
 		transition: 'Slide',
 		transitionComponent: SlideTransition,
-		open: true
+		open: false
 	});
 
-	export const setAlert = (title, message, severity = 'success', transition = 'Slide') => {
-		switch (transition) {
-			case 'Fade':
-				setState({
-					title,
-					message,
-					severity,
-					transition,
-					transitionComponent: Fade,
-					open: true
-				});
-				break;
-			case 'Slide':
-				setState({
-					title,
-					message,
-					severity,
-					transition,
-					transitionComponent: SlideTransition,
-					open: true
-				});
-				break;
-			case 'Grow':
-				setState({
-					title,
-					message,
-					severity,
-					transition,
-					transitionComponent: GrowTransition,
-					open: true
-				});
-				break;
+	useImperativeHandle(ref, () => ({
+		setAlert(title, message, severity = 'success', transition = 'Slide') {
+			switch (transition) {
+				case 'Fade':
+					setState({
+						title,
+						message,
+						severity,
+						transition,
+						transitionComponent: Fade,
+						open: true
+					});
+					break;
+				case 'Slide':
+					setState({
+						title,
+						message,
+						severity,
+						transition,
+						transitionComponent: SlideTransition,
+						open: true
+					});
+					break;
+				case 'Grow':
+					setState({
+						title,
+						message,
+						severity,
+						transition,
+						transitionComponent: GrowTransition,
+						open: true
+					});
+					break;
+			}
 		}
-	};
+	}));
 
 	const handleClose = (event, reason) => {
 		setState({ ...state, open: false });
@@ -82,6 +84,4 @@ const AlertMessage = () => {
 			</Snackbar>
 		</div>
 	);
-};
-
-export default AlertMessage;
+});

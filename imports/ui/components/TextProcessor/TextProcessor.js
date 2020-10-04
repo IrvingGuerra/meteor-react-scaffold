@@ -6,7 +6,6 @@ import { fabric } from './js/init';
 import TextProcessorTabs from './components/TextProcessorTabs/TextProcessorTabs';
 import { STRINGS } from './constants/strings';
 import { BootstrapTooltip } from './components/TabFont/TabFont';
-import { setAlert } from '../Utilities/Alerts/AlertMessage';
 
 let timesKey = 0;
 const grid = 18;
@@ -91,7 +90,7 @@ export default function TextProcessor(props) {
 
 	const save = (doc) => {
 		if (doc.title === '') {
-			setAlert('Error al guardar', 'Debes ponerle un nombre al doco', 'error');
+			props.alert.current.setAlert('Error al guardar', 'Debes ponerle un nombre al doco', 'error');
 			return;
 		}
 		const pagesArrayStrings = [];
@@ -110,10 +109,10 @@ export default function TextProcessor(props) {
 		console.log('Guardaremos ' + docJson.pages);
 		Meteor.call('template.save', docJson, (err, res) => {
 			if (err) {
-				setAlert('Error', err.reason, 'error');
+				props.alert.current.setAlert('Error', err.reason, 'error');
 				return;
 			}
-			setAlert('Éxito', res._message);
+			props.alert.current.setAlert('Éxito', res._message);
 		});
 	};
 

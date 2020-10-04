@@ -12,7 +12,6 @@ import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import { setAlert } from '../../components/Utilities/Alerts/AlertMessage';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginWithPassword } from '../../../redux/actions';
 
@@ -82,8 +81,8 @@ export default function Login(props) {
 	});
 
 	useEffect(() => {
-		if(user && user.profile){
-			props.history.push(`/${user.profile.profile}`);
+		if (user && user.profile) {
+			props.history.push(`/${ user.profile.profile }`);
 		}
 	}, []);
 
@@ -91,11 +90,11 @@ export default function Login(props) {
 		e.preventDefault();
 		dispatch(
 			loginWithPassword(form.email, form.password, (response) => {
-				if(!response){
-					setAlert('Error', 'Credenciales incorrectas', 'error');
+				if (!response) {
+					props.alert.current.setAlert('Error', 'Credenciales incorrectas', 'error');
 					return;
 				}
-				props.history.push(`/${response}`);
+				props.history.push(`/${ response }`);
 			})
 		);
 	};
@@ -104,11 +103,10 @@ export default function Login(props) {
 		e.preventDefault();
 		Meteor.call('user.save', { user: formSignUp }, (error, response) => {
 			if (error) {
-				setAlert('Error', error.reason, 'error');
+				props.alert.current.setAlert('Error', error.reason, 'error');
 				return;
 			}
-			setAlert('Éxito', response._message);
-			return;
+			props.alert.current.setAlert('Éxito', response._message);
 		});
 	};
 	return (

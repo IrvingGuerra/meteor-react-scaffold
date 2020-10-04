@@ -18,7 +18,6 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
 import { Template } from '../../../api/Templates/Template';
-import { setAlert } from '../../components/Utilities/Alerts/AlertMessage';
 
 const useStyles = makeStyles((theme) => ({
 	card: {
@@ -41,10 +40,10 @@ const ListTemplates = (props) => {
 	const deleteTemplate = (idTemplate) => {
 		Meteor.call('template.delete', idTemplate, (error, response) => {
 			if (error) {
-				setAlert('Error', error.reason, 'error');
+				props.alert.current.setAlert('Error', error.reason, 'error');
 				return;
 			}
-			setAlert('Éxito', response._message);
+			props.alert.current.setAlert('Éxito', response._message);
 		});
 	};
 

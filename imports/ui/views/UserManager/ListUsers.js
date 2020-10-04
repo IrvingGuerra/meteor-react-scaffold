@@ -1,6 +1,5 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-
 import {
 	TableContainer,
 	Table,
@@ -10,8 +9,9 @@ import {
 	TableBody,
 	IconButton,
 	Card,
-	CardHeader, CardContent,
-	Button, Fab
+	CardHeader,
+	CardContent,
+	Fab
 } from '@material-ui/core';
 import { useTracker } from 'react-meteor-hooks';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
 		marginTop: theme.spacing(5)
 	},
 	heading: {
-		padding: theme.spacing(4,4,0,4)
+		padding: theme.spacing(4, 4, 0, 4)
 	}
 }));
 
@@ -42,9 +42,9 @@ const ListUsers = (props) => {
 			<CardHeader
 				className={ classes.heading }
 				action={
-					<Fab color="primary" aria-label="add" onClick={() => {
-						props.history.push(props.history.location.pathname+'Create');
-					}}>
+					<Fab color="primary" aria-label="add" onClick={ () => {
+						props.history.push(props.history.location.pathname + 'Create');
+					} }>
 						<AddIcon/>
 					</Fab>
 				}

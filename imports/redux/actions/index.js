@@ -4,6 +4,7 @@ export const loginWithPassword = (email, password, response) => async (dispatch)
 	Meteor.loginWithPassword(email, password, (error) => {
 		if (error) {
 			response(false);
+			return;
 		}
 		const user = Meteor.user();
 		dispatch({
