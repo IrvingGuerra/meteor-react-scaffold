@@ -60,7 +60,7 @@ export default function TabFont(props) {
 		if (doc.lastElementSelected === undefined || doc.lastElementSelected === null) return;
 		let obj = doc.pages[doc.actualPage].canvas.getActiveObject();
 		if (obj === undefined || obj === null) return;
-		if (obj.type === 'path') return; // Is drawing
+		if (obj.type === 'path' || obj.type === 'image') return; // Is drawing
 		setActualObjectFont(doc.lastElementSelected.get('fontFamily'));
 		changeAlign(doc, doc.lastElementSelected.get('textAlign'));
 		// Update icons styles

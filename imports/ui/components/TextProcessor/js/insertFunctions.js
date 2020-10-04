@@ -55,3 +55,20 @@ export const addInput = (doc) => {
     });
     doc.pages[doc.actualPage].canvas.add(eje);
 }
+
+
+export const addImage = (doc) => {
+    const file = document.querySelector('#addImage').files[0];
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = function (f) {
+        const data = f.target.result;
+        new fabric.Image.fromURL(data , function(img){
+            const canvasImage = img.set({
+                left: 0,
+                top: 0
+            })
+            doc.pages[doc.actualPage].canvas.add(canvasImage);
+        });
+    }
+}

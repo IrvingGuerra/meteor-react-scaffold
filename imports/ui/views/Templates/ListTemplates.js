@@ -80,7 +80,7 @@ const ListTemplates = (props) => {
 										<IconButton onClick={ () => {
 											props.history.push({
 												pathname: props.history.location.pathname + 'Edit',
-												state: { template, canEdit: false }
+												state: { template, canEdit: true }
 											});
 										} }>
 											<EditIcon/>

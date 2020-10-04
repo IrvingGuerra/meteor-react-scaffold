@@ -1,6 +1,6 @@
 import React from 'react';
 import { Grid, makeStyles } from '@material-ui/core';
-import { addInput, addText, addTitle } from '../../js/insertFunctions';
+import { addImage, addInput, addText, addTitle } from '../../js/insertFunctions';
 import Divider from '@material-ui/core/Divider';
 import { STRINGS } from '../../constants/strings';
 import { BootstrapTooltip } from '../TabFont/TabFont';
@@ -45,6 +45,9 @@ export default function TabInsert(props) {
 						<i id='bold' className="fa fa-keyboard-o ico"/>
 					</button>
 				</BootstrapTooltip>
+
+				<input type="file" id="addImage" name="image" onChange={() => addImage(doc)} />
+
 				<Divider orientation="vertical" flexItem/>
 			</Grid>
 		</Grid>
