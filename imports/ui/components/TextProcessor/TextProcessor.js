@@ -106,7 +106,6 @@ export default function TextProcessor(props) {
 			title: doc.title,
 			pages: pagesArrayStrings
 		};
-		console.log('Guardaremos ' + docJson.pages);
 		Meteor.call('template.save', docJson, (err, res) => {
 			if (err) {
 				props.alert.current.setAlert('Error', err.reason, 'error');

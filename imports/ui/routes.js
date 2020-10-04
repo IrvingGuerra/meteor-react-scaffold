@@ -47,6 +47,12 @@ const dashboardRoutes = [
 		name: 'Crear usuario',
 		component: CreateUser,
 		layout: ['admin']
+	},
+	{
+		path: '/usersEdit',
+		name: 'Editar usuario',
+		component: CreateUser,
+		layout: ['admin']
 	}
 ];
 

@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import { FormControl, InputLabel, Select, MenuItem, Card, Fab, CardHeader, CardContent } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import { fabric } from '../../components/TextProcessor/js/init';
 
 const useStyles = makeStyles((theme) => ({
 	card: {
@@ -40,6 +41,20 @@ export default function CreateUser(props) {
 			return;
 		});
 	};
+	useEffect(() => {
+		if (props.location.state) {
+			const user = props.location.state.user;
+			setForm({
+				_id: user._id,
+				firstname: user.profile.firstname,
+				lastname: user.profile.lastname,
+				username: user.profile.username,
+				email: user.emails[0].address,
+				password: '',
+				profile: user.profile.profile,
+			})
+		}
+	}, []);
 	return (
 		<Grid item xs={ 8 }>
 			<Card className={ classes.card } elevation={ 6 }>
@@ -124,12 +139,6 @@ export default function CreateUser(props) {
 							</Grid>
 							<Grid item xs={ 12 }>
 								<TextField
-									inputProps={ {
-										autoComplete: 'new-password',
-										form: {
-											autoComplete: 'off'
-										}
-									} }
 									variant="outlined"
 									required
 									fullWidth
@@ -149,7 +158,7 @@ export default function CreateUser(props) {
 							color="primary"
 							className={ classes.submit }
 						>
-							Crear
+							{ form._id ? 'Actualizar' :  'Crear' }
 						</Button>
 					</form>
 				</CardContent>

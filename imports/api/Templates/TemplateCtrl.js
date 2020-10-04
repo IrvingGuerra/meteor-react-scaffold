@@ -51,10 +51,10 @@ export const saveUserMethod = new ValidatedMethod({
 	}
 });
 
-export const deleteUserMethod = new ValidatedMethod({
+export const deleteTemplateMethod = new ValidatedMethod({
 	name: 'template.delete',
 	mixins: [MethodHooks],
-	permissions: [Permissions.TEMPLATES.CREATE.VALUE, Permissions.TEMPLATES.UPDATE.VALUE],
+	permissions: [Permissions.TEMPLATES.DELETE.VALUE],
 	validate(idTemplate) {
 		try {
 			check(idTemplate, String);
