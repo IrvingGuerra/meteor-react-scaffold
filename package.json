@@ -24,6 +24,7 @@
     "history": "^5.0.0",
     "indexof": "^0.0.1",
     "jquery": "^3.5.1",
+    "jspdf": "^2.1.1",
     "meteor-node-stubs": "^1.0.1",
     "rc-color-picker": "^1.2.6",
     "react": "^16.13.1",

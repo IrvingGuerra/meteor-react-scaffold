@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Tooltip } from '@material-ui/core';
+import { Card } from '@material-ui/core';
 import './TextProcessor.css';
 import { DOC_MARGIN } from './constants';
 import { fabric } from './js/init';
 import TextProcessorTabs from './components/TextProcessorTabs/TextProcessorTabs';
 import { STRINGS } from './constants/strings';
 import { BootstrapTooltip } from './components/TabFont/TabFont';
+import jsPDF from 'jspdf';
 
 let timesKey = 0;
 const grid = 18;
@@ -106,6 +107,16 @@ export default function TextProcessor(props) {
 			title: doc.title,
 			pages: pagesArrayStrings
 		};
+		if (!props.location.state.canEdit) {
+			Meteor.call('analysis.update', { analysis: docJson, orderId: props.location.state.orderId }, (err, res) => {
+				if (err) {
+					props.alert.current.setAlert('Error', err.reason, 'error');
+					return;
+				}
+				props.alert.current.setAlert('Éxito', res._message);
+			});
+			return;
+		}
 		Meteor.call('template.save', docJson, (err, res) => {
 			if (err) {
 				props.alert.current.setAlert('Error', err.reason, 'error');
@@ -182,10 +193,29 @@ export default function TextProcessor(props) {
 	const modeSignature = () => {
 		doc.pages[doc.actualPage].canvas.isDrawingMode = !doc.pages[doc.actualPage].canvas.isDrawingMode;
 		if (doc.pages[doc.actualPage].canvas.isDrawingMode) {
-			document.getElementById('pencil').className = 'fa fa-signature iconSave select';
+			document.getElementById('signature').className = 'fa fa-signature iconSave select';
 		} else {
-			document.getElementById('pencil').className = 'fa fa-signature iconSave';
+			document.getElementById('signature').className = 'fa fa-signature iconSave';
 		}
+	};
+
+	const downloadDocument = () => {
+		/*
+		doc.pages[doc.actualPage].canvas.setDimensions({
+			width: doc.pages[doc.actualPage].canvas.getWidth() * 2,
+			height: doc.pages[doc.actualPage].canvas.getHeight() * 2
+		});
+		doc.pages[doc.actualPage].canvas.setZoom(2);
+		 */
+		const canvasHeight = doc.pages[doc.actualPage].canvas.getHeight();
+		const canvasWidth = doc.pages[doc.actualPage].canvas.getWidth();
+		const imgData = doc.pages[doc.actualPage].canvas.toDataURL('image/png', 1.0);
+		// eslint-disable-next-line new-cap
+		const pdf = new jsPDF('p', 'px', [canvasHeight, canvasWidth]);
+		pdf.addImage(imgData, 'PNG', 0, 0, canvasWidth, canvasHeight);
+		pdf.save(doc.title + '.pdf', {
+			returnPromise: true
+		});
 	};
 
 	const _handleNewPage = () => {
@@ -229,7 +259,7 @@ export default function TextProcessor(props) {
 			...doc,
 			showGrid: !doc.showGrid
 		});
-	}
+	};
 
 	useEffect(() => {
 		if (doc.pages[doc.actualPage].canvas === null) return;
@@ -243,11 +273,10 @@ export default function TextProcessor(props) {
 		};
 	}, [doc.pages[doc.actualPage].canvas]);
 
-
 	useEffect(() => {
 		// SHOW GRID
 		if (doc.pages[doc.actualPage].canvas === null) return;
-		if(doc.showGrid){
+		if (doc.showGrid) {
 			for (let i = 0; i < (1054 / grid); i++) {
 				doc.pages[doc.actualPage].canvas.add(new fabric.Line([i * grid, 0, i * grid, 1054], {
 					stroke: '#CCCCCC',
@@ -267,7 +296,7 @@ export default function TextProcessor(props) {
 					}).setCoords();
 				}
 			});
-		}else{
+		} else {
 			const obj = doc.pages[doc.actualPage].canvas.getObjects('line');
 			for (let i in obj) {
 				doc.pages[doc.actualPage].canvas.remove(obj[i]);
@@ -283,6 +312,11 @@ export default function TextProcessor(props) {
 						<i className="fa fa-save iconSave"/>
 					</button>
 				</BootstrapTooltip>
+				<BootstrapTooltip title={ STRINGS.download }>
+					<button type="button" className="noButton" onClick={ () => downloadDocument() }>
+						<i id="download" className="fa fa-download iconDownload"/>
+					</button>
+				</BootstrapTooltip>
 				<input
 					value={ doc.title }
 					className="textProcessorHeaderTitleText"
@@ -292,7 +326,7 @@ export default function TextProcessor(props) {
 				/>
 				<BootstrapTooltip title={ STRINGS.signature }>
 					<button type="button" className="noButton" onClick={ () => modeSignature() }>
-						<i id="pencil" className="fa fa-signature iconSave"/>
+						<i id="signature" className="fa fa-signature iconSave"/>
 					</button>
 				</BootstrapTooltip>
 			</div>
@@ -301,7 +335,7 @@ export default function TextProcessor(props) {
 				_handleNewPage={ _handleNewPage }
 				_handlePrevPage={ _handlePrevPage }
 				_handleNextPage={ _handleNextPage }
-				_handleGrid={_handleGrid}
+				_handleGrid={ _handleGrid }
 			/>
 			<div className="textProcessorBody">
 				<div id="docPaper" className="docPaper"/>

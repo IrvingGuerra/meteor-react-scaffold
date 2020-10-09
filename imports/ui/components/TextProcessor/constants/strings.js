@@ -25,6 +25,7 @@ export const STRINGS = {
         compress: 'Comprimir padding'
     },
     signature: 'Active o desactive modo firma',
+    download: 'Descargar documento',
     insert: {
         label: 'Insertar campo de texto',
         title: 'Insertar titulo',

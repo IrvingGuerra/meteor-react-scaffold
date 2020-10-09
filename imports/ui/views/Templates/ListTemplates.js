@@ -65,7 +65,7 @@ const ListTemplates = (props) => {
 					className={ classes.heading }
 					action={
 						<Fab color="primary" aria-label="add" onClick={ () => {
-							props.history.push(props.history.location.pathname + 'Create');
+							props.history.push('/' + props.history.location.pathname.split('/')[1] + '/createTemplate');
 						} }>
 							<AddIcon/>
 						</Fab>
@@ -90,7 +90,7 @@ const ListTemplates = (props) => {
 										<TableCell align="right">
 											<IconButton onClick={ () => {
 												props.history.push({
-													pathname: props.history.location.pathname + 'Edit',
+													pathname: '/' + props.history.location.pathname.split('/')[1] + '/editTemplate',
 													state: { template, canEdit: true }
 												});
 											} }>

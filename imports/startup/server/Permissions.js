@@ -22,6 +22,12 @@ const Permissions = {
 		UPDATE: { VALUE: 'templates-edit', TEXT: 'Actualizar plantilla' },
 		DELETE: { VALUE: 'templates-delete', TEXT: 'Eliminar plantilla' }
 	},
+	ORDERS: {
+		LIST: { VALUE: 'analyses-view', TEXT: 'Listar analices' },
+		CREATE: { VALUE: 'analyses-create', TEXT: 'Crear analisis' },
+		UPDATE: { VALUE: 'analyses-edit', TEXT: 'Actualizar analisis' },
+		DELETE: { VALUE: 'analyses-delete', TEXT: 'Eliminar analisis' }
+	},
 }
 
 export const permissionsArray = Object.keys(Permissions).reduce((accumulator, systemModuleName) => {

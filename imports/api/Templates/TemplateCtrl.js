@@ -6,7 +6,7 @@ import { Template } from './Template';
 
 import Permissions from '../../startup/server/Permissions';
 
-export const saveUserMethod = new ValidatedMethod({
+export const saveTemplateMethod = new ValidatedMethod({
 	name: 'template.save',
 	mixins: [MethodHooks],
 	permissions: [Permissions.TEMPLATES.CREATE.VALUE, Permissions.TEMPLATES.UPDATE.VALUE],
