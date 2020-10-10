@@ -1,1 +1,1 @@
-{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"unique":true,"key":{"service":{"$numberInt":"1"}},"name":"service_1"}],"uuid":"f28a38c0ae854019b2492058160dee92","collectionName":"meteor_accounts_loginServiceConfiguration"}
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"unique":true,"key":{"service":{"$numberInt":"1"}},"name":"service_1"}],"uuid":"9797fc608dd34ee79b3423bdd110e00c","collectionName":"meteor_accounts_loginServiceConfiguration"}
