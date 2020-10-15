@@ -12,7 +12,8 @@ export const STRINGS = {
         topRight: 'Borde superior derecho',
         topLeft: 'Borde superior izquierdo',
         bottomRight: 'Borde inferior derecho',
-        bottomLeft: 'Borde inferior izquierdo'
+        bottomLeft: 'Borde inferior izquierdo',
+        colorBorder: 'Color de borde'
     },
     align: {
         left: 'Alinear a la izquierda',
@@ -29,7 +30,13 @@ export const STRINGS = {
     insert: {
         label: 'Insertar campo de texto',
         title: 'Insertar titulo',
-        input: 'Insertar input'
+        input: 'Insertar input',
+        col: 'Una columna',
+        cols2: 'Dos columnas',
+        cols3: 'Tres columnas',
+        cols4: 'Cuatro columnas',
+        cols5: 'Cinco columnas',
+        cols6: 'Seis columnas',
     },
     page: {
         addPage: 'Agregar una pagina nueva',

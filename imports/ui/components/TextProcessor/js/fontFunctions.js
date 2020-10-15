@@ -106,3 +106,15 @@ export const changeBorder = (doc, position) => {
 	}
 	doc.pages[doc.actualPage].canvas.renderAll();
 };
+
+
+export const changeBorderColor = (doc) => {
+	let obj = doc.pages[doc.actualPage].canvas.getActiveObject();
+	if (obj === undefined || obj === null) return;
+	const textBoxBorderColor = getStyle(obj, 'textBoxBorderColor');
+	setStyle(obj, 'textBoxBorderColor', textBoxBorderColor === 'black' ? 'white' : 'black');
+	textBoxBorderColor === 'white' ? document.getElementById('textBoxBorderColor').className = 'fa fa-border-none ico select'
+		: document.getElementById('textBoxBorderColor').className = 'fa fa-border-none ico';
+
+	doc.pages[doc.actualPage].canvas.renderAll();
+}

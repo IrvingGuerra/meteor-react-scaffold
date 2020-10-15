@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Grid, Tooltip, makeStyles, Select, FormControl, InputLabel, MenuItem, IconButton } from '@material-ui/core';
 import {
-	changeAlign, changeBorder, changePadding,
+	changeAlign, changeBorder, changeBorderColor, changePadding,
 	changeSize,
 	changeStyle,
 	getStyle
@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	formControl: {
 		margin: theme.spacing(1),
-		minWidth: 120
+		width: 120
 	}
 }));
 
@@ -88,6 +88,10 @@ export default function TabFont(props) {
 		const borderBottomLeftRadius = getStyle(obj, 'borderBottomLeftRadius');
 		borderBottomLeftRadius > 0 ? document.getElementById('bottomLeft').className = 'fa fa-border-style ico rotate270 select'
 			: document.getElementById('bottomLeft').className = 'fa fa-border-style rotate270 ico';
+		// Update Color Border
+		const textBoxBorderColor = getStyle(obj, 'textBoxBorderColor');
+		textBoxBorderColor === 'white' ? document.getElementById('textBoxBorderColor').className = 'fa fa-border-none ico'
+			: document.getElementById('textBoxBorderColor').className = 'fa fa-border-none ico select';
 	}, [doc.lastElementSelected]);
 
 	useEffect(() => {
@@ -124,7 +128,7 @@ export default function TabFont(props) {
 				<FormControl variant="outlined" className={ classes.formControl }>
 					<InputLabel id="demo-simple-select-outlined-label">Fuente</InputLabel>
 					<Select
-						style={ { minWidth: 200 } }
+						style={ { width: 120 } }
 						labelId="demo-simple-select-outlined-label"
 						id="demo-simple-select-outlined"
 						value={ actualObjectFont }
@@ -261,6 +265,14 @@ export default function TabFont(props) {
 				<BootstrapTooltip title={ STRINGS.padding.compress }>
 					<button type="button" className="noButton" onClick={ () => changePadding(doc, 'less') }>
 						<i id='bottomLeft' className="fa fa-compress ico"/>
+					</button>
+				</BootstrapTooltip>
+
+				<Divider orientation="vertical" flexItem/>
+
+				<BootstrapTooltip title={ STRINGS.border.colorBorder }>
+					<button type="button" className="noButton" onClick={ () => changeBorderColor(doc) }>
+						<i id='textBoxBorderColor' className="fa fa-border-none ico"/>
 					</button>
 				</BootstrapTooltip>
 

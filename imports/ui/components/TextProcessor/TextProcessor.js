@@ -12,6 +12,7 @@ let timesKey = 0;
 const grid = 18;
 
 export default function TextProcessor(props) {
+
 	const [doc, setDoc] = useState({
 		_id: null,
 		title: '',
@@ -107,7 +108,7 @@ export default function TextProcessor(props) {
 			title: doc.title,
 			pages: pagesArrayStrings
 		};
-		if (!props.location.state.canEdit) {
+		if (props.location.state && !props.location.state.canEdit) {
 			Meteor.call('analysis.update', { analysis: docJson, orderId: props.location.state.orderId }, (err, res) => {
 				if (err) {
 					props.alert.current.setAlert('Error', err.reason, 'error');
