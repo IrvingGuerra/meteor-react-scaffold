@@ -30,7 +30,7 @@ export const changeAlign = (doc, align) => {
 	doc.pages[doc.actualPage].canvas.renderAll();
 };
 
-const setStyle = (object, styleName, value) => {
+export const setStyle = (object, styleName, value) => {
 	if (object.setSelectionStyles && object.isEditing) {
 		const style = { };
 		style[styleName] = value;

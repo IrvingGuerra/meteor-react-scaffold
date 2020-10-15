@@ -7,6 +7,7 @@ import TextProcessorTabs from './components/TextProcessorTabs/TextProcessorTabs'
 import { STRINGS } from './constants/strings';
 import { BootstrapTooltip } from './components/TabFont/TabFont';
 import jsPDF from 'jspdf';
+import { changeStyle, setStyle } from './js/fontFunctions';
 
 let timesKey = 0;
 const grid = 18;
@@ -61,6 +62,8 @@ export default function TextProcessor(props) {
 							object.set('selectable', true);
 							object.set('lockMovementX', true);
 							object.set('lockMovementY', true);
+						} else if (object.id && object.id.includes('result')){
+							object.set('selectable', true);
 						} else {
 							object.set('selectable', false);
 						}
@@ -262,11 +265,41 @@ export default function TextProcessor(props) {
 		});
 	};
 
+	const _changeResult = (event) => {
+		const object = doc.pages[doc.actualPage].canvas.getActiveObject();
+		if (object === undefined || object === null) return;
+		const number = object.id.replace("result", "");
+		const result = object.text;
+		let compLess = 0;
+		let compMore = 0;
+		doc.pages[doc.actualPage].canvas.getObjects().forEach(function(o) {
+			if(o.id === 'comp_less'+number){
+				compLess = o.text;
+			}else if(o.id === 'comp_more'+number){
+				compMore = o.text;
+			}
+		})
+		if(isNaN(result)){
+			object.text = '';
+		}else{
+			object.text = result;
+		}
+		if(!isNaN(parseFloat(result))){
+			if(parseFloat(result) < parseFloat(compLess) || parseFloat(result) > parseFloat(compMore)){
+				object.set("fontWeight", "bold");
+			}else{
+				object.set("fontWeight", "normal");
+			}
+		}
+		doc.pages[doc.actualPage].canvas.renderAll();
+	}
+
 	useEffect(() => {
 		if (doc.pages[doc.actualPage].canvas === null) return;
 		document.addEventListener('keyup', _handleKeyUp);
 		document.addEventListener('keydown', _handleKeyDown);
 		document.addEventListener('mouseup', _handleClickDown);
+		doc.pages[doc.actualPage].canvas.on('text:changed', _changeResult);
 		return () => {
 			document.removeEventListener('keyup', _handleKeyUp);
 			document.removeEventListener('mouseup', _handleKeyDown);

@@ -159,3 +159,86 @@ export const addColumns = (doc, number) => {
 		}
 	}
 };
+
+const getNumberComparison = (doc) => {
+	let number = 0;
+	doc.pages[doc.actualPage].canvas.getObjects().forEach((o) => {
+		if (o.id && o.id.includes('result')) {
+			number++;
+		}
+	});
+	return number;
+};
+
+
+export const addComparison = (doc) => {
+	const number = getNumberComparison(doc);
+	const top = getTop(doc, 18);
+	const result = new fabric.NewTextBox('result'+number, {
+		left: doc.pages[doc.actualPage].margin,
+		top,
+		width: 100,
+		fontFamily: 'Arial',
+		fontSize: 16,
+		fontWeight: 'normal',
+		fill: '#000000',
+		textAlign: 'left',
+		backgroundColor: '#ffffff',
+		borderColor: 'blue',
+		editingBorderColor: 'green',
+		textBoxBorderColor: 'white',
+		padding: 0,
+		id: 'result'+number
+	});
+	const compLess = new fabric.NewTextBox('50', {
+		left: doc.pages[doc.actualPage].margin + 100,
+		top,
+		width: 50,
+		fontFamily: 'Arial',
+		fontSize: 16,
+		fontWeight: 'normal',
+		fill: '#000000',
+		textAlign: 'left',
+		backgroundColor: '#ffffff',
+		borderColor: 'blue',
+		editingBorderColor: 'green',
+		textBoxBorderColor: 'white',
+		padding: 0,
+		id: 'comp_less'+number
+	});
+	const char = new fabric.NewTextBox('-', {
+		left: doc.pages[doc.actualPage].margin+150,
+		top,
+		width: 15,
+		fontFamily: 'Arial',
+		fontSize: 16,
+		fontWeight: 'normal',
+		fill: '#000000',
+		textAlign: 'left',
+		backgroundColor: '#ffffff',
+		borderColor: 'blue',
+		editingBorderColor: 'green',
+		textBoxBorderColor: 'white',
+		padding: 0,
+	});
+	const compMore = new fabric.NewTextBox('100', {
+		left: doc.pages[doc.actualPage].margin+165,
+		top,
+		width: 50,
+		fontFamily: 'Arial',
+		fontSize: 16,
+		fontWeight: 'normal',
+		fill: '#000000',
+		textAlign: 'left',
+		backgroundColor: '#ffffff',
+		borderColor: 'blue',
+		editingBorderColor: 'green',
+		textBoxBorderColor: 'white',
+		padding: 0,
+		id: 'comp_more'+number
+	});
+	doc.pages[doc.actualPage].canvas.add(result);
+	doc.pages[doc.actualPage].canvas.add(compLess);
+	doc.pages[doc.actualPage].canvas.add(char);
+	doc.pages[doc.actualPage].canvas.add(compMore);
+}

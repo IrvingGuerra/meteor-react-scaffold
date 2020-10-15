@@ -31,12 +31,14 @@ export const STRINGS = {
         label: 'Insertar campo de texto',
         title: 'Insertar titulo',
         input: 'Insertar input',
+        image: 'Insertar imagen',
         col: 'Una columna',
         cols2: 'Dos columnas',
         cols3: 'Tres columnas',
         cols4: 'Cuatro columnas',
         cols5: 'Cinco columnas',
         cols6: 'Seis columnas',
+        comparison: 'Módulo de comparación'
     },
     page: {
         addPage: 'Agregar una pagina nueva',

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Grid, makeStyles } from '@material-ui/core';
-import { addColumns, addImage, addInput, addText, addTitle } from '../../js/insertFunctions';
+import { addColumns, addComparison, addImage, addInput, addText, addTitle } from '../../js/insertFunctions';
 import Divider from '@material-ui/core/Divider';
 import { STRINGS } from '../../constants/strings';
 import { BootstrapTooltip } from '../TabFont/TabFont';
@@ -40,41 +40,56 @@ export default function TabInsert(props) {
 						<i id='bold' className="fa fa-th-list ico"/>
 					</button>
 				</BootstrapTooltip>
-				<BootstrapTooltip title={ STRINGS.insert.input }>
-					<button type="button" className="noButton" onClick={ () => addInput(doc) }>
-						<i id='bold' className="fa fa-keyboard ico"/>
+				<BootstrapTooltip title={ STRINGS.insert.image }>
+					<button type="button" className="noButton" onClick={ () => {
+						document.getElementById('addImage').click();
+					} }>
+						<i id='image' className="fa fa-image ico"/>
 					</button>
 				</BootstrapTooltip>
-				<input type="file" id="addImage" name="image" onChange={() => addImage(doc)} />
+				<input style={ { display: 'none' } } type="file" id="addImage" name="image"
+				       onChange={ () => addImage(doc) }/>
+
 				<Divider orientation="vertical" flexItem/>
 				<BootstrapTooltip title={ STRINGS.insert.col }>
 					<button type="button" className="noButton" onClick={ () => addColumns(doc, 1) }>
-						<i id='bold' className="fa fa-columns ico"/>
+						<i id='cols' className="fa fa-columns ico"/>
 					</button>
 				</BootstrapTooltip>
 				<BootstrapTooltip title={ STRINGS.insert.cols2 }>
 					<button type="button" className="noButton" onClick={ () => addColumns(doc, 2) }>
-						<i id='bold' className="fa fa-columns ico"/>
+						<i id='cols' className="fa fa-columns ico"/>
 					</button>
 				</BootstrapTooltip>
 				<BootstrapTooltip title={ STRINGS.insert.cols3 }>
 					<button type="button" className="noButton" onClick={ () => addColumns(doc, 3) }>
-						<i id='bold' className="fa fa-columns ico"/>
+						<i id='cols' className="fa fa-columns ico"/>
 					</button>
 				</BootstrapTooltip>
 				<BootstrapTooltip title={ STRINGS.insert.cols4 }>
 					<button type="button" className="noButton" onClick={ () => addColumns(doc, 4) }>
-						<i id='bold' className="fa fa-columns ico"/>
+						<i id='cols' className="fa fa-columns ico"/>
 					</button>
 				</BootstrapTooltip>
 				<BootstrapTooltip title={ STRINGS.insert.cols5 }>
 					<button type="button" className="noButton" onClick={ () => addColumns(doc, 5) }>
-						<i id='bold' className="fa fa-columns ico"/>
+						<i id='cols' className="fa fa-columns ico"/>
 					</button>
 				</BootstrapTooltip>
 				<BootstrapTooltip title={ STRINGS.insert.cols6 }>
 					<button type="button" className="noButton" onClick={ () => addColumns(doc, 6) }>
-						<i id='bold' className="fa fa-columns ico"/>
+						<i id='cols' className="fa fa-columns ico"/>
+					</button>
+				</BootstrapTooltip>
+				<Divider orientation="vertical" flexItem/>
+				<BootstrapTooltip title={ STRINGS.insert.input }>
+					<button type="button" className="noButton" onClick={ () => addInput(doc) }>
+						<i id='input' className="fa fa-keyboard ico"/>
+					</button>
+				</BootstrapTooltip>
+				<BootstrapTooltip title={ STRINGS.insert.comparison }>
+					<button type="button" className="noButton" onClick={ () => addComparison(doc) }>
+						<i id='comparison' className="fa fa-less-than-equal ico"/>
 					</button>
 				</BootstrapTooltip>
 			</Grid>
