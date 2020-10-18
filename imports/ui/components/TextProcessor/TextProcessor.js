@@ -131,11 +131,38 @@ export default function TextProcessor(props) {
 	};
 
 	const _handleKeyUp = (event) => {
-		// Suprimir elemento
+		const object = doc.pages[doc.actualPage].canvas.getActiveObject();
+		if (object === undefined || object === null) return;
 		if (event.keyCode === 46) {
-			const obj = doc.pages[doc.actualPage].canvas.getActiveObject();
-			if (obj === undefined || obj === null) return;
-			doc.pages[doc.actualPage].canvas.remove(obj);
+			doc.pages[doc.actualPage].canvas.remove(object);
+			return;
+		}
+		if(object.id.includes("result")){
+			if (event.keyCode >= 48 && event.keyCode <= 57){
+				//is number
+				const number = object.id.replace("result", "");
+				const result = object.text;
+				let compLess = 0;
+				let compMore = 0;
+				doc.pages[doc.actualPage].canvas.getObjects().forEach(function(o) {
+					if(o.id === 'comp_less'+number){
+						compLess = o.text;
+					}else if(o.id === 'comp_more'+number){
+						compMore = o.text;
+					}
+				})
+				console.log(result);
+				console.log(compLess);
+				console.log(compMore);
+				if(!isNaN(parseFloat(result))){
+					if(parseFloat(result) < parseFloat(compLess) || parseFloat(result) > parseFloat(compMore)){
+						object.set("fontWeight", "bold");
+					}else{
+						object.set("fontWeight", "normal");
+					}
+				}
+			}
+			doc.pages[doc.actualPage].canvas.renderAll();
 		}
 	};
 
@@ -180,6 +207,14 @@ export default function TextProcessor(props) {
 				obj.clone(function(cloned) {
 					doc.pages[doc.actualPage].clipboard = cloned;
 				});
+			}
+		}
+		const object = doc.pages[doc.actualPage].canvas.getActiveObject();
+		if (object === undefined || object === null) return;
+		if(object.id.includes("result")){
+			if (event.keyCode >= 48 && event.keyCode <= 57){
+			}else{
+				if (event.preventDefault) event.preventDefault();
 			}
 		}
 	};
@@ -265,41 +300,11 @@ export default function TextProcessor(props) {
 		});
 	};
 
-	const _changeResult = (event) => {
-		const object = doc.pages[doc.actualPage].canvas.getActiveObject();
-		if (object === undefined || object === null) return;
-		const number = object.id.replace("result", "");
-		const result = object.text;
-		let compLess = 0;
-		let compMore = 0;
-		doc.pages[doc.actualPage].canvas.getObjects().forEach(function(o) {
-			if(o.id === 'comp_less'+number){
-				compLess = o.text;
-			}else if(o.id === 'comp_more'+number){
-				compMore = o.text;
-			}
-		})
-		if(isNaN(result)){
-			object.text = '';
-		}else{
-			object.text = result;
-		}
-		if(!isNaN(parseFloat(result))){
-			if(parseFloat(result) < parseFloat(compLess) || parseFloat(result) > parseFloat(compMore)){
-				object.set("fontWeight", "bold");
-			}else{
-				object.set("fontWeight", "normal");
-			}
-		}
-		doc.pages[doc.actualPage].canvas.renderAll();
-	}
-
 	useEffect(() => {
 		if (doc.pages[doc.actualPage].canvas === null) return;
 		document.addEventListener('keyup', _handleKeyUp);
 		document.addEventListener('keydown', _handleKeyDown);
 		document.addEventListener('mouseup', _handleClickDown);
-		doc.pages[doc.actualPage].canvas.on('text:changed', _changeResult);
 		return () => {
 			document.removeEventListener('keyup', _handleKeyUp);
 			document.removeEventListener('mouseup', _handleKeyDown);
