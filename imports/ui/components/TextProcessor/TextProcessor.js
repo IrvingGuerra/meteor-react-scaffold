@@ -7,8 +7,8 @@ import TextProcessorTabs from './components/TextProcessorTabs/TextProcessorTabs'
 import { STRINGS } from './constants/strings';
 import { BootstrapTooltip } from './components/TabFont/TabFont';
 import jsPDF from 'jspdf';
+import { _handleClickDown, _handleKeyDown, _handleKeyUp } from './js/events';
 
-let timesKey = 0;
 const grid = 18;
 
 export default function TextProcessor(props) {
@@ -129,105 +129,6 @@ export default function TextProcessor(props) {
 		});
 	};
 
-	const _handleKeyUp = (event) => {
-		const object = doc.pages[doc.actualPage].canvas.getActiveObject();
-		if (object === undefined || object === null) return;
-		if (event.keyCode === 46) {
-			doc.pages[doc.actualPage].canvas.remove(object);
-			return;
-		}
-		if (object.id.includes('result')) {
-			if (event.keyCode >= 48 && event.keyCode <= 57) {
-				//is number
-				const number = object.id.replace('result', '');
-				const result = object.text;
-				let compLess = 0;
-				let compMore = 0;
-				doc.pages[doc.actualPage].canvas.getObjects().forEach(function(o) {
-					if (o.id === 'comp_less' + number) {
-						compLess = o.text;
-					} else if (o.id === 'comp_more' + number) {
-						compMore = o.text;
-					}
-				});
-				console.log(result);
-				console.log(compLess);
-				console.log(compMore);
-				if (!isNaN(parseFloat(result))) {
-					if (parseFloat(result) < parseFloat(compLess) || parseFloat(result) > parseFloat(compMore)) {
-						object.set('fontWeight', 'bold');
-					} else {
-						object.set('fontWeight', 'normal');
-					}
-				}
-			}
-			doc.pages[doc.actualPage].canvas.renderAll();
-		}
-	};
-
-	const _handleKeyDown = (event) => {
-		event = event || window.event;
-		const key = event.which || event.keyCode; // keyCode detection
-		const ctrl = event.ctrlKey ? event.ctrlKey : ((key === 17)); // ctrl detection (WINDOWS)
-		const cmd = event.metaKey ? event.metaKey : ((key === 93)); // cmd detection (MAC)
-		if (key === 86 && ctrl || key === 86 && cmd) {
-			timesKey++;
-			if (timesKey === 2) {
-				timesKey = 0;
-				doc.pages[doc.actualPage].clipboard.clone(function(clonedObj) {
-					doc.pages[doc.actualPage].canvas.discardActiveObject();
-					clonedObj.set({
-						left: clonedObj.left + 10,
-						top: clonedObj.top + 10,
-						evented: true
-					});
-					if (clonedObj.type === 'activeSelection') {
-						// active selection needs a reference to the canvas.
-						clonedObj.canvas = canvas;
-						clonedObj.forEachObject(function(obj) {
-							doc.pages[doc.actualPage].canvas.add(obj);
-						});
-						// this should solve the unselectability
-						clonedObj.setCoords();
-					} else {
-						doc.pages[doc.actualPage].canvas.add(clonedObj);
-					}
-					doc.pages[doc.actualPage].clipboard.top += 10;
-					doc.pages[doc.actualPage].clipboard.left += 10;
-					doc.pages[doc.actualPage].canvas.setActiveObject(clonedObj);
-					doc.pages[doc.actualPage].canvas.renderAll();
-				});
-			}
-		} else if (key === 67 && ctrl || key === 67 && cmd) {
-			timesKey++;
-			if (timesKey === 2) {
-				timesKey = 0;
-				const obj = doc.pages[doc.actualPage].canvas.getActiveObject();
-				obj.clone(function(cloned) {
-					doc.pages[doc.actualPage].clipboard = cloned;
-				});
-			}
-		}
-		const object = doc.pages[doc.actualPage].canvas.getActiveObject();
-		if (object === undefined || object === null) return;
-		if (object.id.includes('result')) {
-			if (event.keyCode >= 48 && event.keyCode <= 57) {
-			} else {
-				if (event.preventDefault) event.preventDefault();
-			}
-		}
-	};
-
-	const _handleClickDown = (event) => {
-		if (event.target.tagName !== 'CANVAS') return;
-		const obj = doc.pages[doc.actualPage].canvas.getActiveObject();
-		if (obj === undefined || obj === null) return;
-		setDoc({
-			...doc,
-			lastElementSelected: obj
-		});
-	};
-
 	const modeSignature = () => {
 		doc.pages[doc.actualPage].canvas.isDrawingMode = !doc.pages[doc.actualPage].canvas.isDrawingMode;
 		if (doc.pages[doc.actualPage].canvas.isDrawingMode) {
@@ -305,13 +206,13 @@ export default function TextProcessor(props) {
 
 	useEffect(() => {
 		if (doc.pages[doc.actualPage].canvas === null) return;
-		document.addEventListener('keyup', _handleKeyUp);
-		document.addEventListener('keydown', _handleKeyDown);
-		document.addEventListener('mouseup', _handleClickDown);
+		document.addEventListener('keyup', e => _handleKeyUp(e, doc));
+		document.addEventListener('keydown', e => _handleKeyDown(e, doc));
+		document.addEventListener('mouseup', e => _handleClickDown(e, doc, setDoc));
 		return () => {
-			document.removeEventListener('keyup', _handleKeyUp);
-			document.removeEventListener('mouseup', _handleKeyDown);
-			document.removeEventListener('mouseup', _handleClickDown);
+			document.removeEventListener('keyup', e => _handleKeyUp(e, doc));
+			document.removeEventListener('mouseup', e => _handleKeyDown(e, doc));
+			document.removeEventListener('mouseup', e => _handleClickDown(e, doc, setDoc));
 		};
 	}, [doc.pages[doc.actualPage].canvas]);
 
