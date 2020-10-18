@@ -33,41 +33,42 @@ export const fabric = window.fabric;
 				return;
 			}
 			const dim = this._getNonTransformedDimensions();
-			ctx.save();
-			ctx.fillStyle = this.backgroundColor;
 			const r = {
 				x: -dim.x / 2,
 				y: -dim.y / 2,
 				width: dim.x,
 				height: dim.y
 			};
-			ctx.beginPath();
-			if (this.borderTopRightRadius) {
-				ctx.moveTo(r.x + this.borderTopRightRadius, r.y);
-				ctx.arcTo(r.x + r.width, r.y, r.x + r.width, r.y + r.height, this.borderTopRightRadius);
-			} else {
-				ctx.moveTo(r.x + 0, r.y);
-				ctx.arcTo(r.x + r.width, r.y, r.x + r.width, r.y + r.height, 0);
+			// Set Background Color and Borders
+			if(this.borderTopRightRadius || this.borderBottomRightRadius || this.borderBottomLeftRadius || this.borderTopLeftRadius){
+				ctx.fillStyle = this.backgroundColor;
+				ctx.beginPath();
+				if (this.borderTopRightRadius) {
+					ctx.moveTo(r.x + this.borderTopRightRadius, r.y);
+					ctx.arcTo(r.x + r.width, r.y, r.x + r.width, r.y + r.height, this.borderTopRightRadius);
+				} else {
+					ctx.moveTo(r.x + 0, r.y);
+					ctx.arcTo(r.x + r.width, r.y, r.x + r.width, r.y + r.height, 0);
+				}
+				if (this.borderBottomRightRadius) {
+					ctx.arcTo(r.x + r.width, r.y + r.height, r.x, r.y + r.height, this.borderBottomRightRadius);
+				} else {
+					ctx.arcTo(r.x + r.width, r.y + r.height, r.x, r.y + r.height, 0);
+				}
+				if (this.borderBottomLeftRadius) {
+					ctx.arcTo(r.x, r.y + r.height, r.x, r.y, this.borderBottomLeftRadius);
+				} else {
+					ctx.arcTo(r.x, r.y + r.height, r.x, r.y, 0);
+				}
+				if (this.borderTopLeftRadius) {
+					ctx.arcTo(r.x, r.y, r.x + r.width, r.y, this.borderTopLeftRadius);
+				} else {
+					ctx.arcTo(r.x, r.y, r.x + r.width, r.y, 0);
+				}
+				ctx.closePath();
+				this._renderFill(ctx);
 			}
-			if (this.borderBottomRightRadius) {
-				ctx.arcTo(r.x + r.width, r.y + r.height, r.x, r.y + r.height, this.borderBottomRightRadius);
-			} else {
-				ctx.arcTo(r.x + r.width, r.y + r.height, r.x, r.y + r.height, 0);
-			}
-			if (this.borderBottomLeftRadius) {
-				ctx.arcTo(r.x, r.y + r.height, r.x, r.y, this.borderBottomLeftRadius);
-			} else {
-				ctx.arcTo(r.x, r.y + r.height, r.x, r.y, 0);
-			}
-			if (this.borderTopLeftRadius) {
-				ctx.arcTo(r.x, r.y, r.x + r.width, r.y, this.borderTopLeftRadius);
-			} else {
-				ctx.arcTo(r.x, r.y, r.x + r.width, r.y, 0);
-			}
-			ctx.closePath();
-			this._renderFill(ctx);
-			ctx.restore();
-			this._clearCache();
+			// Set border
 			if (this.textBoxBorderColor) {
 				ctx.beginPath();
 				ctx.moveTo(r.x, r.y);
@@ -81,16 +82,14 @@ export const fabric = window.fabric;
 				ctx.stroke();
 				ctx.strokeStyle = stroke;
 			}
-			this._clearCache();
-			ctx.save();
+			// Set Text
 			ctx.fillStyle = this.fill;
 			this._setTextStyles(ctx);
 			this._renderTextLinesBackground(ctx);
 			this._renderTextDecoration(ctx, 'underline');
-			this._renderText(ctx);
 			this._renderTextDecoration(ctx, 'overline');
 			this._renderTextDecoration(ctx, 'linethrough');
-			ctx.restore();
+			this._renderText(ctx);
 		}
 	});
 	fabric.NewTextBox.fromObject = function(object, callback) {

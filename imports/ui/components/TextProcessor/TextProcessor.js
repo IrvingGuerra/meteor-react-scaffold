@@ -239,14 +239,11 @@ export default function TextProcessor(props) {
 	};
 
 	const downloadDocument = () => {
-		/*
 		doc.pages[doc.actualPage].canvas.setDimensions({
 			width: doc.pages[doc.actualPage].canvas.getWidth() * 2,
 			height: doc.pages[doc.actualPage].canvas.getHeight() * 2
 		});
 		doc.pages[doc.actualPage].canvas.setZoom(2);
-
-		 */
 		const canvasHeight = doc.pages[doc.actualPage].canvas.getHeight();
 		const canvasWidth = doc.pages[doc.actualPage].canvas.getWidth();
 		const imgData = doc.pages[doc.actualPage].canvas.toDataURL('image/jpeg', 0.1);
@@ -257,15 +254,11 @@ export default function TextProcessor(props) {
 		}).then(
 			alert('PDF render all done!')
 		);
-
-		/*
 		doc.pages[doc.actualPage].canvas.setDimensions({
 			width: doc.pages[doc.actualPage].canvas.getWidth() / 2,
 			height: doc.pages[doc.actualPage].canvas.getHeight() / 2
 		});
 		doc.pages[doc.actualPage].canvas.setZoom(1);
-
-		 */
 	};
 
 	const _handleNewPage = () => {
