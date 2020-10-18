@@ -7,7 +7,6 @@ import TextProcessorTabs from './components/TextProcessorTabs/TextProcessorTabs'
 import { STRINGS } from './constants/strings';
 import { BootstrapTooltip } from './components/TabFont/TabFont';
 import jsPDF from 'jspdf';
-import { changeStyle, setStyle } from './js/fontFunctions';
 
 let timesKey = 0;
 const grid = 18;
@@ -62,7 +61,7 @@ export default function TextProcessor(props) {
 							object.set('selectable', true);
 							object.set('lockMovementX', true);
 							object.set('lockMovementY', true);
-						} else if (object.id && object.id.includes('result')){
+						} else if (object.id && object.id.includes('result')) {
 							object.set('selectable', true);
 						} else {
 							object.set('selectable', false);
@@ -137,28 +136,28 @@ export default function TextProcessor(props) {
 			doc.pages[doc.actualPage].canvas.remove(object);
 			return;
 		}
-		if(object.id.includes("result")){
-			if (event.keyCode >= 48 && event.keyCode <= 57){
+		if (object.id.includes('result')) {
+			if (event.keyCode >= 48 && event.keyCode <= 57) {
 				//is number
-				const number = object.id.replace("result", "");
+				const number = object.id.replace('result', '');
 				const result = object.text;
 				let compLess = 0;
 				let compMore = 0;
 				doc.pages[doc.actualPage].canvas.getObjects().forEach(function(o) {
-					if(o.id === 'comp_less'+number){
+					if (o.id === 'comp_less' + number) {
 						compLess = o.text;
-					}else if(o.id === 'comp_more'+number){
+					} else if (o.id === 'comp_more' + number) {
 						compMore = o.text;
 					}
-				})
+				});
 				console.log(result);
 				console.log(compLess);
 				console.log(compMore);
-				if(!isNaN(parseFloat(result))){
-					if(parseFloat(result) < parseFloat(compLess) || parseFloat(result) > parseFloat(compMore)){
-						object.set("fontWeight", "bold");
-					}else{
-						object.set("fontWeight", "normal");
+				if (!isNaN(parseFloat(result))) {
+					if (parseFloat(result) < parseFloat(compLess) || parseFloat(result) > parseFloat(compMore)) {
+						object.set('fontWeight', 'bold');
+					} else {
+						object.set('fontWeight', 'normal');
 					}
 				}
 			}
@@ -211,9 +210,9 @@ export default function TextProcessor(props) {
 		}
 		const object = doc.pages[doc.actualPage].canvas.getActiveObject();
 		if (object === undefined || object === null) return;
-		if(object.id.includes("result")){
-			if (event.keyCode >= 48 && event.keyCode <= 57){
-			}else{
+		if (object.id.includes('result')) {
+			if (event.keyCode >= 48 && event.keyCode <= 57) {
+			} else {
 				if (event.preventDefault) event.preventDefault();
 			}
 		}
@@ -319,6 +318,7 @@ export default function TextProcessor(props) {
 	useEffect(() => {
 		// SHOW GRID
 		if (doc.pages[doc.actualPage].canvas === null) return;
+		if (doc.showGrid === undefined) return;
 		if (doc.showGrid) {
 			for (let i = 0; i < (1054 / grid); i++) {
 				doc.pages[doc.actualPage].canvas.add(new fabric.Line([i * grid, 0, i * grid, 1054], {
@@ -340,10 +340,9 @@ export default function TextProcessor(props) {
 				}
 			});
 		} else {
-			const obj = doc.pages[doc.actualPage].canvas.getObjects('line');
-			for (let i in obj) {
-				doc.pages[doc.actualPage].canvas.remove(obj[i]);
-			}
+			doc.pages[doc.actualPage].canvas.getObjects('line').forEach(function(o) {
+				doc.pages[doc.actualPage].canvas.remove(o);
+			});
 		}
 	}, [doc.pages[doc.actualPage].canvas, doc.showGrid]);
 
