@@ -29,7 +29,6 @@ export const addText = (doc) => {
 		backgroundColor: '#ffffff',
 		borderColor: 'blue',
 		editingBorderColor: 'green',
-		textBoxBorderColor: 'white',
 		padding: 0,
 		id: 'label'
 	});
@@ -53,7 +52,6 @@ export const addTitle = (doc) => {
 		backgroundColor: '#000000',
 		borderColor: 'blue',
 		editingBorderColor: 'green',
-		textBoxBorderColor: 'white',
 		padding: 25,
 		id: 'title'
 	});
@@ -73,7 +71,6 @@ export const addInput = (doc) => {
 		backgroundColor: '#ffffff',
 		borderColor: 'blue',
 		editingBorderColor: 'green',
-		textBoxBorderColor: 'white',
 		padding: 0,
 		id: 'input'
 	});
@@ -186,7 +183,6 @@ export const addComparison = (doc) => {
 		backgroundColor: '#ffffff',
 		borderColor: 'blue',
 		editingBorderColor: 'green',
-		textBoxBorderColor: 'white',
 		padding: 0,
 		id: 'result'+number
 	});
@@ -202,7 +198,6 @@ export const addComparison = (doc) => {
 		backgroundColor: '#ffffff',
 		borderColor: 'blue',
 		editingBorderColor: 'green',
-		textBoxBorderColor: 'white',
 		padding: 0,
 		id: 'comp_less'+number
 	});
@@ -218,7 +213,6 @@ export const addComparison = (doc) => {
 		backgroundColor: '#ffffff',
 		borderColor: 'blue',
 		editingBorderColor: 'green',
-		textBoxBorderColor: 'white',
 		padding: 0,
 	});
 	const compMore = new fabric.NewTextBox('100', {
@@ -233,7 +227,6 @@ export const addComparison = (doc) => {
 		backgroundColor: '#ffffff',
 		borderColor: 'blue',
 		editingBorderColor: 'green',
-		textBoxBorderColor: 'white',
 		padding: 0,
 		id: 'comp_more'+number
 	});

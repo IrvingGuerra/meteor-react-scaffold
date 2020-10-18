@@ -32,9 +32,9 @@ export default function TextProcessor(props) {
 	const createCanvas = (number) => {
 		const canvas = document.createElement('CANVAS');
 		canvas.setAttribute('id', 'doc' + number);
-		canvas.setAttribute('width', '816');
-		canvas.setAttribute('height', '1054');
-		canvas.setAttribute('style', 'border: 1px solid black');
+		canvas.setAttribute('width', '863');
+		canvas.setAttribute('height', '1050');
+		canvas.setAttribute('style', 'border: 1px solid black; width: 816px; height: 1054px');
 		document.getElementById('docPaper').append(canvas);
 	};
 
@@ -245,16 +245,27 @@ export default function TextProcessor(props) {
 			height: doc.pages[doc.actualPage].canvas.getHeight() * 2
 		});
 		doc.pages[doc.actualPage].canvas.setZoom(2);
+
 		 */
 		const canvasHeight = doc.pages[doc.actualPage].canvas.getHeight();
 		const canvasWidth = doc.pages[doc.actualPage].canvas.getWidth();
-		const imgData = doc.pages[doc.actualPage].canvas.toDataURL('image/png', 1.0);
-		// eslint-disable-next-line new-cap
-		const pdf = new jsPDF('p', 'px', [canvasHeight, canvasWidth]);
-		pdf.addImage(imgData, 'PNG', 0, 0, canvasWidth, canvasHeight);
+		const imgData = doc.pages[doc.actualPage].canvas.toDataURL('image/jpeg', 0.1);
+		const pdf = new jsPDF('p', 'px', [canvasHeight, canvasWidth], true);
+		pdf.addImage(imgData, 'JPEG', 0, 0, canvasWidth, canvasHeight, '', 'FAST');
 		pdf.save(doc.title + '.pdf', {
 			returnPromise: true
+		}).then(
+			alert('PDF render all done!')
+		);
+
+		/*
+		doc.pages[doc.actualPage].canvas.setDimensions({
+			width: doc.pages[doc.actualPage].canvas.getWidth() / 2,
+			height: doc.pages[doc.actualPage].canvas.getHeight() / 2
 		});
+		doc.pages[doc.actualPage].canvas.setZoom(1);
+
+		 */
 	};
 
 	const _handleNewPage = () => {
