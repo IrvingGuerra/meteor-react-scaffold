@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Grid, Tooltip, makeStyles, Select, FormControl, InputLabel, MenuItem, IconButton } from '@material-ui/core';
+import { Grid, Tooltip, makeStyles, Select, FormControl, InputLabel, MenuItem, TextField } from '@material-ui/core';
 import {
 	changeAlign, changeBorder, changeBorderColor, changePadding,
 	changeSize,
 	changeStyle,
-	getStyle
+	getStyle, updateFontSize
 } from '../../js/fontFunctions';
 import './TabFont.css';
 import { STRINGS } from '../../constants/strings';
@@ -41,6 +41,10 @@ const useStyles = makeStyles((theme) => ({
 	formControl: {
 		margin: theme.spacing(1),
 		width: 120
+	},
+	input: {
+		margin: theme.spacing(1),
+		width: 80
 	}
 }));
 
@@ -53,6 +57,7 @@ export default function TabFont(props) {
 	const classes = useStyles();
 	const { doc } = props;
 	const [actualObjectFont, setActualObjectFont] = useState('');
+	const [actualFontSize, setActualFontSize] = useState(16);
 	const [actualColorFont, setActualColorFont] = useState('#ffffff');
 
 	useEffect(() => {
@@ -61,7 +66,12 @@ export default function TabFont(props) {
 		let obj = doc.pages[doc.actualPage].canvas.getActiveObject();
 		if (obj === undefined || obj === null) return;
 		if (obj.type === 'path' || obj.type === 'image') return; // Is drawing
+		// Update font family
 		setActualObjectFont(doc.lastElementSelected.get('fontFamily'));
+		// Update font size
+		const fontSize = getStyle(obj, 'fontSize');
+		setActualFontSize(fontSize);
+		// Update Align
 		changeAlign(doc, doc.lastElementSelected.get('textAlign'));
 		// Update icons styles
 		const isBold = (getStyle(obj, 'fontWeight') || '').indexOf('bold') > -1;
@@ -140,19 +150,33 @@ export default function TabFont(props) {
 					</Select>
 				</FormControl>
 				<BootstrapTooltip title={ STRINGS.font.plus }>
-					<button type="button" className="noButton" onClick={ () => changeSize(doc, 'plus') }>
+					<button type="button" className="noButton"
+					        onClick={ () => changeSize(doc, 'plus', setActualFontSize) }>
 						<i className="fa fa-font icoFont">
 							<i className="up"/>
 						</i>
 					</button>
 				</BootstrapTooltip>
 				<BootstrapTooltip title={ STRINGS.font.less }>
-					<button type="button" className="noButton" onClick={ () => changeSize(doc, 'less') }>
+					<button type="button" className="noButton"
+					        onClick={ () => changeSize(doc, 'less', setActualFontSize) }>
 						<i className="fa fa-font icoFont">
 							<i className="down"/>
 						</i>
 					</button>
 				</BootstrapTooltip>
+				<TextField
+					className={ classes.input }
+					id="standard-number"
+					label="Tamaño"
+					type="number"
+					InputLabelProps={ { shrink: true } }
+					value={ actualFontSize }
+					onChange={ (value) => {
+						setActualFontSize(Number(value.target.value));
+						updateFontSize(doc, Number(value.target.value));
+					} }
+				/>
 				<BootstrapTooltip title={ STRINGS.font.less }>
 					<button type="button" className="noButton" onClick={ () => {
 						document.getElementById('colorFontPicker').click();

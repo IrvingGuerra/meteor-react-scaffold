@@ -1,9 +1,20 @@
-export const changeSize = (doc, size) => {
+export const updateFontSize = (doc, size) => {
+	const obj = doc.pages[doc.actualPage].canvas.getActiveObject();
+	if (obj === undefined || obj === null) return;
+	obj.setSelectionStyles({
+		fontSize: size
+	});
+	doc.pages[doc.actualPage].canvas.renderAll();
+}
+
+export const changeSize = (doc, size, setActualFontSize) => {
 	const obj = doc.pages[doc.actualPage].canvas.getActiveObject();
 	if (obj === undefined || obj === null) return;
 	obj.setSelectionStyles({
 		fontSize: size === 'plus' ? (obj.fontSize += 1) : (obj.fontSize -= 1)
 	});
+	const fontSize = getStyle(obj, 'fontSize');
+	setActualFontSize(fontSize);
 	doc.pages[doc.actualPage].canvas.renderAll();
 };
 
