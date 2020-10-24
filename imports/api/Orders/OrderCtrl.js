@@ -4,6 +4,7 @@ import { check, Match } from 'meteor/check';
 import { Meteor } from 'meteor/meteor';
 import { ResponseMessage } from '../../startup/server/BusinessClass/ResponseMessage';
 import { Order } from './Order';
+import Utilities from '../../startup/both/Utilities';
 
 export const requestOrderMethod = new ValidatedMethod({
 	name: 'order.request',
@@ -17,7 +18,7 @@ export const requestOrderMethod = new ValidatedMethod({
 				petSpecies: String,
 				petBreed: String,
 				petGender: String,
-				petAge: String
+				petAge: String,
 			});
 		} catch (exception) {
 			console.log('La información introducida no es válida: ', exception);
@@ -31,6 +32,8 @@ export const requestOrderMethod = new ValidatedMethod({
 				delete order._id;
 				order.number = Order.find().count() + 1;
 				order.status = 'open';
+				order.date = Utilities.currentLocalISODate();
+				order.idRequested = Meteor.userId();
 				Order.insert(order);
 				responseMessage.create(true, 'Orden solicitada exitosamente');
 			} catch (err) {
@@ -53,6 +56,8 @@ export const updateOrderMethod = new ValidatedMethod({
 			check(order, {
 				_id: Match.OneOf(String, null),
 				number: Number,
+				date: String,
+				idRequested: String,
 				petName: String,
 				petSpecies: String,
 				petBreed: String,

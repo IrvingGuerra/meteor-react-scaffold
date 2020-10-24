@@ -18,6 +18,8 @@ import {
 	Checkbox,
 	ListItemText, List, ListItem, ListItemSecondaryAction
 } from '@material-ui/core';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { useTracker } from 'react-meteor-hooks';
 import { Template } from '../../../api/Templates/Template';
@@ -61,7 +63,6 @@ export default function OrderDetails(props) {
 		status: '',
 		analyses: []
 	});
-	const [analyses, setanalyses] = useState([]);
 
 	const templates = useTracker(() => {
 		Meteor.subscribe('templates');
@@ -76,6 +77,7 @@ export default function OrderDetails(props) {
 				return;
 			}
 			props.alert.current.setAlert('Éxito', response._message);
+			props.history.goBack();
 		});
 	};
 
@@ -169,52 +171,44 @@ export default function OrderDetails(props) {
 									onChange={ e => setForm({ ...form, petAge: e.target.value }) }
 								/>
 							</Grid>
-							{form.status === 'open' && (
+							{ form.status === 'open' && (
 								<Grid item xs={ 12 }>
-									<FormControl className={ classes.formControl }>
-										<InputLabel id="demo-mutiple-chip-label">Asigna los analisis</InputLabel>
-										<Select
-											labelId="demo-mutiple-chip-label"
-											id="demo-mutiple-chip"
-											multiple
-											value={ analyses }
-											onChange={ e => {
-												setanalyses(e.target.value);
-												setForm({ ...form, analyses: e.target.value });
-											} }
-											input={ <Input id="select-multiple-chip"/> }
-											renderValue={ (selected) => (
-												<div className={ classes.chips }>
-													{ selected.map((value) => {
-														const template = templates.find(t => t._id === value._id);
-														return (
-															<Chip key={ value._id } label={ template.title }
-															      className={ classes.chip }/>
-														);
-													}) }
-												</div>
-											) }
-										>
-											{ templates.map((template) => (
-												<MenuItem key={ template._id } value={ template }>
-													<Checkbox checked={ analyses.indexOf(template) > -1 }/>
-													<ListItemText primary={ template.title }/>
-												</MenuItem>
-											)) }
-										</Select>
-									</FormControl>
+									<Autocomplete
+										multiple
+										id="tags-standard"
+										options={ templates.map((template) => template) }
+										getOptionLabel={ (template) => template.title }
+										renderTags={ (value, getTagProps) =>
+											value.map((template, index) => (
+												<Chip label={ template.title } { ...getTagProps({ index }) } />
+											))
+										}
+										renderInput={ (
+											params) => (
+											<TextField { ...params } variant="filled" label="Seleccione analisis"/>
+										) }
+										onChange={ (event, values) => {
+											setForm({ ...form, analyses: values });
+										} }
+										getOptionSelected={ (option, { multiple }) => {
+											if (!multiple) {
+												return false;
+											}
+											return false;
+										} }
+									/>
 								</Grid>
-							)}
+							) }
 
-							{form.status === 'awaitingSample' && (
+							{ form.status === 'awaitingSample' && (
 								<Grid item xs={ 12 }>
-									<List dense={true}>
-										{form.analyses.map((analysis) => {
-											if (templates.length > 0){
-												return(
-													<ListItem key={analysis._id}>
+									<List dense={ true }>
+										{ form.analyses.map((analysis, index) => {
+											if (templates.length > 0) {
+												return (
+													<ListItem key={ index }>
 														<ListItemText
-															primary={analysis.title}
+															primary={ analysis.title }
 														/>
 														<ListItemSecondaryAction>
 															<IconButton onClick={ () => {
@@ -227,16 +221,16 @@ export default function OrderDetails(props) {
 																	}
 																});
 															} }>
-																<NavigateNextIcon />
+																<NavigateNextIcon/>
 															</IconButton>
 														</ListItemSecondaryAction>
 													</ListItem>
-												)
+												);
 											}
-										})}
+										}) }
 									</List>
 								</Grid>
-							)}
+							) }
 
 						</Grid>
 						<Button

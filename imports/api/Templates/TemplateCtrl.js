@@ -5,6 +5,7 @@ import { check, Match } from 'meteor/check';
 import { Template } from './Template';
 
 import Permissions from '../../startup/server/Permissions';
+import Utilities from '../../startup/both/Utilities';
 
 export const saveTemplateMethod = new ValidatedMethod({
 	name: 'template.save',
@@ -27,6 +28,8 @@ export const saveTemplateMethod = new ValidatedMethod({
 		if (template._id === null) {
 			try {
 				delete template._id;
+				template.creationDate = Utilities.currentLocalISODate();
+				template.idCreator = Meteor.userId();
 				Template.insert(template);
 				responseMessage.create(true, 'Se ha creado una plantilla.');
 			} catch (err) {

@@ -7,11 +7,13 @@ import {
 	TableRow,
 	TableCell,
 	TableBody,
+	TablePagination,
 	IconButton,
 	Card,
 	CardHeader,
 	CardContent,
-	Fab
+	Fab,
+	Grid
 } from '@material-ui/core';
 import { useTracker } from 'react-meteor-hooks';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -21,9 +23,6 @@ import useModal from '../../hooks/useModal';
 import { ModalDialog } from '../../components/Utilities/Modals/ModalDialog';
 
 const useStyles = makeStyles((theme) => ({
-	card: {
-		marginTop: theme.spacing(5)
-	},
 	heading: {
 		padding: theme.spacing(4, 4, 0, 4)
 	}
@@ -33,6 +32,17 @@ const ListUsers = (props) => {
 	const classes = useStyles();
 	const modal = useModal();
 	const [idDelete, setIdDelete] = useState(null);
+	const [page, setPage] = React.useState(0);
+	const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+	const handleChangePage = (event, newPage) => {
+		setPage(newPage);
+	};
+
+	const handleChangeRowsPerPage = (event) => {
+		setRowsPerPage(+event.target.value);
+		setPage(0);
+	};
 
 	const users = useTracker(() => {
 		Meteor.subscribe('users');
@@ -57,8 +67,8 @@ const ListUsers = (props) => {
 	};
 
 	return (
-		<>
-			<Card className={ classes.card } elevation={ 6 }>
+		<Grid item lg={ 8 } md={ 10 } sm={ 12 }>
+			<Card elevation={ 6 }>
 				<CardHeader
 					className={ classes.heading }
 					action={
@@ -71,47 +81,60 @@ const ListUsers = (props) => {
 					title="Usuarios Registrados"
 				/>
 				<CardContent>
-					<TableContainer>
-						<Table aria-label="simple table">
-							<TableHead>
-								<TableRow>
-									<TableCell>Nombre de usuario</TableCell>
-									<TableCell>Correo eléctronico</TableCell>
-									<TableCell>Perfil</TableCell>
-									<TableCell>Configuracion</TableCell>
-								</TableRow>
-							</TableHead>
-							<TableBody>
-								{ users.map((user) => (
-									<TableRow key={ user._id }>
-										<TableCell component="th" scope="row">
-											{ user.profile.username }
-										</TableCell>
-										<TableCell>{ user.emails[0].address }</TableCell>
-										<TableCell>{ user.profile.profile }</TableCell>
-										<TableCell>
-											<IconButton onClick={ () => {
-												props.history.push({
-													pathname: '/' + props.history.location.pathname.split('/')[1] + '/editUser',
-													state: { user }
-												});
-											} }>
-												<EditIcon/>
-											</IconButton>
-											<IconButton aria-label="delete"
-											            onClick={ () => confirmDelete(user._id) }>
-												<DeleteIcon/>
-											</IconButton>
-										</TableCell>
-									</TableRow>
-								)) }
-							</TableBody>
-						</Table>
-					</TableContainer>
+					<Grid container spacing={ 2 }>
+						<Grid item xs={ 12 }>
+							<TableContainer>
+								<Table aria-label="simple table">
+									<TableHead>
+										<TableRow>
+											<TableCell>Nombre de usuario</TableCell>
+											<TableCell>Correo eléctronico</TableCell>
+											<TableCell>Perfil</TableCell>
+											<TableCell>Configuracion</TableCell>
+										</TableRow>
+									</TableHead>
+									<TableBody>
+										{ users.map((user) => (
+											<TableRow key={ user._id }>
+												<TableCell component="th" scope="row">
+													{ user.profile.username }
+												</TableCell>
+												<TableCell>{ user.emails[0].address }</TableCell>
+												<TableCell>{ user.profile.profile }</TableCell>
+												<TableCell>
+													<IconButton onClick={ () => {
+														props.history.push({
+															pathname: '/' + props.history.location.pathname.split('/')[1] + '/editUser',
+															state: { user }
+														});
+													} }>
+														<EditIcon/>
+													</IconButton>
+													<IconButton aria-label="delete"
+													            onClick={ () => confirmDelete(user._id) }>
+														<DeleteIcon/>
+													</IconButton>
+												</TableCell>
+											</TableRow>
+										)) }
+									</TableBody>
+								</Table>
+							</TableContainer>
+							<TablePagination
+								rowsPerPageOptions={ [10, 25, 100] }
+								component="div"
+								count={ users.length }
+								rowsPerPage={ rowsPerPage }
+								page={ page }
+								onChangePage={ handleChangePage }
+								onChangeRowsPerPage={ handleChangeRowsPerPage }
+							/>
+						</Grid>
+					</Grid>
 				</CardContent>
 			</Card>
 			<ModalDialog modal={ modal } _handleAccept={ deleteUser }/>
-		</>
+		</Grid>
 	);
 };
 

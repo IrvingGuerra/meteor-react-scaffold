@@ -36,12 +36,6 @@ const useStyles = makeStyles((theme) => ({
 		flexDirection: 'column',
 		marginTop: theme.spacing(5),
 		marginBottom: theme.spacing(5)
-	},
-	footer: {
-		padding: theme.spacing(3, 2),
-		marginTop: 'auto',
-		backgroundColor:
-			theme.palette.type === 'light' ? theme.palette.grey[200] : theme.palette.grey[800]
 	}
 }));
 
@@ -109,12 +103,6 @@ export default function System(props) {
 				<Container component="main" className={ classes.main }>
 					<SwitchRoutes profile={ user.profile.profile } props={ props }/>
 				</Container>
-				<footer className={ classes.footer }>
-					<Container maxWidth="sm">
-						<Typography variant="body1">My sticky footer can be found here.</Typography>
-						<Copyright/>
-					</Container>
-				</footer>
 			</main>
 		</div>
 	);

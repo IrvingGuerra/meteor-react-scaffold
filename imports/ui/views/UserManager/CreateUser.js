@@ -5,12 +5,8 @@ import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import { FormControl, InputLabel, Select, MenuItem, Card, Fab, CardHeader, CardContent } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import { fabric } from '../../components/TextProcessor/js/init';
 
 const useStyles = makeStyles((theme) => ({
-	card: {
-		marginTop: theme.spacing(5)
-	},
 	heading: {
 		padding: theme.spacing(4, 4, 0, 4)
 	},
@@ -51,20 +47,20 @@ export default function CreateUser(props) {
 				username: user.profile.username,
 				email: user.emails[0].address,
 				password: '',
-				profile: user.profile.profile,
-			})
+				profile: user.profile.profile
+			});
 		}
 	}, []);
 	return (
-		<Grid item xs={ 8 }>
-			<Card className={ classes.card } elevation={ 6 }>
+		<Grid item lg={ 6 } md={ 8 } sm={ 12 }>
+			<Card elevation={ 6 }>
 				<CardHeader
 					className={ classes.heading }
 					action={
 						<Fab color="primary" aria-label="add" onClick={ () => {
 							props.history.goBack();
 						} }>
-							<ArrowBackIcon />
+							<ArrowBackIcon/>
 						</Fab>
 					}
 					title="Crear Usuario"
@@ -158,7 +154,7 @@ export default function CreateUser(props) {
 							color="primary"
 							className={ classes.submit }
 						>
-							{ form._id ? 'Actualizar' :  'Crear' }
+							{ form._id ? 'Actualizar' : 'Crear' }
 						</Button>
 					</form>
 				</CardContent>
