@@ -1,13 +1,16 @@
 import { Meteor } from 'meteor/meteor';
 import { ReactiveAggregate } from 'meteor/tunguska:reactive-aggregate';
 import { Template } from './Template';
+import Utilities from '../../startup/both/Utilities';
 
 if (Meteor.isServer) {
 	Meteor.publish('templates', function( data ) {
-		let query = {};
+		let query = {
+			date: { $gte: Utilities.currentLocalISODate(), $lte: Utilities.currentLocalISODate() }
+		};
 		if(data){
 			query = {
-				creationDate: { $gte: data.startDate.toISOString().substring(0, 10), $lte: data.endDate.toISOString().substring(0, 10) }
+				date: { $gte: data.startDate.toISOString().substring(0, 10), $lte: data.endDate.toISOString().substring(0, 10) }
 			}
 		}
 		ReactiveAggregate(this, Template, [

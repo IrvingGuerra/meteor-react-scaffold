@@ -8,6 +8,7 @@ import { STRINGS } from './constants/strings';
 import { BootstrapTooltip } from './components/TabFont/TabFont';
 import jsPDF from 'jspdf';
 import { _handleClickDown, _handleKeyDown, _handleKeyUp } from './js/events';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 const grid = 18;
 
@@ -27,6 +28,8 @@ export default function TextProcessor(props) {
 		clipboard: null,
 		showGrid: false
 	});
+
+	const [loading, setLoading] = useState(false);
 
 	const createCanvas = (number) => {
 		const canvas = document.createElement('CANVAS');
@@ -138,27 +141,40 @@ export default function TextProcessor(props) {
 		}
 	};
 
+	const createPDF = () => {
+		return new Promise(resolve => {
+			doc.pages[doc.actualPage].canvas.setDimensions({
+				width: doc.pages[doc.actualPage].canvas.getWidth() * 1.5,
+				height: doc.pages[doc.actualPage].canvas.getHeight() * 1.5
+			});
+			doc.pages[doc.actualPage].canvas.setZoom(1.5);
+			const canvasHeight = doc.pages[doc.actualPage].canvas.getHeight();
+			const canvasWidth = doc.pages[doc.actualPage].canvas.getWidth();
+			const imgData = doc.pages[doc.actualPage].canvas.toDataURL('image/jpeg', 1.0);
+			console.log("Creara PDF");
+			const pdf = new jsPDF('p', 'px', [canvasHeight, canvasWidth], true);
+			//const pdf = new jsPDF('p', 'px', [canvasHeight, canvasWidth]);
+			console.log("Creo PDF");
+			//pdf.addImage(imgData, 'JPEG', 0, 0, canvasWidth, canvasHeight, '', 'FAST');
+			pdf.addImage(imgData, 'JPEG', 0, 0, canvasWidth, canvasHeight);
+			console.log("Agrego imagen, comienza a guardar");
+			pdf.save(doc.title + '.pdf');
+			doc.pages[doc.actualPage].canvas.setDimensions({
+				width: doc.pages[doc.actualPage].canvas.getWidth() / 1.5,
+				height: doc.pages[doc.actualPage].canvas.getHeight() / 1.5
+			});
+			doc.pages[doc.actualPage].canvas.setZoom(1);
+			resolve('resolved');
+		});
+	}
+
 	const downloadDocument = () => {
-		doc.pages[doc.actualPage].canvas.setDimensions({
-			width: doc.pages[doc.actualPage].canvas.getWidth() * 2,
-			height: doc.pages[doc.actualPage].canvas.getHeight() * 2
-		});
-		doc.pages[doc.actualPage].canvas.setZoom(2);
-		const canvasHeight = doc.pages[doc.actualPage].canvas.getHeight();
-		const canvasWidth = doc.pages[doc.actualPage].canvas.getWidth();
-		const imgData = doc.pages[doc.actualPage].canvas.toDataURL('image/jpeg', 0.1);
-		const pdf = new jsPDF('p', 'px', [canvasHeight, canvasWidth], true);
-		pdf.addImage(imgData, 'JPEG', 0, 0, canvasWidth, canvasHeight, '', 'FAST');
-		pdf.save(doc.title + '.pdf', {
-			returnPromise: true
-		}).then(
-			alert('PDF render all done!')
-		);
-		doc.pages[doc.actualPage].canvas.setDimensions({
-			width: doc.pages[doc.actualPage].canvas.getWidth() / 2,
-			height: doc.pages[doc.actualPage].canvas.getHeight() / 2
-		});
-		doc.pages[doc.actualPage].canvas.setZoom(1);
+		setLoading(true);
+		setTimeout(function(){
+			createPDF().then(() => {
+				setLoading(false);
+			})
+		}, 500);
 	};
 
 	const _handleNewPage = () => {
@@ -249,6 +265,9 @@ export default function TextProcessor(props) {
 
 	return (
 		<Card elevation={ 6 }>
+			{loading && (
+				<LinearProgress color="secondary" />
+			)}
 			<div className="textProcessorHeaderTitleContainer">
 				<BootstrapTooltip title={ STRINGS.save }>
 					<button type="button" className="noButton" onClick={ () => save(doc) }>

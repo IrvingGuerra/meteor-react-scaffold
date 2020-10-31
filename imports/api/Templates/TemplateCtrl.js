@@ -28,7 +28,7 @@ export const saveTemplateMethod = new ValidatedMethod({
 		if (template._id === null) {
 			try {
 				delete template._id;
-				template.creationDate = Utilities.currentLocalISODate();
+				template.date = Utilities.currentLocalISODate();
 				template.idCreator = Meteor.userId();
 				Template.insert(template);
 				responseMessage.create(true, 'Se ha creado una plantilla.');

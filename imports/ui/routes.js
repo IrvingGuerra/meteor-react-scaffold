@@ -12,6 +12,7 @@ import MyOrders from './views/MyOrders/MyOrders';
 import RequestOrder from './views/MyOrders/RequestOrder';
 import ListOrders from './views/Orders/ListOrders';
 import OrderDetails from './views/Orders/OrderDetails';
+import ListReports from './views/Reports/ListReports';
 
 const dashboardRoutes = [
 	{
@@ -20,6 +21,13 @@ const dashboardRoutes = [
 		icon: DashboardIcon,
 		component: Dashboard,
 		layout: ['admin', 'client', 'specialist', 'labworker']
+	},
+	{
+		path: '/reports',
+		name: 'Reportes',
+		icon: DescriptionIcon,
+		component: ListReports,
+		layout: ['admin']
 	},
 	{
 		path: '/myOrderList',

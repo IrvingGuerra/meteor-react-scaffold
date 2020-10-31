@@ -8,22 +8,17 @@ import {
 	TableCell,
 	TableBody,
 	TablePagination,
-	IconButton,
 	Card,
 	CardHeader,
 	CardContent,
-	Fab, Grid
+	Grid
 } from '@material-ui/core';
 import { useTracker } from 'react-meteor-hooks';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
-import AddIcon from '@material-ui/icons/Add';
 import { Template } from '../../../api/Templates/Template';
-import { ModalDialog } from '../../components/Utilities/Modals/ModalDialog';
-import useModal from '../../hooks/useModal';
 import DateFnsUtils from '@date-io/date-fns';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import Utilities from '../../../startup/both/Utilities';
+import { ExportCSV } from './ExportCSV';
 
 const useStyles = makeStyles((theme) => ({
 	heading: {
@@ -34,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-export default function ListTemplates(props) {
+export default function TemplateReport(props) {
 	const classes = useStyles();
 	// Filters
 	const [filters, setFilters] = useState({
@@ -44,9 +39,6 @@ export default function ListTemplates(props) {
 	//Pagination
 	const [page, setPage] = React.useState(0);
 	const [rowsPerPage, setRowsPerPage] = React.useState(5);
-	//Modal and delete
-	const modal = useModal();
-	const [idDelete, setIdDelete] = useState(null);
 
 	const handleChangePage = (event, newPage) => {
 		setPage(newPage);
@@ -68,39 +60,18 @@ export default function ListTemplates(props) {
 		return [data, !subscription.ready()];
 	}, []);
 
-	const deleteTemplate = () => {
-		Meteor.call('template.delete', idDelete, (error, response) => {
-			if (error) {
-				props.alert.current.setAlert('Error', error.reason, 'error');
-				return;
-			}
-			modal.toggle();
-			props.alert.current.setAlert('Éxito', response._message);
-		});
-	};
-
-	const confirmDelete = (idTemplate) => {
-		setIdDelete(idTemplate);
-		const template = templates.filter(template => template._id === idTemplate)[0];
-		modal.setModal('Eliminar Plantilla', '¿Esta seguro de eliminar la plantilla ' + template.title + '?');
-	};
-
 	return (
 		<Grid item lg={ 8 } md={ 10 } sm={ 12 }>
 			<Card elevation={ 6 }>
 				<CardHeader
 					className={ classes.heading }
-					action={
-						<Fab color="primary" aria-label="add" onClick={ () => {
-							props.history.push('/' + props.history.location.pathname.split('/')[1] + '/createTemplate');
-						} }>
-							<AddIcon/>
-						</Fab>
-					}
-					title="Plantillas creadas"
+					title="Reporte de plantillas"
 				/>
 				<CardContent>
 					<Grid container spacing={ 2 }>
+						<Grid item xs={ 12 }>
+							<ExportCSV csvData={templates} fileName={"Test"}/>
+						</Grid>
 						<Grid item xs={ 12 }>
 							<MuiPickersUtilsProvider utils={ DateFnsUtils }>
 								<DatePicker
@@ -136,8 +107,6 @@ export default function ListTemplates(props) {
 											<TableCell>Nombre de la plantilla</TableCell>
 											<TableCell>Fecha de cración</TableCell>
 											<TableCell>Creador de la plantilla</TableCell>
-											<TableCell align="center"><i
-												className={ 'fa fa-cog' }></i></TableCell>
 										</TableRow>
 									</TableHead>
 									<TableBody>
@@ -151,20 +120,6 @@ export default function ListTemplates(props) {
 												</TableCell>
 												<TableCell component="th" scope="row">
 													{ template.creator.profile.username }
-												</TableCell>
-												<TableCell align="right">
-													<IconButton onClick={ () => {
-														props.history.push({
-															pathname: '/' + props.history.location.pathname.split('/')[1] + '/editTemplate',
-															state: { template, canEdit: true }
-														});
-													} }>
-														<EditIcon/>
-													</IconButton>
-													<IconButton aria-label="delete"
-													            onClick={ () => confirmDelete(template._id) }>
-														<DeleteIcon/>
-													</IconButton>
 												</TableCell>
 											</TableRow>
 										)) }
@@ -192,7 +147,6 @@ export default function ListTemplates(props) {
 					</Grid>
 				</CardContent>
 			</Card>
-			<ModalDialog modal={ modal } _handleAccept={ deleteTemplate }/>
 		</Grid>
 	);
 };
