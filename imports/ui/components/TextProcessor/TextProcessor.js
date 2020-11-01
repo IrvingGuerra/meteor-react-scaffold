@@ -8,7 +8,7 @@ import { STRINGS } from './constants/strings';
 import { BootstrapTooltip } from './components/TabFont/TabFont';
 import { _handleClickDown, _handleKeyDown, _handleKeyUp } from './js/events';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import { jsPDF } from "jspdf";
+import { jsPDF } from 'jspdf';
 
 const grid = 18;
 
