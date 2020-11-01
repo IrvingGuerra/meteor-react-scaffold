@@ -34,9 +34,9 @@ export default function TextProcessor(props) {
 	const createCanvas = (number) => {
 		const canvas = document.createElement('CANVAS');
 		canvas.setAttribute('id', 'doc' + number);
-		canvas.setAttribute('width', '863');
-		canvas.setAttribute('height', '1050');
-		canvas.setAttribute('style', 'border: 1px solid black; width: 816px; height: 1054px');
+		canvas.setAttribute('width', '793.700787402');
+		canvas.setAttribute('height', '1122.519685039');
+		canvas.setAttribute('style', 'border: 1px solid black');
 		document.getElementById('docPaper').append(canvas);
 	};
 
@@ -143,37 +143,28 @@ export default function TextProcessor(props) {
 
 	const createPDF = () => {
 		return new Promise(resolve => {
-			doc.pages[doc.actualPage].canvas.setDimensions({
-				width: doc.pages[doc.actualPage].canvas.getWidth() * 1.5,
-				height: doc.pages[doc.actualPage].canvas.getHeight() * 1.5
-			});
-			doc.pages[doc.actualPage].canvas.setZoom(1.5);
+			const startDate = new Date();
 			const canvasHeight = doc.pages[doc.actualPage].canvas.getHeight();
 			const canvasWidth = doc.pages[doc.actualPage].canvas.getWidth();
 			const imgData = doc.pages[doc.actualPage].canvas.toDataURL('image/jpeg', 1.0);
-			console.log("Creara PDF");
-			const pdf = new jsPDF('p', 'px', [canvasHeight, canvasWidth], true);
-			//const pdf = new jsPDF('p', 'px', [canvasHeight, canvasWidth]);
-			console.log("Creo PDF");
-			//pdf.addImage(imgData, 'JPEG', 0, 0, canvasWidth, canvasHeight, '', 'FAST');
-			pdf.addImage(imgData, 'JPEG', 0, 0, canvasWidth, canvasHeight);
-			console.log("Agrego imagen, comienza a guardar");
+			const pdf = new jsPDF('p', 'mm', [297, 210]);
+			const aspectHeight = (canvasHeight) / 297;
+			const aspectWidth = (canvasWidth) / 210;
+			pdf.addImage(imgData, 'JPEG', 0, 0, canvasWidth / aspectWidth, canvasHeight / aspectHeight, undefined, "FAST");
 			pdf.save(doc.title + '.pdf');
-			doc.pages[doc.actualPage].canvas.setDimensions({
-				width: doc.pages[doc.actualPage].canvas.getWidth() / 1.5,
-				height: doc.pages[doc.actualPage].canvas.getHeight() / 1.5
-			});
-			doc.pages[doc.actualPage].canvas.setZoom(1);
+			const endDate = new Date();
+			const seconds = (endDate.getTime() - startDate.getTime()) / 1000;
+			console.log('Trado: ' + seconds + ' segundos');
 			resolve('resolved');
 		});
-	}
+	};
 
 	const downloadDocument = () => {
 		setLoading(true);
-		setTimeout(function(){
+		setTimeout(function() {
 			createPDF().then(() => {
 				setLoading(false);
-			})
+			});
 		}, 500);
 	};
 
@@ -265,9 +256,9 @@ export default function TextProcessor(props) {
 
 	return (
 		<Card elevation={ 6 }>
-			{loading && (
-				<LinearProgress color="secondary" />
-			)}
+			{ loading && (
+				<LinearProgress color="secondary"/>
+			) }
 			<div className="textProcessorHeaderTitleContainer">
 				<BootstrapTooltip title={ STRINGS.save }>
 					<button type="button" className="noButton" onClick={ () => save(doc) }>
