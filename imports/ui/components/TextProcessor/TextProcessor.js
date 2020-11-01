@@ -6,9 +6,9 @@ import { fabric } from './js/init';
 import TextProcessorTabs from './components/TextProcessorTabs/TextProcessorTabs';
 import { STRINGS } from './constants/strings';
 import { BootstrapTooltip } from './components/TabFont/TabFont';
-import jsPDF from 'jspdf';
 import { _handleClickDown, _handleKeyDown, _handleKeyUp } from './js/events';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import { jsPDF } from "jspdf";
 
 const grid = 18;
 
@@ -141,31 +141,22 @@ export default function TextProcessor(props) {
 		}
 	};
 
-	const createPDF = () => {
-		return new Promise(resolve => {
-			const startDate = new Date();
-			const canvasHeight = doc.pages[doc.actualPage].canvas.getHeight();
-			const canvasWidth = doc.pages[doc.actualPage].canvas.getWidth();
-			const imgData = doc.pages[doc.actualPage].canvas.toDataURL('image/jpeg', 1.0);
-			const pdf = new jsPDF('p', 'mm', [297, 210]);
-			const aspectHeight = (canvasHeight) / 297;
-			const aspectWidth = (canvasWidth) / 210;
-			pdf.addImage(imgData, 'JPEG', 0, 0, canvasWidth / aspectWidth, canvasHeight / aspectHeight, undefined, "FAST");
-			pdf.save(doc.title + '.pdf');
-			const endDate = new Date();
-			const seconds = (endDate.getTime() - startDate.getTime()) / 1000;
-			console.log('Trado: ' + seconds + ' segundos');
-			resolve('resolved');
-		});
-	};
-
 	const downloadDocument = () => {
 		setLoading(true);
-		setTimeout(function() {
-			createPDF().then(() => {
-				setLoading(false);
-			});
-		}, 500);
+		const pdf = new jsPDF('p', 'mm', [297, 210]);
+		doc.pages.forEach((page, i) => {
+			if (i > 0) {
+				pdf.addPage();
+			}
+			const canvasHeight = page.canvas.getHeight();
+			const canvasWidth = page.canvas.getWidth();
+			const imgData = page.canvas.toDataURL('image/jpeg', 1.0);
+			const aspectHeight = (canvasHeight) / 297;
+			const aspectWidth = (canvasWidth) / 210;
+			pdf.addImage(imgData, 'JPEG', 0, 0, canvasWidth / aspectWidth, canvasHeight / aspectHeight, 'page' + i, 'FAST');
+		});
+		pdf.save(doc.title + '.pdf');
+		setLoading(false);
 	};
 
 	const _handleNewPage = () => {
@@ -266,7 +257,7 @@ export default function TextProcessor(props) {
 					</button>
 				</BootstrapTooltip>
 				<BootstrapTooltip title={ STRINGS.download }>
-					<button type="button" className="noButton" onClick={ () => downloadDocument() }>
+					<button type="button" className="noButton" onClick={ downloadDocument }>
 						<i id="download" className="fa fa-download iconDownload"/>
 					</button>
 				</BootstrapTooltip>
