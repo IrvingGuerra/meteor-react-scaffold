@@ -8,7 +8,7 @@ import { STRINGS } from './constants/strings';
 import { BootstrapTooltip } from './components/TabFont/TabFont';
 import { _handleClickDown, _handleKeyDown, _handleKeyUp } from './js/events';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import { jsPDF } from 'jspdf';
+import { useWorker } from '@koale/useworker';
 
 const grid = 18;
 
@@ -141,21 +141,73 @@ export default function TextProcessor(props) {
 		}
 	};
 
-	const downloadDocument = () => {
-		setLoading(true);
-		const pdf = new jsPDF('p', 'mm', [297, 210]);
-		doc.pages.forEach((page, i) => {
+	const generatePDF = (title, arrayCanvas64) => {
+		const pdf = new jspdf.jsPDF('p', 'mm', [297, 210], true);
+		pdf.setProperties({
+			title,
+			subject: 'Labvetanaliza sample',
+			author: 'Irving Guerra',
+			creator: 'Labvetanaliza'
+		});
+		const arrayCanvasString = JSON.parse(atob(arrayCanvas64));
+		arrayCanvasString.forEach((canvasData, i) => {
 			if (i > 0) {
 				pdf.addPage();
 			}
+			pdf.addImage(
+				canvasData.imgData,
+				'JPEG',
+				0,
+				0,
+				canvasData.canvasWidth / canvasData.aspectWidth,
+				canvasData.canvasHeight / canvasData.aspectHeight,
+				'page' + i,
+				'FAST'
+			);
+		});
+		const output = pdf.output('datauristring');
+		return btoa(output);
+	};
+
+	const [pdfWorker] = useWorker(generatePDF, {
+		remoteDependencies: [
+			'https://unpkg.com/jspdf@2.1.1/dist/jspdf.umd.min.js'
+		]
+	});
+
+	const downloadDocument = async() => {
+		setLoading(true);
+		const arrayCanvas = [];
+		doc.pages.forEach((page) => {
+			page.canvas.setDimensions({
+				width: page.canvas.getWidth() * 2,
+				height: page.canvas.getHeight() * 2
+			});
+			page.canvas.setZoom(2);
 			const canvasHeight = page.canvas.getHeight();
 			const canvasWidth = page.canvas.getWidth();
 			const imgData = page.canvas.toDataURL('image/jpeg', 1.0);
 			const aspectHeight = (canvasHeight) / 297;
 			const aspectWidth = (canvasWidth) / 210;
-			pdf.addImage(imgData, 'JPEG', 0, 0, canvasWidth / aspectWidth, canvasHeight / aspectHeight, 'page' + i, 'FAST');
+			arrayCanvas.push({
+				imgData,
+				canvasHeight,
+				canvasWidth,
+				aspectHeight,
+				aspectWidth
+			});
+			page.canvas.setDimensions({
+				width: page.canvas.getWidth() / 2,
+				height: page.canvas.getHeight() / 2
+			});
+			page.canvas.setZoom(1);
 		});
-		pdf.save(doc.title + '.pdf');
+		const blob  = await pdfWorker(doc.title, btoa(JSON.stringify(arrayCanvas)));
+		const iframe = "<iframe width='100%' height='100%' src='" + atob(blob) + "'></iframe>"
+		const x = window.open();
+		x.document.open();
+		x.document.write(iframe);
+		x.document.close();
 		setLoading(false);
 	};
 
