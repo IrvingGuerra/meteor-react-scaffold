@@ -7,7 +7,6 @@ import TextProcessorTabs from './components/TextProcessorTabs/TextProcessorTabs'
 import { STRINGS } from './constants/strings';
 import { BootstrapTooltip } from './components/TabFont/TabFont';
 import { _handleClickDown, _handleKeyDown, _handleKeyUp } from './js/events';
-import LinearProgress from '@material-ui/core/LinearProgress';
 import { useWorker } from '@koale/useworker';
 
 const grid = 18;
@@ -30,13 +29,11 @@ export default function TextProcessor(props) {
 		showGrid: false
 	});
 
-	const [loading, setLoading] = useState(false);
-
 	const createCanvas = (number) => {
 		const canvas = document.createElement('CANVAS');
 		canvas.setAttribute('id', 'doc' + number)
-		canvas.setAttribute('width', (doc.pages[number].paperSize.W * 3.7795275591).toString());
-		canvas.setAttribute('height', (doc.pages[number].paperSize.H * 3.7795275591).toString());
+		canvas.setAttribute('width', (PAPER_SIZES.LETTER.W * 3.7795275591).toString());
+		canvas.setAttribute('height', (PAPER_SIZES.LETTER.H * 3.7795275591).toString());
 		canvas.setAttribute('style', 'border: 1px solid black');
 		document.getElementById('docPaper').append(canvas);
 	};
@@ -74,7 +71,8 @@ export default function TextProcessor(props) {
 				});
 				pagesArrayJsons.push({
 					canvas: c,
-					margin: page.margin
+					margin: page.margin,
+					paperSize: page.paperSize
 				});
 			});
 			setDoc({
@@ -106,7 +104,8 @@ export default function TextProcessor(props) {
 		doc.pages.forEach((page) => {
 			pagesArrayStrings.push({
 				canvas: JSON.stringify(page.canvas),
-				margin: page.margin
+				margin: page.margin,
+				paperSize: page.paperSize
 			});
 		});
 		const docJson = {
@@ -177,7 +176,7 @@ export default function TextProcessor(props) {
 	});
 
 	const downloadDocument = async() => {
-		setLoading(true);
+		props.loader.current.setLoader(true);
 		const arrayCanvas = [];
 		doc.pages.forEach((page) => {
 			page.canvas.setDimensions({
@@ -209,7 +208,7 @@ export default function TextProcessor(props) {
 		x.document.open();
 		x.document.write(iframe);
 		x.document.close();
-		setLoading(false);
+		props.loader.current.setLoader(false);
 	};
 
 	const _handleNewPage = () => {
@@ -219,7 +218,8 @@ export default function TextProcessor(props) {
 		const copyPages = doc.pages;
 		copyPages.push({
 			canvas: new fabric.Canvas('doc' + nextPage),
-			margin: DOC_MARGIN.md
+			margin: 18,
+			paperSize: PAPER_SIZES.LETTER
 		});
 		setDoc({
 			...doc,
@@ -300,9 +300,6 @@ export default function TextProcessor(props) {
 
 	return (
 		<Card elevation={ 6 }>
-			{ loading && (
-				<LinearProgress color="secondary"/>
-			) }
 			<div className="textProcessorHeaderTitleContainer">
 				<BootstrapTooltip title={ STRINGS.save }>
 					<button type="button" className="noButton" onClick={ () => save(doc) }>

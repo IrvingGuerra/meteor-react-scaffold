@@ -9,6 +9,7 @@ import { loadState, saveState } from '../../utils/localStorage';
 import System from './System';
 import Login from '../views/Auth/login';
 import { AlertMessage } from '../components/Utilities/Alerts/AlertMessage';
+import { LoaderPage } from '../components/Utilities/Loaders/LoaderPage';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const history = createBrowserHistory();
@@ -24,18 +25,25 @@ store.subscribe(() => {
 
 const App = () => {
 	const alert = useRef();
+	const loader = useRef();
 	return (
 		<Provider store={ store }>
 			<Router history={ history }>
 				<Switch>
-					<Route exact path="/" render={ (props) => (<Login { ...props } alert={ alert }/>) }/>
-					<Route path="/admin" render={ (props) => (<System { ...props } alert={ alert }/>) }/>
-					<Route path="/client" render={ (props) => (<System { ...props } alert={ alert }/>) }/>
-					<Route path="/specialist" render={ (props) => (<System { ...props } alert={ alert }/>) }/>
-					<Route path="/labworker" render={ (props) => (<System { ...props } alert={ alert }/>) }/>
+					<Route exact path="/"
+					       render={ (props) => (<Login { ...props } alert={ alert } loader={ loader }/>) }/>
+					<Route path="/admin"
+					       render={ (props) => (<System { ...props } alert={ alert } loader={ loader }/>) }/>
+					<Route path="/client"
+					       render={ (props) => (<System { ...props } alert={ alert } loader={ loader }/>) }/>
+					<Route path="/specialist"
+					       render={ (props) => (<System { ...props } alert={ alert } loader={ loader }/>) }/>
+					<Route path="/labworker"
+					       render={ (props) => (<System { ...props } alert={ alert } loader={ loader }/>) }/>
 				</Switch>
 			</Router>
 			<AlertMessage ref={ alert }/>
+			<LoaderPage ref={ loader }/>
 		</Provider>
 	);
 };

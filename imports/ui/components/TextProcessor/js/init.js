@@ -40,7 +40,6 @@ export const fabric = window.fabric;
 				height: dim.y
 			};
 			// Set Background Color and Borders
-			console.log(this.backgroundColor);
 			if(this.backgroundColor !== '#ffffff'){
 				ctx.fillStyle = this.backgroundColor;
 				ctx.beginPath();
