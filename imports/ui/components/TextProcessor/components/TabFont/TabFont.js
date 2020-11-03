@@ -85,7 +85,7 @@ export default function TabFont(props) {
 			: document.getElementById('underline').className = 'fa fa-underline ico';
 		// Update Color Font
 		setActualColorFont(obj.get('fill'));
-		// Update borders
+		// Update borders radius
 		const borderTopLeftRadius = getStyle(obj, 'borderTopLeftRadius');
 		borderTopLeftRadius > 0 ? document.getElementById('topLeft').className = 'fa fa-border-style ico select'
 			: document.getElementById('topLeft').className = 'fa fa-border-style ico';
@@ -100,7 +100,7 @@ export default function TabFont(props) {
 			: document.getElementById('bottomLeft').className = 'fa fa-border-style rotate270 ico';
 		// Update Color Border
 		const textBoxBorderColor = getStyle(obj, 'textBoxBorderColor');
-		textBoxBorderColor === 'white' ? document.getElementById('textBoxBorderColor').className = 'fa fa-border-none ico'
+		!textBoxBorderColor ? document.getElementById('textBoxBorderColor').className = 'fa fa-border-none ico'
 			: document.getElementById('textBoxBorderColor').className = 'fa fa-border-none ico select';
 	}, [doc.lastElementSelected]);
 

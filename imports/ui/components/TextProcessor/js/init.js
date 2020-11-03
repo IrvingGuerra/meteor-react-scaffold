@@ -40,7 +40,8 @@ export const fabric = window.fabric;
 				height: dim.y
 			};
 			// Set Background Color and Borders
-			if(this.borderTopRightRadius || this.borderBottomRightRadius || this.borderBottomLeftRadius || this.borderTopLeftRadius){
+			console.log(this.backgroundColor);
+			if(this.backgroundColor !== '#ffffff'){
 				ctx.fillStyle = this.backgroundColor;
 				ctx.beginPath();
 				if (this.borderTopRightRadius) {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Card } from '@material-ui/core';
 import './TextProcessor.css';
-import { DOC_MARGIN } from './constants';
+import { DOC_MARGIN, PAPER_SIZES } from './constants';
 import { fabric } from './js/init';
 import TextProcessorTabs from './components/TextProcessorTabs/TextProcessorTabs';
 import { STRINGS } from './constants/strings';
@@ -20,7 +20,8 @@ export default function TextProcessor(props) {
 		pages: [
 			{
 				canvas: null,
-				margin: 18
+				margin: 18,
+				paperSize: PAPER_SIZES.LETTER
 			}
 		],
 		actualPage: 0,
@@ -33,9 +34,9 @@ export default function TextProcessor(props) {
 
 	const createCanvas = (number) => {
 		const canvas = document.createElement('CANVAS');
-		canvas.setAttribute('id', 'doc' + number);
-		canvas.setAttribute('width', '793.700787402');
-		canvas.setAttribute('height', '1122.519685039');
+		canvas.setAttribute('id', 'doc' + number)
+		canvas.setAttribute('width', (doc.pages[number].paperSize.W * 3.7795275591).toString());
+		canvas.setAttribute('height', (doc.pages[number].paperSize.H * 3.7795275591).toString());
 		canvas.setAttribute('style', 'border: 1px solid black');
 		document.getElementById('docPaper').append(canvas);
 	};
@@ -142,7 +143,7 @@ export default function TextProcessor(props) {
 	};
 
 	const generatePDF = (title, arrayCanvas64) => {
-		const pdf = new jspdf.jsPDF('p', 'mm', [297, 210], true);
+		const pdf = new jspdf.jsPDF('portrait', 'mm', 'letter');
 		pdf.setProperties({
 			title,
 			subject: 'Labvetanaliza sample',
@@ -187,8 +188,8 @@ export default function TextProcessor(props) {
 			const canvasHeight = page.canvas.getHeight();
 			const canvasWidth = page.canvas.getWidth();
 			const imgData = page.canvas.toDataURL('image/jpeg', 1.0);
-			const aspectHeight = (canvasHeight) / 297;
-			const aspectWidth = (canvasWidth) / 210;
+			const aspectHeight = (canvasHeight) / page.paperSize.H;
+			const aspectWidth = (canvasWidth) / page.paperSize.W;
 			arrayCanvas.push({
 				imgData,
 				canvasHeight,

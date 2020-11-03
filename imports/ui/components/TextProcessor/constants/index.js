@@ -9,3 +9,14 @@ export const DOC_MARGIN = {
 export const DOC_COLORS = {
     blue: '#2178DF'
 }
+
+export const PAPER_SIZES = {
+    LETTER : {
+        W: 216,
+        H: 279
+    },
+    LEGAL: {
+        W: 216,
+        H: 356
+    }
+}
