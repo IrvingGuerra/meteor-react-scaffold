@@ -38,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ListUsers = (props) => {
+	const { history, loader, alert } = props;
 	const classes = useStyles();
 	const modal = useModal();
 	const [idDelete, setIdDelete] = useState(null);
@@ -58,20 +59,22 @@ const ListUsers = (props) => {
 	const usersHeaders = ['Nombre de usuario', 'Correo eléctronico', 'Perfil'];
 
 	const deleteUser = () => {
+		loader.current.setLoader(true);
 		Meteor.call('user.delete', idDelete, (error, response) => {
+			loader.current.setLoader(false);
 			if (error) {
-				props.alert.current.setAlert('Error', error.reason, 'error');
+				alert.current.setAlert('Error', error.reason, 'error');
 				return;
 			}
 			modal.toggle();
-			props.alert.current.setAlert('Éxito', response._message);
+			alert.current.setAlert('Éxito', response._message);
 		});
 	};
 
 	const confirmDelete = (id) => {
 		setIdDelete(id);
 		const user = users.filter(usr => usr._id === id)[0];
-		modal.setModal('Eliminar Usuario', '¿Esta seguro de eliminar el usuario ' + user.profile.username + '?');
+		modal.setModal('Eliminar Usuario', '¿Esta seguro de eliminar el usuario ' + user.username + '?');
 	};
 
 	return (
@@ -90,7 +93,7 @@ const ListUsers = (props) => {
 							<Grid item>
 								<BootstrapTooltip title="Agregar nuevo usuario">
 									<IconButton onClick={ () => {
-										props.history.push('/' + props.history.location.pathname.split('/')[1] + '/createUser');
+										history.push('/' + history.location.pathname.split('/')[1] + '/createUser');
 									} }>
 										<AddCircleIcon fontSize="large" color="primary"/>
 									</IconButton>
@@ -109,10 +112,10 @@ const ListUsers = (props) => {
 									view: false
 								}
 							}
-							handleEdit={ (idGender) => {
+							handleEdit={ (idUser) => {
 								history.push({
 									pathname: '/' + history.location.pathname.split('/')[1] + '/editUser',
-									state: { idGender }
+									state: { idUser }
 								});
 							} }
 							handleRemove={ (idUser) => {

@@ -36,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function CreateUser(props) {
+	const { history, loader, alert } = props;
 	const classes = useStyles();
 	const [form, setForm] = useState({
 		_id: null,
@@ -46,31 +47,45 @@ export default function CreateUser(props) {
 		password: '',
 		profile: 'admin'
 	});
+
 	const handleSubmitForm = (e) => {
 		e.preventDefault();
+		loader.current.setLoader(true);
 		Meteor.call('user.save', { user: form }, (error, response) => {
+			loader.current.setLoader(false);
 			if (error) {
-				props.alert.current.setAlert('Error', error.reason, 'error');
+				alert.current.setAlert('Error', error.reason, 'error');
 				return;
 			}
-			props.alert.current.setAlert('Éxito', response._message);
-			return;
+			alert.current.setAlert('Éxito', response._message);
+			setTimeout(() => {
+				history.goBack();
+			}, 1000);
 		});
 	};
+
 	useEffect(() => {
 		if (props.location.state) {
-			const user = props.location.state.user;
-			setForm({
-				_id: user._id,
-				firstname: user.profile.firstname,
-				lastname: user.profile.lastname,
-				username: user.profile.username,
-				email: user.emails[0].address,
-				password: '',
-				profile: user.profile.profile
+			loader.current.setLoader(true);
+			Meteor.call('user.get', props.location.state.idUser , (error, response) => {
+				loader.current.setLoader(false);
+				if (error) {
+					alert.current.setAlert('Error', error.reason, 'error');
+					return;
+				}
+				setForm({
+					_id: response._data._id,
+					firstname: response._data.profile.firstname,
+					lastname: response._data.profile.lastname,
+					username: response._data.profile.username,
+					email: response._data.emails[0].address,
+					password: '',
+					profile: response._data.profile.profile
+				});
 			});
 		}
 	}, []);
+
 	return (
 		<Container maxWidth="lg" className={ classes.container }>
 			<Paper className={ classes.paper } elevation={ 10 }>
@@ -85,7 +100,7 @@ export default function CreateUser(props) {
 								</IconButton>
 							</Grid>
 							<Grid item>
-								<Typography color="primary">
+								<Typography color="primary" component="span">
 									<Box fontSize={ 24 } fontWeight="fontWeightMedium" m={ 2 }>
 										{ form._id ? 'EDITAR USUARIO' : 'CREAR USUARIO' }
 									</Box>

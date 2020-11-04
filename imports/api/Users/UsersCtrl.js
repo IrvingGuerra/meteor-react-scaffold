@@ -3,7 +3,6 @@ import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { ResponseMessage } from '../../startup/server/BusinessClass/ResponseMessage';
 import { check, Match } from 'meteor/check';
 import UsersServ from './UsersServ';
-
 import Permissions from '../../startup/server/Permissions';
 
 export const saveUserMethod = new ValidatedMethod({
@@ -60,6 +59,31 @@ export const saveUserMethod = new ValidatedMethod({
 				console.error('Error updating template: ', err);
 				throw new Meteor.Error('500', 'Error al actualizar al usuario');
 			}
+		}
+		return responseMessage;
+	}
+});
+
+export const getUserMethod = new ValidatedMethod({
+	name: 'user.get',
+	mixins: [MethodHooks],
+	permissions: [Permissions.USERS.LIST.VALUE],
+	validate(idUser) {
+		try {
+			check(idUser, String);
+		} catch (exception) {
+			console.log('La información introducida no es válida: ', exception);
+			throw new Meteor.Error('500', 'La información introducida no es válida');
+		}
+	},
+	run(idUser) {
+		const responseMessage = new ResponseMessage();
+		try {
+			const user = Meteor.users.findOne(idUser);
+			responseMessage.create(true, 'Se ha obtenido el usuario.', null, user);
+		} catch (err) {
+			console.error('Error getting user: ', err);
+			throw new Meteor.Error('500', 'Error al obtener el usuario');
 		}
 		return responseMessage;
 	}
