@@ -35,26 +35,23 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-export default function CreateUser(props) {
+export default function CreateSpecie(props) {
 	const classes = useStyles();
 	const [form, setForm] = useState({
 		_id: null,
-		firstname: '',
-		lastname: '',
-		username: '',
-		email: '',
-		password: '',
-		profile: 'admin'
+		name: '',
 	});
 	const handleSubmitForm = (e) => {
 		e.preventDefault();
-		Meteor.call('user.save', { user: form }, (error, response) => {
+		Meteor.call('specie.save', form , (error, response) => {
 			if (error) {
 				props.alert.current.setAlert('Error', error.reason, 'error');
 				return;
 			}
 			props.alert.current.setAlert('Éxito', response._message);
-			return;
+			setTimeout(() => {
+				props.history.goBack();
+			}, 1000);
 		});
 	};
 	useEffect(() => {
@@ -85,9 +82,9 @@ export default function CreateUser(props) {
 								</IconButton>
 							</Grid>
 							<Grid item>
-								<Typography color="primary">
+								<Typography color="primary" component="span">
 									<Box fontSize={ 24 } fontWeight="fontWeightMedium" m={ 2 }>
-										{ form._id ? 'EDITAR USUARIO' : 'CREAR USUARIO' }
+										{ form._id ? 'EDITAR ESPECIE' : 'CREAR ESPECIE' }
 									</Box>
 								</Typography>
 							</Grid>
@@ -96,82 +93,16 @@ export default function CreateUser(props) {
 					<Grid item xs={ 12 }>
 						<form className={ classes.form } onSubmit={ handleSubmitForm }>
 							<Grid container spacing={ 2 }>
-								<Grid item xs={ 6 }>
+								<Grid item xs={ 12 }>
 									<TextField
 										variant="outlined"
 										required
 										fullWidth
-										id="firstname"
+										id="name"
 										label="Nombre"
-										name="firstname"
-										value={ form.firstname }
-										onChange={ e => setForm({ ...form, firstname: e.target.value }) }
-									/>
-								</Grid>
-								<Grid item xs={ 6 }>
-									<TextField
-										variant="outlined"
-										required
-										fullWidth
-										id="lastname"
-										label="Apellidos"
-										name="lastname"
-										value={ form.lastname }
-										onChange={ e => setForm({ ...form, lastname: e.target.value }) }
-									/>
-								</Grid>
-								<Grid item xs={ 12 }>
-									<TextField
-										variant="outlined"
-										required
-										fullWidth
-										id="username"
-										label="Nombre de usuario"
 										name="username"
-										value={ form.username }
-										onChange={ e => setForm({ ...form, username: e.target.value }) }
-									/>
-								</Grid>
-								<Grid item xs={ 12 }>
-									<FormControl variant="outlined" fullWidth required>
-										<InputLabel id="demo-simple-select-outlined-label">Perfil</InputLabel>
-										<Select
-											labelId="demo-simple-select-outlined-label"
-											id="demo-simple-select-outlined"
-											value={ form.profile }
-											onChange={ e => setForm({ ...form, profile: e.target.value }) }
-											label="Perfil"
-										>
-											<MenuItem value='admin'>Admin</MenuItem>
-											<MenuItem value='specialist'>Especialista</MenuItem>
-											<MenuItem value='labworker'>Laboratorista</MenuItem>
-											<MenuItem value='client'>Cliente</MenuItem>
-										</Select>
-									</FormControl>
-								</Grid>
-								<Grid item xs={ 12 }>
-									<TextField
-										variant="outlined"
-										required
-										fullWidth
-										id="email"
-										label="Email Address"
-										name="email"
-										value={ form.email }
-										onChange={ e => setForm({ ...form, email: e.target.value }) }
-									/>
-								</Grid>
-								<Grid item xs={ 12 }>
-									<TextField
-										variant="outlined"
-										required
-										fullWidth
-										name="password"
-										label="Password"
-										type="password"
-										id="password"
-										value={ form.password }
-										onChange={ e => setForm({ ...form, password: e.target.value }) }
+										value={ form.name }
+										onChange={ e => setForm({ ...form, name: e.target.value }) }
 									/>
 								</Grid>
 							</Grid>

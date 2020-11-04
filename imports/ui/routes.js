@@ -17,6 +17,7 @@ import ListOrders from './views/Orders/ListOrders';
 import OrderDetails from './views/Orders/OrderDetails';
 import ListReports from './views/Reports/ListReports';
 import Pets from './views/Pets/Pets';
+import CreateSpecie from './views/Pets/CreateSpecie';
 
 const dashboardRoutes = [
 	{
@@ -103,7 +104,19 @@ const dashboardRoutes = [
 		icon: PetsIcon,
 		component: Pets,
 		layout: ['admin']
-	}
+	},
+	{
+		path: '/createSpecie',
+		name: 'Crear especie',
+		component: CreateSpecie,
+		layout: ['admin']
+	},
+	{
+		path: '/editSpecie',
+		name: 'Editar especie',
+		component: CreateSpecie,
+		layout: ['admin']
+	},
 ];
 
 export default dashboardRoutes;

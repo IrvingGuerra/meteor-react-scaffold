@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-const Pets = () => {
+const Pets = (props) => {
 	const classes = useStyles();
 
 	return (
@@ -31,7 +31,7 @@ const Pets = () => {
 					<Typography>Especies</Typography>
 				</AccordionSummary>
 				<AccordionDetails>
-					<TableSpecies />
+					<TableSpecies history={ props.history } />
 				</AccordionDetails>
 			</Accordion>
 		</Container>

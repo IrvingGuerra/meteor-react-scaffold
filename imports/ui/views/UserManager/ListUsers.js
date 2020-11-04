@@ -106,7 +106,7 @@ const ListUsers = (props) => {
 										<TableCell>Nombre de usuario</TableCell>
 										<TableCell>Correo eléctronico</TableCell>
 										<TableCell>Perfil</TableCell>
-										<TableCell>Configuracion</TableCell>
+										<TableCell align="center"><i className={ 'fa fa-cog' }/></TableCell>
 									</TableRow>
 								</TableHead>
 								<TableBody>
@@ -117,7 +117,7 @@ const ListUsers = (props) => {
 											</TableCell>
 											<TableCell>{ user.emails[0].address }</TableCell>
 											<TableCell>{ user.profile.profile }</TableCell>
-											<TableCell>
+											<TableCell align="center">
 												<IconButton onClick={ () => {
 													props.history.push({
 														pathname: '/' + props.history.location.pathname.split('/')[1] + '/editUser',

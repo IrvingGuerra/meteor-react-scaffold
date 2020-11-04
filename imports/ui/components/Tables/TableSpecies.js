@@ -20,8 +20,9 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import useModal from '../../hooks/useModal';
 import { ModalDialog } from '../Utilities/Modals/ModalDialog';
+import BootstrapTooltip from '../Tooltips/BootstrapTooltip';
 
-export default function TableSpecies() {
+export default function TableSpecies(props) {
 	const [page, setPage] = React.useState(0);
 	const [rowsPerPage, setRowsPerPage] = React.useState(5);
 	const [idDelete, setIdDelete] = useState(null);
@@ -63,18 +64,20 @@ export default function TableSpecies() {
 			<Grid item xs={ 12 }>
 				<Grid container direction="row" justify="space-between" alignItems="center">
 					<Grid item>
-						<Typography color="primary">
+						<Typography color="primary" component="span">
 							<Box fontSize={ 24 } fontWeight="fontWeightMedium" m={ 2 }>
 								ESPECIES REGISTRADAS
 							</Box>
 						</Typography>
 					</Grid>
 					<Grid item>
-						<Tooltip placement="top" title="Agregar especie">
-							<IconButton>
+						<BootstrapTooltip title="Agregar nueva especie">
+							<IconButton onClick={ () => {
+								props.history.push('/' + props.history.location.pathname.split('/')[1] + '/createSpecie');
+							} }>
 								<AddCircleIcon fontSize="large" color="primary"/>
 							</IconButton>
-						</Tooltip>
+						</BootstrapTooltip>
 					</Grid>
 				</Grid>
 			</Grid>
@@ -83,15 +86,15 @@ export default function TableSpecies() {
 					<Table>
 						<TableHead>
 							<TableRow>
-								<TableCell>Nombre</TableCell>
+								<TableCell align="center">Nombre</TableCell>
 								<TableCell align="center"><i className={ 'fa fa-cog' }/></TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>
 							{ species.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((specie) => (
-								<TableRow key={ specie.id }>
-									<TableCell>{ specie.name }</TableCell>
-									<TableCell>
+								<TableRow key={ specie._id }>
+									<TableCell align="center">{ specie.name }</TableCell>
+									<TableCell align="center">
 										<IconButton onClick={ () => {
 											props.history.push({
 												pathname: '/' + props.history.location.pathname.split('/')[1] + '/editSpecie',
