@@ -20,8 +20,9 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import useModal from '../../hooks/useModal';
 import { ModalDialog } from '../Utilities/Modals/ModalDialog';
 import BootstrapTooltip from '../Tooltips/BootstrapTooltip';
+import { Breed } from '../../../api/Pets/Breeds/Breed';
 
-export default function TableSpecies(props) {
+export default function TableBreeds(props) {
 	const [page, setPage] = React.useState(0);
 	const [rowsPerPage, setRowsPerPage] = React.useState(5);
 	const [idDelete, setIdDelete] = useState(null);
@@ -36,13 +37,13 @@ export default function TableSpecies(props) {
 		setPage(0);
 	};
 
-	const species = useTracker(() => {
-		Meteor.subscribe('species');
-		return Specie.find({}).fetch();
+	const breeds = useTracker(() => {
+		Meteor.subscribe('breeds');
+		return Breed.find({}).fetch();
 	}, []);
 
-	const deleteSpecie = () => {
-		Meteor.call('specie.delete', idDelete, (error, response) => {
+	const deleteBreed = () => {
+		Meteor.call('breed.delete', idDelete, (error, response) => {
 			if (error) {
 				props.alert.current.setAlert('Error', error.reason, 'error');
 				return;
@@ -54,8 +55,8 @@ export default function TableSpecies(props) {
 
 	const confirmDelete = (idUser) => {
 		setIdDelete(idUser);
-		const specie = species.filter(e => e._id === idUser)[0];
-		modal.setModal('Eliminar Especie', '¿Esta seguro de eliminar la especie ' + specie.name + '?');
+		const breed = breeds.filter(e => e._id === idUser)[0];
+		modal.setModal('Eliminar Raza', '¿Esta seguro de eliminar la raza ' + specie.name + '?');
 	};
 
 	return (
@@ -65,14 +66,14 @@ export default function TableSpecies(props) {
 					<Grid item>
 						<Typography color="primary" component="span">
 							<Box fontSize={ 24 } fontWeight="fontWeightMedium" m={ 2 }>
-								ESPECIES REGISTRADAS
+								RAZAS REGISTRADAS
 							</Box>
 						</Typography>
 					</Grid>
 					<Grid item>
-						<BootstrapTooltip title="Agregar nueva especie">
+						<BootstrapTooltip title="Agregar nueva raza">
 							<IconButton onClick={ () => {
-								props.history.push('/' + props.history.location.pathname.split('/')[1] + '/createSpecie');
+								props.history.push('/' + props.history.location.pathname.split('/')[1] + '/createBreed');
 							} }>
 								<AddCircleIcon fontSize="large" color="primary"/>
 							</IconButton>
@@ -86,30 +87,32 @@ export default function TableSpecies(props) {
 						<TableHead>
 							<TableRow>
 								<TableCell align="center">Nombre</TableCell>
+								<TableCell align="center">Especie</TableCell>
 								<TableCell align="center"><i className={ 'fa fa-cog' }/></TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							{ species.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((specie) => (
-								<TableRow key={ specie._id }>
-									<TableCell align="center">{ specie.name }</TableCell>
+							{ breeds.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((breed) => (
+								<TableRow key={ breed._id }>
+									<TableCell align="center">{ breed.name }</TableCell>
+									<TableCell align="center">{ breed.breed.name }</TableCell>
 									<TableCell align="center">
 										<IconButton onClick={ () => {
 											props.history.push({
-												pathname: '/' + props.history.location.pathname.split('/')[1] + '/editSpecie',
-												state: { specie }
+												pathname: '/' + props.history.location.pathname.split('/')[1] + '/editBreed',
+												state: { breed }
 											});
 										} }>
 											<EditIcon color="primary"/>
 										</IconButton>
 										<IconButton aria-label="delete"
-										            onClick={ () => confirmDelete(specie._id) }>
+										            onClick={ () => confirmDelete(breed._id) }>
 											<DeleteIcon color="secondary"/>
 										</IconButton>
 									</TableCell>
 								</TableRow>
 							)) }
-							{ species.length === 0 && (
+							{ breeds.length === 0 && (
 								<TableRow>
 									<TableCell align="center" colSpan={ 10 }>
 										No hay datos
@@ -123,14 +126,14 @@ export default function TableSpecies(props) {
 					labelRowsPerPage={ 'Filas por página' }
 					rowsPerPageOptions={ [5, 10, 25, 100] }
 					component="div"
-					count={ species.length }
+					count={ breeds.length }
 					rowsPerPage={ rowsPerPage }
 					page={ page }
 					onChangePage={ handleChangePage }
 					onChangeRowsPerPage={ handleChangeRowsPerPage }
 				/>
 			</Grid>
-			<ModalDialog modal={ modal } _handleAccept={ deleteSpecie }/>
+			<ModalDialog modal={ modal } _handleAccept={ deleteBreed }/>
 		</Grid>
 	);
 }

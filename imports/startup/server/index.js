@@ -15,3 +15,7 @@ import '../../api/Orders/OrderPubs';
 import '../../api/Pets/Species/Specie';
 import '../../api/Pets/Species/SpecieCtrl';
 import '../../api/Pets/Species/SpeciePubs';
+
+import '../../api/Pets/Breeds/Breed';
+import '../../api/Pets/Breeds/BreedCtrl';
+import '../../api/Pets/Breeds/BreedPubs';

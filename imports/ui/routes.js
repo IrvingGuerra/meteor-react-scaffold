@@ -18,6 +18,7 @@ import OrderDetails from './views/Orders/OrderDetails';
 import ListReports from './views/Reports/ListReports';
 import Pets from './views/Pets/Pets';
 import CreateSpecie from './views/Pets/CreateSpecie';
+import CreateBreed from './views/Pets/CreateBreed';
 
 const dashboardRoutes = [
 	{
@@ -115,6 +116,18 @@ const dashboardRoutes = [
 		path: '/editSpecie',
 		name: 'Editar especie',
 		component: CreateSpecie,
+		layout: ['admin']
+	},
+	{
+		path: '/createBreed',
+		name: 'Crear raza',
+		component: CreateBreed,
+		layout: ['admin']
+	},
+	{
+		path: '/editBreed',
+		name: 'Editar raza',
+		component: CreateBreed,
 		layout: ['admin']
 	},
 ];

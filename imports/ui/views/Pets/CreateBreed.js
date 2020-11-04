@@ -15,6 +15,8 @@ import {
 	IconButton
 } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import { useTracker } from 'react-meteor-hooks';
+import { Specie } from '../../../api/Pets/Species/Specie';
 
 const useStyles = makeStyles((theme) => ({
 	container: {
@@ -35,15 +37,16 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-export default function CreateSpecie(props) {
+export default function CreateBreed(props) {
 	const classes = useStyles();
 	const [form, setForm] = useState({
 		_id: null,
 		name: '',
+		idSpecie: ''
 	});
 	const handleSubmitForm = (e) => {
 		e.preventDefault();
-		Meteor.call('specie.save', form , (error, response) => {
+		Meteor.call('breed.save', form, (error, response) => {
 			if (error) {
 				props.alert.current.setAlert('Error', error.reason, 'error');
 				return;
@@ -54,12 +57,17 @@ export default function CreateSpecie(props) {
 			}, 1000);
 		});
 	};
+	const species = useTracker(() => {
+		Meteor.subscribe('species');
+		return Specie.find({}).fetch();
+	}, []);
 	useEffect(() => {
 		if (props.location.state) {
-			const specie = props.location.state.specie;
+			const breed = props.location.state.breed;
 			setForm({
-				_id: specie._id,
-				name: specie.name,
+				_id: breed._id,
+				name: breed.name,
+				idSpecie: breed.idSpecie
 			});
 		}
 	}, []);
@@ -79,7 +87,7 @@ export default function CreateSpecie(props) {
 							<Grid item>
 								<Typography color="primary" component="span">
 									<Box fontSize={ 24 } fontWeight="fontWeightMedium" m={ 2 }>
-										{ form._id ? 'EDITAR ESPECIE' : 'CREAR ESPECIE' }
+										{ form._id ? 'EDITAR RAZA' : 'CREAR RAZA' }
 									</Box>
 								</Typography>
 							</Grid>
@@ -99,6 +107,26 @@ export default function CreateSpecie(props) {
 										value={ form.name }
 										onChange={ e => setForm({ ...form, name: e.target.value }) }
 									/>
+								</Grid>
+								<Grid item xs={ 12 }>
+									<FormControl variant="outlined" fullWidth required>
+										<InputLabel id="demo-simple-select-outlined-label">Especie</InputLabel>
+										<Select
+											labelId="demo-simple-select-outlined-label"
+											id="demo-simple-select-outlined"
+											value={ form.idSpecie }
+											onChange={ e => setForm({ ...form, idSpecie: e.target.value }) }
+											label="Especie"
+										>
+											{ species.map((specie, index) => {
+												return (
+													<MenuItem key={ index } value={ specie._id }>
+														{ specie.name }
+													</MenuItem>
+												);
+											}) }
+										</Select>
+									</FormControl>
 								</Grid>
 							</Grid>
 							<Button
