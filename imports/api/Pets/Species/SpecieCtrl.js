@@ -48,6 +48,31 @@ export const saveSpecieMethod = new ValidatedMethod({
 	}
 });
 
+export const getSpecieMethod = new ValidatedMethod({
+	name: 'specie.get',
+	mixins: [MethodHooks],
+	permissions: [Permissions.SPECIES.LIST.VALUE],
+	validate(idSpecie) {
+		try {
+			check(idSpecie, String);
+		} catch (exception) {
+			console.log('La información introducida no es válida: ', exception);
+			throw new Meteor.Error('500', 'La información introducida no es válida');
+		}
+	},
+	run(idSpecie) {
+		const responseMessage = new ResponseMessage();
+		try {
+			const specie = Specie.findOne(idSpecie);
+			responseMessage.create(true, 'Se ha obtenido la especie.', null, specie);
+		} catch (err) {
+			console.error('Error getting specie: ', err);
+			throw new Meteor.Error('500', 'Error al obtener la especie');
+		}
+		return responseMessage;
+	}
+});
+
 export const deleteSpecieMethod = new ValidatedMethod({
 	name: 'specie.delete',
 	mixins: [MethodHooks],

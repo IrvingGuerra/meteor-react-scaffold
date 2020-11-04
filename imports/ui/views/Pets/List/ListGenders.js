@@ -14,14 +14,14 @@ import React, { useState } from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { useTracker } from 'react-meteor-hooks';
-import { Specie } from '../../../api/Pets/Species/Specie';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-import useModal from '../../hooks/useModal';
-import { ModalDialog } from '../Utilities/Modals/ModalDialog';
-import BootstrapTooltip from '../Tooltips/BootstrapTooltip';
+import useModal from '../../../hooks/useModal';
+import { ModalDialog } from '../../../components/Utilities/Modals/ModalDialog';
+import BootstrapTooltip from '../../../components/Tooltips/BootstrapTooltip';
+import { Gender } from '../../../../api/Pets/Genders/Gender';
 
-export default function TableSpecies(props) {
+export default function ListGenders(props) {
 	const [page, setPage] = React.useState(0);
 	const [rowsPerPage, setRowsPerPage] = React.useState(5);
 	const [idDelete, setIdDelete] = useState(null);
@@ -36,13 +36,13 @@ export default function TableSpecies(props) {
 		setPage(0);
 	};
 
-	const species = useTracker(() => {
-		Meteor.subscribe('species');
-		return Specie.find({}).fetch();
+	const genders = useTracker(() => {
+		Meteor.subscribe('genders');
+		return Gender.find({}).fetch();
 	}, []);
 
-	const deleteSpecie = () => {
-		Meteor.call('specie.delete', idDelete, (error, response) => {
+	const deleteGender = () => {
+		Meteor.call('gender.delete', idDelete, (error, response) => {
 			if (error) {
 				props.alert.current.setAlert('Error', error.reason, 'error');
 				return;
@@ -52,10 +52,10 @@ export default function TableSpecies(props) {
 		});
 	};
 
-	const confirmDelete = (idUser) => {
-		setIdDelete(idUser);
-		const specie = species.filter(e => e._id === idUser)[0];
-		modal.setModal('Eliminar Especie', '¿Esta seguro de eliminar la especie ' + specie.name + '?');
+	const confirmDelete = (idGender) => {
+		setIdDelete(idGender);
+		const gender = genders.filter(e => e._id === idGender)[0];
+		modal.setModal('Eliminar Genero', '¿Esta seguro de eliminar el genero ' + gender.name + '?');
 	};
 
 	return (
@@ -65,14 +65,14 @@ export default function TableSpecies(props) {
 					<Grid item>
 						<Typography color="primary" component="span">
 							<Box fontSize={ 24 } fontWeight="fontWeightMedium" m={ 2 }>
-								ESPECIES REGISTRADAS
+								GENEROS REGISTRADOS
 							</Box>
 						</Typography>
 					</Grid>
 					<Grid item>
-						<BootstrapTooltip title="Agregar nueva especie">
+						<BootstrapTooltip title="Agregar un nuevo genero">
 							<IconButton onClick={ () => {
-								props.history.push('/' + props.history.location.pathname.split('/')[1] + '/createSpecie');
+								props.history.push('/' + props.history.location.pathname.split('/')[1] + '/createGender');
 							} }>
 								<AddCircleIcon fontSize="large" color="primary"/>
 							</IconButton>
@@ -90,26 +90,26 @@ export default function TableSpecies(props) {
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							{ species.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((specie) => (
-								<TableRow key={ specie._id }>
-									<TableCell align="center">{ specie.name }</TableCell>
+							{ genders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((gender) => (
+								<TableRow key={ gender._id }>
+									<TableCell align="center">{ gender.name }</TableCell>
 									<TableCell align="center">
 										<IconButton onClick={ () => {
 											props.history.push({
-												pathname: '/' + props.history.location.pathname.split('/')[1] + '/editSpecie',
-												state: { specie }
+												pathname: '/' + props.history.location.pathname.split('/')[1] + '/editGender',
+												state: { gender }
 											});
 										} }>
 											<EditIcon color="primary"/>
 										</IconButton>
 										<IconButton aria-label="delete"
-										            onClick={ () => confirmDelete(specie._id) }>
+										            onClick={ () => confirmDelete(gender._id) }>
 											<DeleteIcon color="secondary"/>
 										</IconButton>
 									</TableCell>
 								</TableRow>
 							)) }
-							{ species.length === 0 && (
+							{ genders.length === 0 && (
 								<TableRow>
 									<TableCell align="center" colSpan={ 10 }>
 										No hay datos
@@ -123,14 +123,14 @@ export default function TableSpecies(props) {
 					labelRowsPerPage={ 'Filas por página' }
 					rowsPerPageOptions={ [5, 10, 25, 100] }
 					component="div"
-					count={ species.length }
+					count={ genders.length }
 					rowsPerPage={ rowsPerPage }
 					page={ page }
 					onChangePage={ handleChangePage }
 					onChangeRowsPerPage={ handleChangeRowsPerPage }
 				/>
 			</Grid>
-			<ModalDialog modal={ modal } _handleAccept={ deleteSpecie }/>
+			<ModalDialog modal={ modal } _handleAccept={ deleteGender }/>
 		</Grid>
 	);
 }

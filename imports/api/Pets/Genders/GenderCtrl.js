@@ -4,6 +4,7 @@ import { ResponseMessage } from '../../../startup/server/BusinessClass/ResponseM
 import { check, Match } from 'meteor/check';
 import Permissions from '../../../startup/server/Permissions';
 import { Gender } from './Gender';
+import { Specie } from '../Species/Specie';
 
 export const saveGenderMethod = new ValidatedMethod({
 	name: 'gender.save',
@@ -43,6 +44,31 @@ export const saveGenderMethod = new ValidatedMethod({
 				console.error('Error updating gender: ', err);
 				throw new Meteor.Error('500', 'Error al actualizar el genero');
 			}
+		}
+		return responseMessage;
+	}
+});
+
+export const getGenderMethod = new ValidatedMethod({
+	name: 'gender.get',
+	mixins: [MethodHooks],
+	permissions: [Permissions.GENDERS.LIST.VALUE],
+	validate(idGender) {
+		try {
+			check(idGender, String);
+		} catch (exception) {
+			console.log('La información introducida no es válida: ', exception);
+			throw new Meteor.Error('500', 'La información introducida no es válida');
+		}
+	},
+	run(idGender) {
+		const responseMessage = new ResponseMessage();
+		try {
+			const gender = Gender.findOne(idGender);
+			responseMessage.create(true, 'Se ha obtenido el genero.', null, gender);
+		} catch (err) {
+			console.error('Error getting gender: ', err);
+			throw new Meteor.Error('500', 'Error al obtener el genero');
 		}
 		return responseMessage;
 	}

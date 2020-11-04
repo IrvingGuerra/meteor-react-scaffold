@@ -8,9 +8,9 @@ import {
 	Typography
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import TableSpecies from '../../components/Tables/TableSpecies';
-import TableBreeds from '../../components/Tables/TableBreeds';
-import TableGenders from '../../components/Tables/TableGenders';
+import ListSpecies from './List/ListSpecies';
+import ListBreeds from './List/ListBreeds';
+import ListGenders from './List/ListGenders';
 
 const useStyles = makeStyles((theme) => ({
 	container: {
@@ -33,7 +33,7 @@ const Pets = (props) => {
 					<Typography>Especies</Typography>
 				</AccordionSummary>
 				<AccordionDetails>
-					<TableSpecies history={ props.history } />
+					<ListSpecies { ...props } />
 				</AccordionDetails>
 			</Accordion>
 			<Accordion>
@@ -45,7 +45,7 @@ const Pets = (props) => {
 					<Typography>Razas</Typography>
 				</AccordionSummary>
 				<AccordionDetails>
-					<TableBreeds history={ props.history } />
+					<ListBreeds { ...props } />
 				</AccordionDetails>
 			</Accordion>
 			<Accordion>
@@ -57,7 +57,7 @@ const Pets = (props) => {
 					<Typography>Generos</Typography>
 				</AccordionSummary>
 				<AccordionDetails>
-					<TableGenders history={ props.history } />
+					<ListGenders { ...props } />
 				</AccordionDetails>
 			</Accordion>
 		</Container>

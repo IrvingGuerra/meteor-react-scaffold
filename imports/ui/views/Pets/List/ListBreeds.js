@@ -14,16 +14,17 @@ import React, { useState } from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { useTracker } from 'react-meteor-hooks';
+import { Specie } from '../../../../api/Pets/Species/Specie';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-import useModal from '../../hooks/useModal';
-import { ModalDialog } from '../Utilities/Modals/ModalDialog';
-import BootstrapTooltip from '../Tooltips/BootstrapTooltip';
-import { Gender } from '../../../api/Pets/Genders/Gender';
+import useModal from '../../../hooks/useModal';
+import { ModalDialog } from '../../../components/Utilities/Modals/ModalDialog';
+import BootstrapTooltip from '../../../components/Tooltips/BootstrapTooltip';
+import { Breed } from '../../../../api/Pets/Breeds/Breed';
 
-export default function TableGenders(props) {
-	const [page, setPage] = React.useState(0);
-	const [rowsPerPage, setRowsPerPage] = React.useState(5);
+export default function ListBreeds(props) {
+	const [page, setPage] = useState(0);
+	const [rowsPerPage, setRowsPerPage] = useState(5);
 	const [idDelete, setIdDelete] = useState(null);
 	const modal = useModal();
 
@@ -36,13 +37,13 @@ export default function TableGenders(props) {
 		setPage(0);
 	};
 
-	const genders = useTracker(() => {
-		Meteor.subscribe('genders');
-		return Gender.find({}).fetch();
+	const breeds = useTracker(() => {
+		Meteor.subscribe('breeds');
+		return Breed.find({}).fetch();
 	}, []);
 
-	const deleteGender = () => {
-		Meteor.call('gender.delete', idDelete, (error, response) => {
+	const deleteBreed = () => {
+		Meteor.call('breed.delete', idDelete, (error, response) => {
 			if (error) {
 				props.alert.current.setAlert('Error', error.reason, 'error');
 				return;
@@ -52,10 +53,10 @@ export default function TableGenders(props) {
 		});
 	};
 
-	const confirmDelete = (idGender) => {
-		setIdDelete(idGender);
-		const gender = genders.filter(e => e._id === idGender)[0];
-		modal.setModal('Eliminar Genero', '¿Esta seguro de eliminar el genero ' + gender.name + '?');
+	const confirmDelete = (idUser) => {
+		setIdDelete(idUser);
+		const breed = breeds.filter(e => e._id === idUser)[0];
+		modal.setModal('Eliminar Raza', '¿Esta seguro de eliminar la raza ' + breed.name + '?');
 	};
 
 	return (
@@ -65,14 +66,14 @@ export default function TableGenders(props) {
 					<Grid item>
 						<Typography color="primary" component="span">
 							<Box fontSize={ 24 } fontWeight="fontWeightMedium" m={ 2 }>
-								GENEROS REGISTRADOS
+								RAZAS REGISTRADAS
 							</Box>
 						</Typography>
 					</Grid>
 					<Grid item>
-						<BootstrapTooltip title="Agregar un nuevo genero">
+						<BootstrapTooltip title="Agregar nueva raza">
 							<IconButton onClick={ () => {
-								props.history.push('/' + props.history.location.pathname.split('/')[1] + '/createGender');
+								props.history.push('/' + props.history.location.pathname.split('/')[1] + '/createBreed');
 							} }>
 								<AddCircleIcon fontSize="large" color="primary"/>
 							</IconButton>
@@ -86,30 +87,32 @@ export default function TableGenders(props) {
 						<TableHead>
 							<TableRow>
 								<TableCell align="center">Nombre</TableCell>
+								<TableCell align="center">Especie</TableCell>
 								<TableCell align="center"><i className={ 'fa fa-cog' }/></TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							{ genders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((gender) => (
-								<TableRow key={ gender._id }>
-									<TableCell align="center">{ gender.name }</TableCell>
+							{ breeds.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((breed) => (
+								<TableRow key={ breed._id }>
+									<TableCell align="center">{ breed.name }</TableCell>
+									<TableCell align="center">{ breed.specie.name }</TableCell>
 									<TableCell align="center">
 										<IconButton onClick={ () => {
 											props.history.push({
-												pathname: '/' + props.history.location.pathname.split('/')[1] + '/editGender',
-												state: { gender }
+												pathname: '/' + props.history.location.pathname.split('/')[1] + '/editBreed',
+												state: { breed }
 											});
 										} }>
 											<EditIcon color="primary"/>
 										</IconButton>
 										<IconButton aria-label="delete"
-										            onClick={ () => confirmDelete(gender._id) }>
+										            onClick={ () => confirmDelete(breed._id) }>
 											<DeleteIcon color="secondary"/>
 										</IconButton>
 									</TableCell>
 								</TableRow>
 							)) }
-							{ genders.length === 0 && (
+							{ breeds.length === 0 && (
 								<TableRow>
 									<TableCell align="center" colSpan={ 10 }>
 										No hay datos
@@ -123,14 +126,14 @@ export default function TableGenders(props) {
 					labelRowsPerPage={ 'Filas por página' }
 					rowsPerPageOptions={ [5, 10, 25, 100] }
 					component="div"
-					count={ genders.length }
+					count={ breeds.length }
 					rowsPerPage={ rowsPerPage }
 					page={ page }
 					onChangePage={ handleChangePage }
 					onChangeRowsPerPage={ handleChangeRowsPerPage }
 				/>
 			</Grid>
-			<ModalDialog modal={ modal } _handleAccept={ deleteGender }/>
+			<ModalDialog modal={ modal } _handleAccept={ deleteBreed }/>
 		</Grid>
 	);
 }

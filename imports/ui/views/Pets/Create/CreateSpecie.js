@@ -43,7 +43,9 @@ export default function CreateSpecie(props) {
 	});
 	const handleSubmitForm = (e) => {
 		e.preventDefault();
+		props.loader.current.setLoader(true);
 		Meteor.call('specie.save', form , (error, response) => {
+			props.loader.current.setLoader(false);
 			if (error) {
 				props.alert.current.setAlert('Error', error.reason, 'error');
 				return;
@@ -56,10 +58,17 @@ export default function CreateSpecie(props) {
 	};
 	useEffect(() => {
 		if (props.location.state) {
-			const specie = props.location.state.specie;
-			setForm({
-				_id: specie._id,
-				name: specie.name,
+			props.loader.current.setLoader(true);
+			Meteor.call('specie.get', props.location.state.idSpecie , (error, response) => {
+				props.loader.current.setLoader(false);
+				if (error) {
+					props.alert.current.setAlert('Error', error.reason, 'error');
+					return;
+				}
+				setForm({
+					_id: response._data._id,
+					name: response._data.name,
+				});
 			});
 		}
 	}, []);

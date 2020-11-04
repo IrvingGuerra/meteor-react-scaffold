@@ -17,9 +17,9 @@ import ListOrders from './views/Orders/ListOrders';
 import OrderDetails from './views/Orders/OrderDetails';
 import ListReports from './views/Reports/ListReports';
 import Pets from './views/Pets/Pets';
-import CreateSpecie from './views/Pets/CreateSpecie';
-import CreateBreed from './views/Pets/CreateBreed';
-import CreateGender from './views/Pets/CreateGender';
+import CreateSpecie from './views/Pets/Create/CreateSpecie';
+import CreateBreed from './views/Pets/Create/CreateBreed';
+import CreateGender from './views/Pets/Create/CreateGender';
 
 const dashboardRoutes = [
 	{

@@ -4,6 +4,7 @@ import { ResponseMessage } from '../../../startup/server/BusinessClass/ResponseM
 import { check, Match } from 'meteor/check';
 import Permissions from '../../../startup/server/Permissions';
 import { Breed } from './Breed';
+import { Gender } from '../Genders/Gender';
 
 export const saveBreedMethod = new ValidatedMethod({
 	name: 'breed.save',
@@ -45,6 +46,54 @@ export const saveBreedMethod = new ValidatedMethod({
 				console.error('Error updating specie: ', err);
 				throw new Meteor.Error('500', 'Error al actualizar la especie');
 			}
+		}
+		return responseMessage;
+	}
+});
+
+export const getBreedMethod = new ValidatedMethod({
+	name: 'breed.get',
+	mixins: [MethodHooks],
+	permissions: [Permissions.BREEDS.LIST.VALUE],
+	validate(idBreed) {
+		try {
+			check(idBreed, String);
+		} catch (exception) {
+			console.log('La información introducida no es válida: ', exception);
+			throw new Meteor.Error('500', 'La información introducida no es válida');
+		}
+	},
+	async run(idBreed) {
+		const responseMessage = new ResponseMessage();
+		try {
+			let breed = await Breed.rawCollection().aggregate([
+				{
+					$match: {
+						_id: idBreed
+					}
+				},
+				{
+					$lookup:
+						{
+							from: 'species',
+							let: { idSpecie: '$idSpecie' },
+							pipeline: [
+								{ $match: { '$expr': { '$eq': ['$_id', '$$idSpecie'] } } },
+								{ $project: { 'name': 1 } }
+							],
+							as: 'specie'
+						}
+				}, {
+					$unwind: {
+						path: '$specie',
+						preserveNullAndEmptyArrays: true
+					}
+				}
+			]).toArray();
+			responseMessage.create(true, 'Se ha obtenido la raza.', null, breed);
+		} catch (err) {
+			console.error('Error getting breed: ', err);
+			throw new Meteor.Error('500', 'Error al obtener la raza');
 		}
 		return responseMessage;
 	}
