@@ -28,6 +28,12 @@ const Permissions = {
 		UPDATE: { VALUE: 'analyses-edit', TEXT: 'Actualizar analisis' },
 		DELETE: { VALUE: 'analyses-delete', TEXT: 'Eliminar analisis' }
 	},
+	SPECIES: {
+		LIST: { VALUE: 'species-view', TEXT: 'Listar especies' },
+		CREATE: { VALUE: 'species-create', TEXT: 'Crear especie' },
+		UPDATE: { VALUE: 'species-edit', TEXT: 'Actualizar especie' },
+		DELETE: { VALUE: 'species-delete', TEXT: 'Eliminar especie' }
+	},
 }
 
 export const permissionsArray = Object.keys(Permissions).reduce((accumulator, systemModuleName) => {

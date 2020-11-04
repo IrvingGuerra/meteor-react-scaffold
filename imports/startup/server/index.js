@@ -11,3 +11,7 @@ import '../../api/Templates/TemplatePubs';
 import '../../api/Orders/Order';
 import '../../api/Orders/OrderCtrl';
 import '../../api/Orders/OrderPubs';
+
+import '../../api/Pets/Species/Specie';
+import '../../api/Pets/Species/SpecieCtrl';
+import '../../api/Pets/Species/SpeciePubs';

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
+	Box,
+	Container,
 	TableContainer,
 	Table,
 	TableHead,
@@ -9,22 +11,28 @@ import {
 	TableBody,
 	TablePagination,
 	IconButton,
-	Card,
-	CardHeader,
-	CardContent,
-	Fab,
-	Grid
+	Grid,
+	Typography,
+	Paper
 } from '@material-ui/core';
-import { useTracker } from 'react-meteor-hooks';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
-import AddIcon from '@material-ui/icons/Add';
-import useModal from '../../hooks/useModal';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import BootstrapTooltip from '../../components/Tooltips/BootstrapTooltip';
 import { ModalDialog } from '../../components/Utilities/Modals/ModalDialog';
+import { useTracker } from 'react-meteor-hooks';
+import useModal from '../../hooks/useModal';
 
 const useStyles = makeStyles((theme) => ({
-	heading: {
-		padding: theme.spacing(4, 4, 0, 4)
+	container: {
+		paddingTop: theme.spacing(2),
+		paddingBottom: theme.spacing(2)
+	},
+	paper: {
+		padding: theme.spacing(2),
+		display: 'flex',
+		overflow: 'auto',
+		flexDirection: 'column'
 	}
 }));
 
@@ -33,7 +41,7 @@ const ListUsers = (props) => {
 	const modal = useModal();
 	const [idDelete, setIdDelete] = useState(null);
 	const [page, setPage] = React.useState(0);
-	const [rowsPerPage, setRowsPerPage] = React.useState(10);
+	const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
 	const handleChangePage = (event, newPage) => {
 		setPage(newPage);
@@ -67,74 +75,89 @@ const ListUsers = (props) => {
 	};
 
 	return (
-		<Grid item lg={ 8 } md={ 10 } sm={ 12 }>
-			<Card elevation={ 6 }>
-				<CardHeader
-					className={ classes.heading }
-					action={
-						<Fab color="primary" aria-label="add" onClick={ () => {
-							props.history.push('/' + props.history.location.pathname.split('/')[1] + '/createUser');
-						} }>
-							<AddIcon/>
-						</Fab>
-					}
-					title="Usuarios Registrados"
-				/>
-				<CardContent>
-					<Grid container spacing={ 2 }>
-						<Grid item xs={ 12 }>
-							<TableContainer>
-								<Table aria-label="simple table">
-									<TableHead>
-										<TableRow>
-											<TableCell>Nombre de usuario</TableCell>
-											<TableCell>Correo eléctronico</TableCell>
-											<TableCell>Perfil</TableCell>
-											<TableCell>Configuracion</TableCell>
-										</TableRow>
-									</TableHead>
-									<TableBody>
-										{ users.map((user) => (
-											<TableRow key={ user._id }>
-												<TableCell component="th" scope="row">
-													{ user.profile.username }
-												</TableCell>
-												<TableCell>{ user.emails[0].address }</TableCell>
-												<TableCell>{ user.profile.profile }</TableCell>
-												<TableCell>
-													<IconButton onClick={ () => {
-														props.history.push({
-															pathname: '/' + props.history.location.pathname.split('/')[1] + '/editUser',
-															state: { user }
-														});
-													} }>
-														<EditIcon/>
-													</IconButton>
-													<IconButton aria-label="delete"
-													            onClick={ () => confirmDelete(user._id) }>
-														<DeleteIcon/>
-													</IconButton>
-												</TableCell>
-											</TableRow>
-										)) }
-									</TableBody>
-								</Table>
-							</TableContainer>
-							<TablePagination
-								rowsPerPageOptions={ [10, 25, 100] }
-								component="div"
-								count={ users.length }
-								rowsPerPage={ rowsPerPage }
-								page={ page }
-								onChangePage={ handleChangePage }
-								onChangeRowsPerPage={ handleChangeRowsPerPage }
-							/>
+		<Container maxWidth="lg" className={ classes.container }>
+			<Paper className={ classes.paper } elevation={ 10 }>
+				<Grid container direction="column">
+					<Grid item xs={ 12 }>
+						<Grid container direction="row" justify="space-between" alignItems="center">
+							<Grid item>
+								<Typography color="primary">
+									<Box fontSize={ 24 } fontWeight="fontWeightMedium" m={ 2 }>
+										USUARIOS REGISTRADOS
+									</Box>
+								</Typography>
+							</Grid>
+							<Grid item>
+								<BootstrapTooltip title="Agregar nuevo usuario">
+									<IconButton onClick={ () => {
+										props.history.push('/' + props.history.location.pathname.split('/')[1] + '/createUser');
+									} }>
+										<AddCircleIcon fontSize="large" color="primary"/>
+									</IconButton>
+								</BootstrapTooltip>
+							</Grid>
 						</Grid>
 					</Grid>
-				</CardContent>
-			</Card>
+					<Grid item xs={ 12 }>
+						<TableContainer>
+							<Table aria-label="simple table">
+								<TableHead>
+									<TableRow>
+										<TableCell>Nombre de usuario</TableCell>
+										<TableCell>Correo eléctronico</TableCell>
+										<TableCell>Perfil</TableCell>
+										<TableCell>Configuracion</TableCell>
+									</TableRow>
+								</TableHead>
+								<TableBody>
+									{ users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user) => (
+										<TableRow key={ user._id }>
+											<TableCell component="th" scope="row">
+												{ user.profile.username }
+											</TableCell>
+											<TableCell>{ user.emails[0].address }</TableCell>
+											<TableCell>{ user.profile.profile }</TableCell>
+											<TableCell>
+												<IconButton onClick={ () => {
+													props.history.push({
+														pathname: '/' + props.history.location.pathname.split('/')[1] + '/editUser',
+														state: { user }
+													});
+												} }>
+													<EditIcon color="primary"/>
+												</IconButton>
+												<IconButton aria-label="delete"
+												            onClick={ () => confirmDelete(user._id) }>
+													<DeleteIcon color="secondary"/>
+												</IconButton>
+											</TableCell>
+										</TableRow>
+									)) }
+									{ users.length === 0 && (
+										<TableRow>
+											<TableCell align="center" colSpan={ 10 }>
+												No hay datos
+											</TableCell>
+										</TableRow>
+									) }
+								</TableBody>
+							</Table>
+						</TableContainer>
+						<TablePagination
+							labelRowsPerPage={ 'Filas por página' }
+							rowsPerPageOptions={ [5, 10, 25, 100] }
+							component="div"
+							count={ users.length }
+							rowsPerPage={ rowsPerPage }
+							page={ page }
+							onChangePage={ handleChangePage }
+							onChangeRowsPerPage={ handleChangeRowsPerPage }
+						/>
+					</Grid>
+				</Grid>
+			</Paper>
 			<ModalDialog modal={ modal } _handleAccept={ deleteUser }/>
-		</Grid>
+		</Container>
 	);
 };
 

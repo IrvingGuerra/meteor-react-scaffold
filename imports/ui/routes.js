@@ -1,7 +1,10 @@
 import DashboardIcon from '@material-ui/icons/Dashboard';
-import Person from '@material-ui/icons/Person';
+import AssessmentIcon from '@material-ui/icons/Assessment';
+import AssignmentIcon from '@material-ui/icons/Assignment';
+import FindInPageIcon from '@material-ui/icons/FindInPage';
 import DescriptionIcon from '@material-ui/icons/Description';
-
+import Person from '@material-ui/icons/Person';
+import PetsIcon from '@material-ui/icons/Pets';
 
 import Dashboard from './views/Dashboard/Dashboard';
 import CreateTemplate from './views/Templates/CreateTemplate';
@@ -13,6 +16,7 @@ import RequestOrder from './views/MyOrders/RequestOrder';
 import ListOrders from './views/Orders/ListOrders';
 import OrderDetails from './views/Orders/OrderDetails';
 import ListReports from './views/Reports/ListReports';
+import Pets from './views/Pets/Pets';
 
 const dashboardRoutes = [
 	{
@@ -25,14 +29,14 @@ const dashboardRoutes = [
 	{
 		path: '/reports',
 		name: 'Reportes',
-		icon: DescriptionIcon,
+		icon: AssessmentIcon,
 		component: ListReports,
 		layout: ['admin']
 	},
 	{
 		path: '/myOrderList',
 		name: 'Mis ordenes',
-		icon: DescriptionIcon,
+		icon: AssignmentIcon,
 		component: MyOrders,
 		layout: ['admin']
 	},
@@ -45,7 +49,7 @@ const dashboardRoutes = [
 	{
 		path: '/orderList',
 		name: 'Ordenes',
-		icon: DescriptionIcon,
+		icon: FindInPageIcon,
 		component: ListOrders,
 		layout: ['admin']
 	},
@@ -91,6 +95,13 @@ const dashboardRoutes = [
 		path: '/editUser',
 		name: 'Editar usuario',
 		component: CreateUser,
+		layout: ['admin']
+	},
+	{
+		path: '/pets',
+		name: 'Mascotas',
+		icon: PetsIcon,
+		component: Pets,
 		layout: ['admin']
 	}
 ];
