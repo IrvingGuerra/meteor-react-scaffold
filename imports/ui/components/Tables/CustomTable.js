@@ -37,7 +37,7 @@ export const CustomTable = (props) => {
 							{ headers.map((header, i) => <TableCell key={ i } align="center">{ header }</TableCell>) }
 							{ (edit || remove || view) && (
 								<TableCell align="center"><i className={ 'fa fa-cog' }/></TableCell>
-							)}
+							) }
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -50,23 +50,24 @@ export const CustomTable = (props) => {
 							});
 							return (
 								<TableRow key={ i }>
-									{columns.map((col) => <TableCell key={element._id} align="center">{ element[col] }</TableCell>)}
+									{ columns.map((col, index) => <TableCell key={ element._id + index }
+									                                         align="center">{ element[col] }</TableCell>) }
 									<TableCell align="center">
-										{edit && (
+										{ edit && (
 											<IconButton onClick={ () => handleEdit(element._id) }>
 												<EditIcon color="primary"/>
 											</IconButton>
-										)}
-										{remove && (
+										) }
+										{ remove && (
 											<IconButton aria-label="delete" onClick={ () => handleRemove(element._id) }>
 												<DeleteIcon color="secondary"/>
 											</IconButton>
-										)}
-										{view && (
+										) }
+										{ view && (
 											<IconButton onClick={ () => handleView(element._id) }>
 												<VisibilityIcon color="primary"/>
 											</IconButton>
-										)}
+										) }
 									</TableCell>
 								</TableRow>
 							);

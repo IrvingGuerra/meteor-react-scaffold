@@ -38,39 +38,53 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function CreateBreed(props) {
+	const { history, loader, alert } = props;
 	const classes = useStyles();
 	const [form, setForm] = useState({
 		_id: null,
 		name: '',
 		idSpecie: ''
 	});
+
 	const handleSubmitForm = (e) => {
 		e.preventDefault();
+		loader.current.setLoader(true);
 		Meteor.call('breed.save', form, (error, response) => {
+			loader.current.setLoader(false);
 			if (error) {
-				props.alert.current.setAlert('Error', error.reason, 'error');
+				alert.current.setAlert('Error', error.reason, 'error');
 				return;
 			}
-			props.alert.current.setAlert('Éxito', response._message);
+			alert.current.setAlert('Éxito', response._message);
 			setTimeout(() => {
-				props.history.goBack();
+				history.goBack();
 			}, 1000);
 		});
 	};
+
 	const species = useTracker(() => {
 		Meteor.subscribe('species');
 		return Specie.find({}).fetch();
 	}, []);
+
 	useEffect(() => {
 		if (props.location.state) {
-			const breed = props.location.state.breed;
-			setForm({
-				_id: breed._id,
-				name: breed.name,
-				idSpecie: breed.idSpecie
+			loader.current.setLoader(true);
+			Meteor.call('breed.get', props.location.state.idBreed , (error, response) => {
+				loader.current.setLoader(false);
+				if (error) {
+					alert.current.setAlert('Error', error.reason, 'error');
+					return;
+				}
+				setForm({
+					_id: response._data._id,
+					name: response._data.name,
+					idSpecie: response._data.specie._id,
+				});
 			});
 		}
 	}, []);
+
 	return (
 		<Container maxWidth="lg" className={ classes.container }>
 			<Paper className={ classes.paper } elevation={ 10 }>
@@ -79,7 +93,7 @@ export default function CreateBreed(props) {
 						<Grid container direction="row" justify="flex-start" alignItems="center">
 							<Grid item>
 								<IconButton onClick={ () => {
-									props.history.goBack();
+									history.goBack();
 								} }>
 									<ArrowBackIcon fontSize="large" color="primary"/>
 								</IconButton>

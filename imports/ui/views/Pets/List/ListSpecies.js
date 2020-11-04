@@ -14,6 +14,7 @@ import BootstrapTooltip from '../../../components/Tooltips/BootstrapTooltip';
 import { CustomTable } from '../../../components/Tables/CustomTable';
 
 export default function ListSpecies(props) {
+	const { history, loader, alert } = props;
 	const [idDelete, setIdDelete] = useState(null);
 	const modal = useModal();
 
@@ -22,24 +23,24 @@ export default function ListSpecies(props) {
 		return Specie.find({}).fetch();
 	}, []);
 
-	const speciesHeaders = [
-		'Nombre'
-	]
+	const speciesHeaders = ['Nombre'];
 
 	const deleteSpecie = () => {
+		loader.current.setLoader(true);
 		Meteor.call('specie.delete', idDelete, (error, response) => {
+			loader.current.setLoader(false);
 			if (error) {
-				props.alert.current.setAlert('Error', error.reason, 'error');
+				alert.current.setAlert('Error', error.reason, 'error');
 				return;
 			}
 			modal.toggle();
-			props.alert.current.setAlert('Éxito', response._message);
+			alert.current.setAlert('Éxito', response._message);
 		});
 	};
 
-	const confirmDelete = (idUser) => {
-		setIdDelete(idUser);
-		const specie = species.filter(e => e._id === idUser)[0];
+	const confirmDelete = (id) => {
+		setIdDelete(id);
+		const specie = species.filter(e => e._id === id)[0];
 		modal.setModal('Eliminar Especie', '¿Esta seguro de eliminar la especie ' + specie.name + '?');
 	};
 
@@ -57,7 +58,7 @@ export default function ListSpecies(props) {
 					<Grid item>
 						<BootstrapTooltip title="Agregar nueva especie">
 							<IconButton onClick={ () => {
-								props.history.push('/' + props.history.location.pathname.split('/')[1] + '/createSpecie');
+								history.push('/' + history.location.pathname.split('/')[1] + '/createSpecie');
 							} }>
 								<AddCircleIcon fontSize="large" color="primary"/>
 							</IconButton>
@@ -67,24 +68,24 @@ export default function ListSpecies(props) {
 			</Grid>
 			<Grid item xs={ 12 }>
 				<CustomTable
-					headers = {speciesHeaders}
-					data = {species}
-					options = {
+					headers={ speciesHeaders }
+					data={ species }
+					options={
 						{
 							edit: true,
 							remove: true,
 							view: false
 						}
 					}
-					handleEdit = {(idSpecie) => {
-						props.history.push({
-							pathname: '/' + props.history.location.pathname.split('/')[1] + '/editSpecie',
+					handleEdit={ (idSpecie) => {
+						history.push({
+							pathname: '/' + history.location.pathname.split('/')[1] + '/editSpecie',
 							state: { idSpecie }
 						});
-					}}
-					handleRemove = {(idSpecie) => {
-						confirmDelete(idSpecie)
-					}}
+					} }
+					handleRemove={ (idSpecie) => {
+						confirmDelete(idSpecie);
+					} }
 				/>
 			</Grid>
 			<ModalDialog modal={ modal } _handleAccept={ deleteSpecie }/>

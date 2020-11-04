@@ -16,10 +16,22 @@ if (Meteor.isServer) {
 						],
 						as: 'specie'
 					}
-			}, {
+			},
+			{
 				$unwind: {
 					path: '$specie',
 					preserveNullAndEmptyArrays: true
+				}
+			},
+			{
+				$addFields: {
+					'specieName': '$specie.name',
+				}
+			},
+			{
+				$project: {
+					"name": 1,
+					"specieName": 1
 				}
 			}
 		], { warnings: false });

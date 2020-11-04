@@ -32,33 +32,46 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function CreateGender(props) {
+	const { history, loader, alert } = props;
 	const classes = useStyles();
 	const [form, setForm] = useState({
 		_id: null,
 		name: '',
 	});
+
 	const handleSubmitForm = (e) => {
 		e.preventDefault();
+		loader.current.setLoader(true);
 		Meteor.call('gender.save', form , (error, response) => {
+			loader.current.setLoader(false);
 			if (error) {
-				props.alert.current.setAlert('Error', error.reason, 'error');
+				alert.current.setAlert('Error', error.reason, 'error');
 				return;
 			}
-			props.alert.current.setAlert('Éxito', response._message);
+			alert.current.setAlert('Éxito', response._message);
 			setTimeout(() => {
-				props.history.goBack();
+				history.goBack();
 			}, 1000);
 		});
 	};
+
 	useEffect(() => {
 		if (props.location.state) {
-			const gender = props.location.state.gender;
-			setForm({
-				_id: gender._id,
-				name: gender.name,
+			loader.current.setLoader(true);
+			Meteor.call('gender.get', props.location.state.idGender , (error, response) => {
+				loader.current.setLoader(false);
+				if (error) {
+					alert.current.setAlert('Error', error.reason, 'error');
+					return;
+				}
+				setForm({
+					_id: response._data._id,
+					name: response._data.name,
+				});
 			});
 		}
 	}, []);
+
 	return (
 		<Container maxWidth="lg" className={ classes.container }>
 			<Paper className={ classes.paper } elevation={ 10 }>
@@ -67,7 +80,7 @@ export default function CreateGender(props) {
 						<Grid container direction="row" justify="flex-start" alignItems="center">
 							<Grid item>
 								<IconButton onClick={ () => {
-									props.history.goBack();
+									history.goBack();
 								} }>
 									<ArrowBackIcon fontSize="large" color="primary"/>
 								</IconButton>

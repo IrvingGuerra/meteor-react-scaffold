@@ -4,10 +4,6 @@ import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import {
-	FormControl,
-	InputLabel,
-	Select,
-	MenuItem,
 	Paper,
 	Container,
 	Typography,
@@ -36,33 +32,36 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function CreateSpecie(props) {
+	const { history, loader, alert } = props;
 	const classes = useStyles();
 	const [form, setForm] = useState({
 		_id: null,
 		name: '',
 	});
+
 	const handleSubmitForm = (e) => {
 		e.preventDefault();
-		props.loader.current.setLoader(true);
+		loader.current.setLoader(true);
 		Meteor.call('specie.save', form , (error, response) => {
-			props.loader.current.setLoader(false);
+			loader.current.setLoader(false);
 			if (error) {
-				props.alert.current.setAlert('Error', error.reason, 'error');
+				alert.current.setAlert('Error', error.reason, 'error');
 				return;
 			}
-			props.alert.current.setAlert('Éxito', response._message);
+			alert.current.setAlert('Éxito', response._message);
 			setTimeout(() => {
-				props.history.goBack();
+				history.goBack();
 			}, 1000);
 		});
 	};
+
 	useEffect(() => {
 		if (props.location.state) {
-			props.loader.current.setLoader(true);
+			loader.current.setLoader(true);
 			Meteor.call('specie.get', props.location.state.idSpecie , (error, response) => {
-				props.loader.current.setLoader(false);
+				loader.current.setLoader(false);
 				if (error) {
-					props.alert.current.setAlert('Error', error.reason, 'error');
+					alert.current.setAlert('Error', error.reason, 'error');
 					return;
 				}
 				setForm({
@@ -72,6 +71,7 @@ export default function CreateSpecie(props) {
 			});
 		}
 	}, []);
+
 	return (
 		<Container maxWidth="lg" className={ classes.container }>
 			<Paper className={ classes.paper } elevation={ 10 }>
@@ -80,7 +80,7 @@ export default function CreateSpecie(props) {
 						<Grid container direction="row" justify="flex-start" alignItems="center">
 							<Grid item>
 								<IconButton onClick={ () => {
-									props.history.goBack();
+									history.goBack();
 								} }>
 									<ArrowBackIcon fontSize="large" color="primary"/>
 								</IconButton>

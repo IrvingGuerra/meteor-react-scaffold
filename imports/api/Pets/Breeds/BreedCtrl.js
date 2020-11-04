@@ -83,14 +83,20 @@ export const getBreedMethod = new ValidatedMethod({
 							],
 							as: 'specie'
 						}
-				}, {
+				},
+				{
 					$unwind: {
 						path: '$specie',
 						preserveNullAndEmptyArrays: true
 					}
+				},
+				{
+					$addFields: {
+						'specieName': '$specie.name',
+					}
 				}
 			]).toArray();
-			responseMessage.create(true, 'Se ha obtenido la raza.', null, breed);
+			responseMessage.create(true, 'Se ha obtenido la raza.', null, breed[0]);
 		} catch (err) {
 			console.error('Error getting breed: ', err);
 			throw new Meteor.Error('500', 'Error al obtener la raza');

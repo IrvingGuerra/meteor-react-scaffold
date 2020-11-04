@@ -1,60 +1,46 @@
 import {
 	Box,
 	Grid,
-	Table,
-	TableBody,
-	TableCell,
-	TableContainer,
-	TableHead,
-	TablePagination,
-	TableRow,
 	Typography
 } from '@material-ui/core';
 import React, { useState } from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { useTracker } from 'react-meteor-hooks';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
 import useModal from '../../../hooks/useModal';
 import { ModalDialog } from '../../../components/Utilities/Modals/ModalDialog';
 import BootstrapTooltip from '../../../components/Tooltips/BootstrapTooltip';
 import { Gender } from '../../../../api/Pets/Genders/Gender';
+import { CustomTable } from '../../../components/Tables/CustomTable';
 
 export default function ListGenders(props) {
-	const [page, setPage] = React.useState(0);
-	const [rowsPerPage, setRowsPerPage] = React.useState(5);
+	const { history, loader, alert } = props;
 	const [idDelete, setIdDelete] = useState(null);
 	const modal = useModal();
-
-	const handleChangePage = (event, newPage) => {
-		setPage(newPage);
-	};
-
-	const handleChangeRowsPerPage = (event) => {
-		setRowsPerPage(+event.target.value);
-		setPage(0);
-	};
 
 	const genders = useTracker(() => {
 		Meteor.subscribe('genders');
 		return Gender.find({}).fetch();
 	}, []);
 
+	const gendersHeaders = ['Nombre'];
+
 	const deleteGender = () => {
+		loader.current.setLoader(true);
 		Meteor.call('gender.delete', idDelete, (error, response) => {
+			loader.current.setLoader(false);
 			if (error) {
-				props.alert.current.setAlert('Error', error.reason, 'error');
+				alert.current.setAlert('Error', error.reason, 'error');
 				return;
 			}
 			modal.toggle();
-			props.alert.current.setAlert('Éxito', response._message);
+			alert.current.setAlert('Éxito', response._message);
 		});
 	};
 
-	const confirmDelete = (idGender) => {
-		setIdDelete(idGender);
-		const gender = genders.filter(e => e._id === idGender)[0];
+	const confirmDelete = (id) => {
+		setIdDelete(id);
+		const gender = genders.filter(e => e._id === id)[0];
 		modal.setModal('Eliminar Genero', '¿Esta seguro de eliminar el genero ' + gender.name + '?');
 	};
 
@@ -72,7 +58,7 @@ export default function ListGenders(props) {
 					<Grid item>
 						<BootstrapTooltip title="Agregar un nuevo genero">
 							<IconButton onClick={ () => {
-								props.history.push('/' + props.history.location.pathname.split('/')[1] + '/createGender');
+								history.push('/' + history.location.pathname.split('/')[1] + '/createGender');
 							} }>
 								<AddCircleIcon fontSize="large" color="primary"/>
 							</IconButton>
@@ -81,53 +67,25 @@ export default function ListGenders(props) {
 				</Grid>
 			</Grid>
 			<Grid item xs={ 12 }>
-				<TableContainer>
-					<Table>
-						<TableHead>
-							<TableRow>
-								<TableCell align="center">Nombre</TableCell>
-								<TableCell align="center"><i className={ 'fa fa-cog' }/></TableCell>
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							{ genders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((gender) => (
-								<TableRow key={ gender._id }>
-									<TableCell align="center">{ gender.name }</TableCell>
-									<TableCell align="center">
-										<IconButton onClick={ () => {
-											props.history.push({
-												pathname: '/' + props.history.location.pathname.split('/')[1] + '/editGender',
-												state: { gender }
-											});
-										} }>
-											<EditIcon color="primary"/>
-										</IconButton>
-										<IconButton aria-label="delete"
-										            onClick={ () => confirmDelete(gender._id) }>
-											<DeleteIcon color="secondary"/>
-										</IconButton>
-									</TableCell>
-								</TableRow>
-							)) }
-							{ genders.length === 0 && (
-								<TableRow>
-									<TableCell align="center" colSpan={ 10 }>
-										No hay datos
-									</TableCell>
-								</TableRow>
-							) }
-						</TableBody>
-					</Table>
-				</TableContainer>
-				<TablePagination
-					labelRowsPerPage={ 'Filas por página' }
-					rowsPerPageOptions={ [5, 10, 25, 100] }
-					component="div"
-					count={ genders.length }
-					rowsPerPage={ rowsPerPage }
-					page={ page }
-					onChangePage={ handleChangePage }
-					onChangeRowsPerPage={ handleChangeRowsPerPage }
+				<CustomTable
+					headers={ gendersHeaders }
+					data={ genders }
+					options={
+						{
+							edit: true,
+							remove: true,
+							view: false
+						}
+					}
+					handleEdit={ (idGender) => {
+						history.push({
+							pathname: '/' + history.location.pathname.split('/')[1] + '/editGender',
+							state: { idGender }
+						});
+					} }
+					handleRemove={ (idGender) => {
+						confirmDelete(idGender);
+					} }
 				/>
 			</Grid>
 			<ModalDialog modal={ modal } _handleAccept={ deleteGender }/>

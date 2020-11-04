@@ -1,61 +1,46 @@
 import {
 	Box,
 	Grid,
-	Table,
-	TableBody,
-	TableCell,
-	TableContainer,
-	TableHead,
-	TablePagination,
-	TableRow,
 	Typography
 } from '@material-ui/core';
 import React, { useState } from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { useTracker } from 'react-meteor-hooks';
-import { Specie } from '../../../../api/Pets/Species/Specie';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteIcon from '@material-ui/icons/Delete';
 import useModal from '../../../hooks/useModal';
 import { ModalDialog } from '../../../components/Utilities/Modals/ModalDialog';
 import BootstrapTooltip from '../../../components/Tooltips/BootstrapTooltip';
 import { Breed } from '../../../../api/Pets/Breeds/Breed';
+import { CustomTable } from '../../../components/Tables/CustomTable';
 
 export default function ListBreeds(props) {
-	const [page, setPage] = useState(0);
-	const [rowsPerPage, setRowsPerPage] = useState(5);
+	const { history, loader, alert } = props;
 	const [idDelete, setIdDelete] = useState(null);
 	const modal = useModal();
-
-	const handleChangePage = (event, newPage) => {
-		setPage(newPage);
-	};
-
-	const handleChangeRowsPerPage = (event) => {
-		setRowsPerPage(+event.target.value);
-		setPage(0);
-	};
 
 	const breeds = useTracker(() => {
 		Meteor.subscribe('breeds');
 		return Breed.find({}).fetch();
 	}, []);
 
+	const breedsHeaders = ['Nombre', 'Especie'];
+
 	const deleteBreed = () => {
+		loader.current.setLoader(true);
 		Meteor.call('breed.delete', idDelete, (error, response) => {
+			loader.current.setLoader(false);
 			if (error) {
-				props.alert.current.setAlert('Error', error.reason, 'error');
+				alert.current.setAlert('Error', error.reason, 'error');
 				return;
 			}
 			modal.toggle();
-			props.alert.current.setAlert('Éxito', response._message);
+			alert.current.setAlert('Éxito', response._message);
 		});
 	};
 
-	const confirmDelete = (idUser) => {
-		setIdDelete(idUser);
-		const breed = breeds.filter(e => e._id === idUser)[0];
+	const confirmDelete = (id) => {
+		setIdDelete(id);
+		const breed = breeds.filter(e => e._id === id)[0];
 		modal.setModal('Eliminar Raza', '¿Esta seguro de eliminar la raza ' + breed.name + '?');
 	};
 
@@ -73,7 +58,7 @@ export default function ListBreeds(props) {
 					<Grid item>
 						<BootstrapTooltip title="Agregar nueva raza">
 							<IconButton onClick={ () => {
-								props.history.push('/' + props.history.location.pathname.split('/')[1] + '/createBreed');
+								history.push('/' + history.location.pathname.split('/')[1] + '/createBreed');
 							} }>
 								<AddCircleIcon fontSize="large" color="primary"/>
 							</IconButton>
@@ -82,55 +67,25 @@ export default function ListBreeds(props) {
 				</Grid>
 			</Grid>
 			<Grid item xs={ 12 }>
-				<TableContainer>
-					<Table>
-						<TableHead>
-							<TableRow>
-								<TableCell align="center">Nombre</TableCell>
-								<TableCell align="center">Especie</TableCell>
-								<TableCell align="center"><i className={ 'fa fa-cog' }/></TableCell>
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							{ breeds.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((breed) => (
-								<TableRow key={ breed._id }>
-									<TableCell align="center">{ breed.name }</TableCell>
-									<TableCell align="center">{ breed.specie.name }</TableCell>
-									<TableCell align="center">
-										<IconButton onClick={ () => {
-											props.history.push({
-												pathname: '/' + props.history.location.pathname.split('/')[1] + '/editBreed',
-												state: { breed }
-											});
-										} }>
-											<EditIcon color="primary"/>
-										</IconButton>
-										<IconButton aria-label="delete"
-										            onClick={ () => confirmDelete(breed._id) }>
-											<DeleteIcon color="secondary"/>
-										</IconButton>
-									</TableCell>
-								</TableRow>
-							)) }
-							{ breeds.length === 0 && (
-								<TableRow>
-									<TableCell align="center" colSpan={ 10 }>
-										No hay datos
-									</TableCell>
-								</TableRow>
-							) }
-						</TableBody>
-					</Table>
-				</TableContainer>
-				<TablePagination
-					labelRowsPerPage={ 'Filas por página' }
-					rowsPerPageOptions={ [5, 10, 25, 100] }
-					component="div"
-					count={ breeds.length }
-					rowsPerPage={ rowsPerPage }
-					page={ page }
-					onChangePage={ handleChangePage }
-					onChangeRowsPerPage={ handleChangeRowsPerPage }
+				<CustomTable
+					headers={ breedsHeaders }
+					data={ breeds }
+					options={
+						{
+							edit: true,
+							remove: true,
+							view: false
+						}
+					}
+					handleEdit={ (idBreed) => {
+						history.push({
+							pathname: '/' + history.location.pathname.split('/')[1] + '/editBreed',
+							state: { idBreed }
+						});
+					} }
+					handleRemove={ (idBreed) => {
+						confirmDelete(idBreed);
+					} }
 				/>
 			</Grid>
 			<ModalDialog modal={ modal } _handleAccept={ deleteBreed }/>
