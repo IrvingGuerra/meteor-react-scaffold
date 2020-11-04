@@ -24,14 +24,9 @@ if (Meteor.isServer) {
 				}
 			},
 			{
-				$addFields: {
-					'specieName': '$specie.name',
-				}
-			},
-			{
 				$project: {
 					"name": 1,
-					"specieName": 1
+					"specie": 1
 				}
 			}
 		], { warnings: false });

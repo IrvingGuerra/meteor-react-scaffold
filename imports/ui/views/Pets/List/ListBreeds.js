@@ -12,6 +12,7 @@ import { ModalDialog } from '../../../components/Utilities/Modals/ModalDialog';
 import BootstrapTooltip from '../../../components/Tooltips/BootstrapTooltip';
 import { Breed } from '../../../../api/Pets/Breeds/Breed';
 import { CustomTable } from '../../../components/Tables/CustomTable';
+import { Specie } from '../../../../api/Pets/Species/Specie';
 
 export default function ListBreeds(props) {
 	const { history, loader, alert } = props;
@@ -20,7 +21,12 @@ export default function ListBreeds(props) {
 
 	const breeds = useTracker(() => {
 		Meteor.subscribe('breeds');
-		return Breed.find({}).fetch();
+		const breeds = Breed.find({}).fetch();
+		breeds.map((breed) => {
+			breed.specieName = breed.specie.name;
+			delete breed.specie;
+		})
+		return breeds;
 	}, []);
 
 	const breedsHeaders = ['Nombre', 'Especie'];

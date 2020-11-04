@@ -22,6 +22,7 @@ import BootstrapTooltip from '../../components/Tooltips/BootstrapTooltip';
 import { ModalDialog } from '../../components/Utilities/Modals/ModalDialog';
 import { useTracker } from 'react-meteor-hooks';
 import useModal from '../../hooks/useModal';
+import { CustomTable } from '../../components/Tables/CustomTable';
 
 const useStyles = makeStyles((theme) => ({
 	container: {
@@ -40,22 +41,21 @@ const ListUsers = (props) => {
 	const classes = useStyles();
 	const modal = useModal();
 	const [idDelete, setIdDelete] = useState(null);
-	const [page, setPage] = React.useState(0);
-	const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
-	const handleChangePage = (event, newPage) => {
-		setPage(newPage);
-	};
-
-	const handleChangeRowsPerPage = (event) => {
-		setRowsPerPage(+event.target.value);
-		setPage(0);
-	};
 
 	const users = useTracker(() => {
 		Meteor.subscribe('users');
-		return Meteor.users.find({ _id: { $ne: Meteor.userId() } }).fetch();
+		const users = Meteor.users.find({ _id: { $ne: Meteor.userId() } }).fetch();
+		users.map((user) => {
+			user.username = user.profile.username;
+			user.emailUser = user.emails[0].address;
+			user.profileUser = user.profile.profile;
+			delete user.emails;
+			delete user.profile;
+		})
+		return users;
 	}, []);
+
+	const usersHeaders = ['Nombre de usuario', 'Correo eléctronico', 'Perfil'];
 
 	const deleteUser = () => {
 		Meteor.call('user.delete', idDelete, (error, response) => {
@@ -68,9 +68,9 @@ const ListUsers = (props) => {
 		});
 	};
 
-	const confirmDelete = (idUser) => {
-		setIdDelete(idUser);
-		const user = users.filter(usr => usr._id === idUser)[0];
+	const confirmDelete = (id) => {
+		setIdDelete(id);
+		const user = users.filter(usr => usr._id === id)[0];
 		modal.setModal('Eliminar Usuario', '¿Esta seguro de eliminar el usuario ' + user.profile.username + '?');
 	};
 
@@ -81,7 +81,7 @@ const ListUsers = (props) => {
 					<Grid item xs={ 12 }>
 						<Grid container direction="row" justify="space-between" alignItems="center">
 							<Grid item>
-								<Typography color="primary">
+								<Typography color="primary" component="span">
 									<Box fontSize={ 24 } fontWeight="fontWeightMedium" m={ 2 }>
 										USUARIOS REGISTRADOS
 									</Box>
@@ -99,59 +99,25 @@ const ListUsers = (props) => {
 						</Grid>
 					</Grid>
 					<Grid item xs={ 12 }>
-						<TableContainer>
-							<Table aria-label="simple table">
-								<TableHead>
-									<TableRow>
-										<TableCell>Nombre de usuario</TableCell>
-										<TableCell>Correo eléctronico</TableCell>
-										<TableCell>Perfil</TableCell>
-										<TableCell align="center"><i className={ 'fa fa-cog' }/></TableCell>
-									</TableRow>
-								</TableHead>
-								<TableBody>
-									{ users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user) => (
-										<TableRow key={ user._id }>
-											<TableCell component="th" scope="row">
-												{ user.profile.username }
-											</TableCell>
-											<TableCell>{ user.emails[0].address }</TableCell>
-											<TableCell>{ user.profile.profile }</TableCell>
-											<TableCell align="center">
-												<IconButton onClick={ () => {
-													props.history.push({
-														pathname: '/' + props.history.location.pathname.split('/')[1] + '/editUser',
-														state: { user }
-													});
-												} }>
-													<EditIcon color="primary"/>
-												</IconButton>
-												<IconButton aria-label="delete"
-												            onClick={ () => confirmDelete(user._id) }>
-													<DeleteIcon color="secondary"/>
-												</IconButton>
-											</TableCell>
-										</TableRow>
-									)) }
-									{ users.length === 0 && (
-										<TableRow>
-											<TableCell align="center" colSpan={ 10 }>
-												No hay datos
-											</TableCell>
-										</TableRow>
-									) }
-								</TableBody>
-							</Table>
-						</TableContainer>
-						<TablePagination
-							labelRowsPerPage={ 'Filas por página' }
-							rowsPerPageOptions={ [5, 10, 25, 100] }
-							component="div"
-							count={ users.length }
-							rowsPerPage={ rowsPerPage }
-							page={ page }
-							onChangePage={ handleChangePage }
-							onChangeRowsPerPage={ handleChangeRowsPerPage }
+						<CustomTable
+							headers={ usersHeaders }
+							data={ users }
+							options={
+								{
+									edit: true,
+									remove: true,
+									view: false
+								}
+							}
+							handleEdit={ (idGender) => {
+								history.push({
+									pathname: '/' + history.location.pathname.split('/')[1] + '/editUser',
+									state: { idGender }
+								});
+							} }
+							handleRemove={ (idUser) => {
+								confirmDelete(idUser);
+							} }
 						/>
 					</Grid>
 				</Grid>

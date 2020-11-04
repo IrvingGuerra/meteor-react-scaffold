@@ -4,7 +4,6 @@ import { ResponseMessage } from '../../../startup/server/BusinessClass/ResponseM
 import { check, Match } from 'meteor/check';
 import Permissions from '../../../startup/server/Permissions';
 import { Breed } from './Breed';
-import { Gender } from '../Genders/Gender';
 
 export const saveBreedMethod = new ValidatedMethod({
 	name: 'breed.save',
@@ -88,11 +87,6 @@ export const getBreedMethod = new ValidatedMethod({
 					$unwind: {
 						path: '$specie',
 						preserveNullAndEmptyArrays: true
-					}
-				},
-				{
-					$addFields: {
-						'specieName': '$specie.name',
 					}
 				}
 			]).toArray();
