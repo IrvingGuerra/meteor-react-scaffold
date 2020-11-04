@@ -56,7 +56,7 @@ export default function TableBreeds(props) {
 	const confirmDelete = (idUser) => {
 		setIdDelete(idUser);
 		const breed = breeds.filter(e => e._id === idUser)[0];
-		modal.setModal('Eliminar Raza', '¿Esta seguro de eliminar la raza ' + specie.name + '?');
+		modal.setModal('Eliminar Raza', '¿Esta seguro de eliminar la raza ' + breed.name + '?');
 	};
 
 	return (
@@ -95,7 +95,7 @@ export default function TableBreeds(props) {
 							{ breeds.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((breed) => (
 								<TableRow key={ breed._id }>
 									<TableCell align="center">{ breed.name }</TableCell>
-									<TableCell align="center">{ breed.breed.name }</TableCell>
+									<TableCell align="center">{ breed.specie.name }</TableCell>
 									<TableCell align="center">
 										<IconButton onClick={ () => {
 											props.history.push({

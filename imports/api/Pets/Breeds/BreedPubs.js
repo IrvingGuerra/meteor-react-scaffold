@@ -1,9 +1,27 @@
 import { Meteor } from 'meteor/meteor';
 import { ReactiveAggregate } from 'meteor/tunguska:reactive-aggregate';
-import { Gender } from '../Genders/Gender';
+import { Breed } from './Breed';
 
 if (Meteor.isServer) {
-	Meteor.publish('genders', function( ) {
-		ReactiveAggregate(this, Gender, [], { warnings: false });
+	Meteor.publish('breeds', function( ) {
+		ReactiveAggregate(this, Breed, [
+			{
+				$lookup:
+					{
+						from: 'species',
+						let: { idSpecie: '$idSpecie' },
+						pipeline: [
+							{ $match: { '$expr': { '$eq': ['$_id', '$$idSpecie'] } } },
+							{ $project: { 'name': 1 } }
+						],
+						as: 'specie'
+					}
+			}, {
+				$unwind: {
+					path: '$specie',
+					preserveNullAndEmptyArrays: true
+				}
+			}
+		], { warnings: false });
 	});
 }
