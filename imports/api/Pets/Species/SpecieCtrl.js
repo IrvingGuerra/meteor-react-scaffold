@@ -35,7 +35,7 @@ export const saveSpecieMethod = new ValidatedMethod({
 			try {
 				Specie.update(specie._id, {
 					$set: {
-						name: specie.title
+						name: specie.name
 					}
 				});
 				responseMessage.create(true, 'Se ha actualizado la especie.');

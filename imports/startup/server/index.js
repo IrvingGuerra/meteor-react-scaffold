@@ -19,3 +19,7 @@ import '../../api/Pets/Species/SpeciePubs';
 import '../../api/Pets/Breeds/Breed';
 import '../../api/Pets/Breeds/BreedCtrl';
 import '../../api/Pets/Breeds/BreedPubs';
+
+import '../../api/Pets/Genders/Gender';
+import '../../api/Pets/Genders/GenderCtrl';
+import '../../api/Pets/Genders/GenderPubs';

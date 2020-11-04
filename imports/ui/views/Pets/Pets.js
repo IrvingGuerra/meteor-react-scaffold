@@ -10,6 +10,7 @@ import {
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import TableSpecies from '../../components/Tables/TableSpecies';
 import TableBreeds from '../../components/Tables/TableBreeds';
+import TableGenders from '../../components/Tables/TableGenders';
 
 const useStyles = makeStyles((theme) => ({
 	container: {
@@ -45,6 +46,18 @@ const Pets = (props) => {
 				</AccordionSummary>
 				<AccordionDetails>
 					<TableBreeds history={ props.history } />
+				</AccordionDetails>
+			</Accordion>
+			<Accordion>
+				<AccordionSummary
+					expandIcon={<ExpandMoreIcon />}
+					aria-controls="panel1a-content"
+					id="panel1a-header"
+				>
+					<Typography>Generos</Typography>
+				</AccordionSummary>
+				<AccordionDetails>
+					<TableGenders history={ props.history } />
 				</AccordionDetails>
 			</Accordion>
 		</Container>

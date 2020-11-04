@@ -40,6 +40,12 @@ const Permissions = {
 		UPDATE: { VALUE: 'breeds-edit', TEXT: 'Actualizar raza' },
 		DELETE: { VALUE: 'breeds-delete', TEXT: 'Eliminar raza' }
 	},
+	GENDERS: {
+		LIST: { VALUE: 'genders-view', TEXT: 'Listar generos' },
+		CREATE: { VALUE: 'genders-create', TEXT: 'Crear genero' },
+		UPDATE: { VALUE: 'genders-edit', TEXT: 'Actualizar genero' },
+		DELETE: { VALUE: 'genders-delete', TEXT: 'Eliminar genero' }
+	}
 }
 
 export const permissionsArray = Object.keys(Permissions).reduce((accumulator, systemModuleName) => {
