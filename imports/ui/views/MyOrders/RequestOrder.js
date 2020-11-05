@@ -15,6 +15,8 @@ import { useTracker } from 'react-meteor-hooks';
 import { Specie } from '../../../api/Pets/Species/Specie';
 import { Breed } from '../../../api/Pets/Breeds/Breed';
 import { Gender } from '../../../api/Pets/Genders/Gender';
+import Biochemistry from '../../components/RequestOrder/Biochemistry';
+import Analytes from '../../components/RequestOrder/Analytes';
 
 const useStyles = makeStyles((theme) => ({
 	container: {
@@ -47,9 +49,93 @@ export default function RequestOrder(props) {
 		petAge: ''
 	});
 
+	const [biochemistry, setBiochemistry] = useState({
+		BasicProfile: false,
+		HepaticProfile: false,
+		HepaticProfileValue: '',
+		RenalProfile: false,
+		DiabeticProfile: false,
+		DiabeticProfileValue: '',
+		PresurgicalProfile: false,
+		DermatologicalProfile: false,
+		PancreaticProfile: false,
+		ConvulsionsProfile: false,
+		ConvulsionsProfileValue: '',
+		FullProfile: false,
+		Other: false,
+		OtherValue: '',
+		BasicProfileBig: false,
+		HepaticProfileBig: false,
+		RenalProfileBig: false,
+		NeonatalProfile: false,
+		FullProfileBig: false,
+		OtherBig: false,
+		OtherValueBig: '',
+	})
+
+	const [analytes, setAnalytes] = useState({
+		RoutineAnalyte: false,
+		RoutineAnalyteValue: '',
+		FAIE: false,
+		Acid: false,
+		Ammonia: false,
+		GLDH: false,
+		Lipase: false,
+		Electrolyte: false,
+	})
+
+	const [hemostasis, setHemostasis] = useState({
+		value: false,
+	})
+
+	const [nonConventional, setNonConventional] = useState({
+		value: false,
+	})
+
+	const [urinaryTract, setUrinaryTract] = useState({
+		value: false,
+	})
+
+	const [cytology, setCytology] = useState({
+		value: false,
+	})
+
+	const [hematology, setHematology] = useState({
+		value: false,
+	})
+
+	const [parasitology, setParasitology] = useState({
+		value: false,
+	})
+
+	const [bacteriology, setBacteriology] = useState({
+		value: false,
+	})
+
+	const [endocrinology, setEndocrinology] = useState({
+		value: false,
+	})
+
+	const [complementary, setComplementary] = useState({
+		value: false,
+	})
+
+	const [infectious, setInfectious] = useState({
+		value: false,
+	})
+
+	const [toxicology, setToxicology] = useState({
+		value: false,
+	})
+
+	const [histopathology, setHistopathology] = useState({
+		value: false,
+	})
+
 	const handleSubmitForm = (e) => {
 		e.preventDefault();
 		loader.current.setLoader(true);
+		form.biochemistry = biochemistry;
 		Meteor.call('order.request', form, (error, response) => {
 			loader.current.setLoader(false);
 			if (error) {
@@ -63,6 +149,7 @@ export default function RequestOrder(props) {
 		});
 	};
 
+	/*
 	useEffect(() => {
 		if (props.location.state) {
 			const user = props.location.state.user;
@@ -71,6 +158,8 @@ export default function RequestOrder(props) {
 			});
 		}
 	}, []);
+
+	 */
 
 	const species = useTracker(() => {
 		Meteor.subscribe('species');
@@ -134,7 +223,8 @@ export default function RequestOrder(props) {
 											onChange={ e => setForm({ ...form, petSpecie: e.target.value }) }
 											label="Especie"
 										>
-											{species.map((specie, i) => <MenuItem key={i} value={specie._id}>{specie.name}</MenuItem>)}
+											{ species.map((specie, i) => <MenuItem key={ i }
+											                                       value={ specie._id }>{ specie.name }</MenuItem>) }
 										</Select>
 									</FormControl>
 								</Grid>
@@ -148,7 +238,8 @@ export default function RequestOrder(props) {
 											onChange={ e => setForm({ ...form, petBreed: e.target.value }) }
 											label="Raza"
 										>
-											{breeds.map((breed, i) => <MenuItem key={i} value={breed._id}>{breed.name}</MenuItem>)}
+											{ breeds.map((breed, i) => <MenuItem key={ i }
+											                                     value={ breed._id }>{ breed.name }</MenuItem>) }
 										</Select>
 									</FormControl>
 								</Grid>
@@ -162,7 +253,8 @@ export default function RequestOrder(props) {
 											onChange={ e => setForm({ ...form, petGender: e.target.value }) }
 											label="Genero"
 										>
-											{genders.map((gender, i) => <MenuItem key={i} value={gender._id}>{gender.name}</MenuItem>)}
+											{ genders.map((gender, i) => <MenuItem key={ i }
+											                                       value={ gender._id }>{ gender.name }</MenuItem>) }
 										</Select>
 									</FormControl>
 								</Grid>
@@ -177,6 +269,16 @@ export default function RequestOrder(props) {
 										type="number"
 										value={ form.petAge }
 										onChange={ e => setForm({ ...form, petAge: e.target.value }) }
+									/>
+								</Grid>
+								<Grid item xs={ 12 }>
+									<Biochemistry
+										data={biochemistry}
+										setData={setBiochemistry}
+									/>
+									<Analytes
+										data={analytes}
+										setData={setAnalytes}
 									/>
 								</Grid>
 							</Grid>

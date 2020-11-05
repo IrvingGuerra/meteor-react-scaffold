@@ -19,6 +19,20 @@ export const requestOrderMethod = new ValidatedMethod({
 				petBreed: String,
 				petGender: String,
 				petAge: String,
+				biochemistry: Object,
+				analytes: Object,
+				hemostasis: Object,
+				nonConventional: Object,
+				urinaryTract: Object,
+				cytology: Object,
+				hematology: Object,
+				parasitology: Object,
+				bacteriology: Object,
+				endocrinology: Object,
+				complementary: Object,
+				infectious: Object,
+				toxicology: Object,
+				histopathology: Object
 			});
 		} catch (exception) {
 			console.log('La información introducida no es válida: ', exception);
