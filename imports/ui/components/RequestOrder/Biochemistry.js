@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
 	Accordion,
 	AccordionDetails,
@@ -16,7 +16,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 
-const useStyles = makeStyles((theme) => ({
+export const accordionStyles = makeStyles((theme) => ({
 	group: {
 		width: 'auto',
 		height: 'auto',
@@ -24,12 +24,25 @@ const useStyles = makeStyles((theme) => ({
 		flexWrap: 'nowrap',
 		flexDirection: 'row',
 		marginLeft: theme.spacing(4)
+	},
+	accordion: {
+		backgroundColor: '#f6f6f6'
+	},
+	accordionSummary: {
+		color: 'black',
+		backgroundColor: 'f6f6f6',
+		borderRadius: 10
+	},
+	accordionSummaryColor: {
+		color: 'white',
+		backgroundColor: theme.palette.primary.main,
+		borderRadius: 10
 	}
 }));
 
 export default function Biochemistry(props) {
 	const { data, setData } = props;
-	const classes = useStyles();
+	const classes = accordionStyles();
 
 	const handleChange = (event) => {
 		setData({ ...data, [event.target.name]: event.target.checked });
@@ -39,9 +52,27 @@ export default function Biochemistry(props) {
 		setData({ ...data, [event.target.name]: event.target.value });
 	};
 
+	const [headerColor, setHeaderColor] = useState(false);
+
+	const hasTrue = (object) => {
+		let boolean = false;
+		Object.keys(object).forEach(key => {
+			if (object[key]) {
+				boolean = true;
+			}
+		});
+		return boolean;
+	};
+
+	useEffect(() => {
+		console.log(hasTrue(data));
+		setHeaderColor(hasTrue(data));
+	}, [data]);
+
 	return (
-		<Accordion>
+		<Accordion className={ classes.accordion }>
 			<AccordionSummary
+				className={ headerColor ? classes.accordionSummaryColor : classes.accordionSummary }
 				expandIcon={ <ExpandMoreIcon/> }
 				aria-controls="panel1a-content"
 				id="panel1a-header"
@@ -49,8 +80,6 @@ export default function Biochemistry(props) {
 				<Typography>BIOQUÍMICA</Typography>
 			</AccordionSummary>
 			<AccordionDetails>
-
-
 				<Grid container direction="column" justify="center" alignItems="stretch">
 					<Grid item>
 						<Grid container direction="row" justify="center" alignItems="center">
@@ -93,14 +122,15 @@ export default function Biochemistry(props) {
 									</Grid>
 									<Grid item>
 										<FormControl component="fieldset">
-											<RadioGroup className={ classes.group }
-											            aria-label="HepaticProfileValue"
-											            name="HepaticProfileValue"
-											            value={ data.HepaticProfileValue }
-											            onChange={ handleChangeRadioAndText }
+											<RadioGroup
+												className={ classes.group }
+												aria-label="HepaticProfileValue"
+												name="HepaticProfileValue"
+												value={ data.HepaticProfileValue }
+												onChange={ handleChangeRadioAndText }
 											>
-												<FormControlLabel value="one" control={ <Radio/> } label="Uno"/>
-												<FormControlLabel value="two" control={ <Radio/> } label="Dos"/>
+												<FormControlLabel disabled={!data.HepaticProfile} value="one" control={ <Radio/> } label="Uno"/>
+												<FormControlLabel disabled={!data.HepaticProfile}value ="two" control={ <Radio/> } label="Dos"/>
 											</RadioGroup>
 										</FormControl>
 									</Grid>
@@ -132,14 +162,15 @@ export default function Biochemistry(props) {
 									</Grid>
 									<Grid item>
 										<FormControl component="fieldset">
-											<RadioGroup className={ classes.group }
+											<RadioGroup
+												className={ classes.group }
 											            aria-label="DiabeticProfileValue"
 											            name="DiabeticProfileValue"
 											            value={ data.DiabeticProfileValue }
 											            onChange={ handleChangeRadioAndText }
 											>
-												<FormControlLabel value="one" control={ <Radio/> } label="Uno"/>
-												<FormControlLabel value="two" control={ <Radio/> } label="Dos"/>
+												<FormControlLabel disabled={!data.DiabeticProfile} value="one" control={ <Radio/> } label="Uno"/>
+												<FormControlLabel disabled={!data.DiabeticProfile} value="two" control={ <Radio/> } label="Dos"/>
 											</RadioGroup>
 										</FormControl>
 									</Grid>
@@ -201,14 +232,15 @@ export default function Biochemistry(props) {
 									</Grid>
 									<Grid item>
 										<FormControl component="fieldset">
-											<RadioGroup className={ classes.group }
+											<RadioGroup
+												className={ classes.group }
 											            aria-label="ConvulsionsProfileValue"
 											            name="ConvulsionsProfileValue"
 											            value={ data.ConvulsionsProfileValue }
 											            onChange={ handleChangeRadioAndText }
 											>
-												<FormControlLabel value="one" control={ <Radio/> } label="Uno"/>
-												<FormControlLabel value="two" control={ <Radio/> } label="Dos"/>
+												<FormControlLabel disabled={!data.ConvulsionsProfile} value="one" control={ <Radio/> } label="Uno"/>
+												<FormControlLabel disabled={!data.ConvulsionsProfile} value="two" control={ <Radio/> } label="Dos"/>
 											</RadioGroup>
 										</FormControl>
 									</Grid>
@@ -238,15 +270,15 @@ export default function Biochemistry(props) {
 											label="Otro"
 										/>
 									</Grid>
-									<Grid item xs={12}>
+									<Grid item xs={ 12 }>
 										<TextField
-											disabled={!data.Other}
+											disabled={ !data.Other }
 											fullWidth
 											id="other"
 											label="Otro"
 											name="OtherValue"
 											value={ data.OtherValue }
-											onChange={handleChangeRadioAndText}
+											onChange={ handleChangeRadioAndText }
 										/>
 									</Grid>
 								</Grid>
@@ -345,15 +377,15 @@ export default function Biochemistry(props) {
 										label="Otro"
 									/>
 								</Grid>
-								<Grid item xs={12}>
+								<Grid item xs={ 12 }>
 									<TextField
-										disabled={!data.OtherBig}
+										disabled={ !data.OtherBig }
 										fullWidth
 										id="other"
 										label="Otro"
 										name="OtherValueBig"
 										value={ data.OtherValueBig }
-										onChange={handleChangeRadioAndText}
+										onChange={ handleChangeRadioAndText }
 									/>
 								</Grid>
 							</Grid>

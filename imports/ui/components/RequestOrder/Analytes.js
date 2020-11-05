@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
 	Accordion,
 	AccordionDetails,
@@ -6,30 +6,15 @@ import {
 	Typography,
 	FormControlLabel,
 	Checkbox,
-	Grid,
-	Box,
-	FormControl,
-	RadioGroup,
-	Radio
+	Grid
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
-
-const useStyles = makeStyles((theme) => ({
-	group: {
-		width: 'auto',
-		height: 'auto',
-		display: 'flex',
-		flexWrap: 'nowrap',
-		flexDirection: 'row',
-		marginLeft: theme.spacing(4)
-	}
-}));
+import { accordionStyles } from './Biochemistry';
 
 export default function Analytes(props) {
 	const { data, setData } = props;
-	const classes = useStyles();
+	const classes = accordionStyles();
 
 	const handleChange = (event) => {
 		setData({ ...data, [event.target.name]: event.target.checked });
@@ -39,9 +24,27 @@ export default function Analytes(props) {
 		setData({ ...data, [event.target.name]: event.target.value });
 	};
 
+	const [headerColor, setHeaderColor] = useState(false);
+
+	const hasTrue = (object) => {
+		let boolean = false;
+		Object.keys(object).forEach(key => {
+			if (object[key]) {
+				boolean = true;
+			}
+		});
+		return boolean;
+	};
+
+	useEffect(() => {
+		console.log(hasTrue(data));
+		setHeaderColor(hasTrue(data));
+	}, [data]);
+
 	return (
-		<Accordion>
+		<Accordion className={ classes.accordion }>
 			<AccordionSummary
+				className={ headerColor ? classes.accordionSummaryColor : classes.accordionSummary }
 				expandIcon={ <ExpandMoreIcon/> }
 				aria-controls="panel1a-content"
 				id="panel1a-header"
