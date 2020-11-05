@@ -26,6 +26,15 @@ if (Meteor.isServer) {
 					path: '$requested',
 					preserveNullAndEmptyArrays: true
 				}
+			},
+			{
+				$project: {
+					"number": 1,
+					"date": 1,
+					"requested": 1,
+					"status": 1,
+					"idRequested": 1
+				}
 			}
 		], { warnings: false });
 	});

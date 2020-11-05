@@ -12,7 +12,7 @@ import {
 	Card,
 	CardHeader,
 	CardContent,
-	Fab, Grid
+	Fab, Grid, Paper, Typography, Box, Container
 } from '@material-ui/core';
 import { useTracker } from 'react-meteor-hooks';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -23,149 +23,123 @@ import { Order } from '../../../api/Orders/Order';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import Utilities from '../../../startup/both/Utilities';
+import { CustomTable } from '../../components/Tables/CustomTable';
+import BootstrapTooltip from '../../components/Tooltips/BootstrapTooltip';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
-	heading: {
-		padding: theme.spacing(4, 4, 0, 4)
+	container: {
+		paddingTop: theme.spacing(2),
+		paddingBottom: theme.spacing(2)
 	},
 	date: {
 		marginLeft: theme.spacing(2)
+	},
+	paper: {
+		padding: theme.spacing(2),
+		display: 'flex',
+		overflow: 'auto',
+		flexDirection: 'column'
 	}
 }));
 
 export default function MyOrders(props) {
+	const { history, loader, alert } = props;
+	const user = useSelector(state => state.user);
 	const classes = useStyles();
 	// Filters
 	const [filters, setFilters] = useState({
 		startDate: new Date(Utilities.currentLocalDate()),
 		endDate: new Date(Utilities.currentLocalDate())
 	});
-	//Pagination
-	const [page, setPage] = React.useState(0);
-	const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
-	const handleChangePage = (event, newPage) => {
-		setPage(newPage);
-	};
-
-	const handleChangeRowsPerPage = (event) => {
-		setRowsPerPage(+event.target.value);
-		setPage(0);
-	};
 
 	const orders = useTracker(() => {
 		Meteor.subscribe('orders' ,{
 			startDate: filters.startDate,
 			endDate: filters.endDate
 		});
-		return Order.find({}).fetch();
+		const orders = Order.find({idRequested: user._id}).fetch();
+		orders.map((order) => {
+			delete order.requested;
+			delete order.idRequested;
+		});
+		return orders;
 	}, []);
 
+	const ordersHeaders = ['Numero de orden', 'Estatus', 'Fecha'];
+
 	return (
-		<Grid item lg={ 8 } md={ 10 } sm={ 12 }>
-			<Card elevation={ 6 }>
-				<CardHeader
-					className={ classes.heading }
-					action={
-						<Fab color="primary" aria-label="add" onClick={ () => {
-							props.history.push('/' + props.history.location.pathname.split('/')[1] + '/requestOrder');
-						} }>
-							<AddIcon/>
-						</Fab>
-					}
-					title="Mis ordenes"
-				/>
-				<CardContent>
-					<Grid container spacing={ 2 }>
-						<Grid item xs={ 12 }>
-							<MuiPickersUtilsProvider utils={ DateFnsUtils }>
-								<DatePicker
-									className={ classes.date }
-									disableToolbar
-									variant="inline"
-									format="yyyy-MM-dd"
-									margin="normal"
-									id="Fecha de inicio"
-									label="Fecha de inicio"
-									value={ filters.startDate }
-									onChange={ (date) => setFilters({ ...filters, startDate: new Date(date) }) }
-								/>
-								<DatePicker
-									className={ classes.date }
-									disableToolbar
-									variant="inline"
-									format="yyyy-MM-dd"
-									margin="normal"
-									id="Fecha de fin"
-									label="Fecha de fin"
-									value={ filters.endDate }
-									onChange={ (date) => setFilters({ ...filters, endDate: new Date(date) }) }
-								/>
-							</MuiPickersUtilsProvider>
-						</Grid>
-						<Grid item xs={ 12 }>
-							<TableContainer>
-								<Table aria-label="simple table">
-									<TableHead>
-										<TableRow>
-											<TableCell>Numero de orden</TableCell>
-											<TableCell>Fecha</TableCell>
-											<TableCell>Solicito</TableCell>
-											<TableCell>Atendio</TableCell>
-											<TableCell>Estatus</TableCell>
-											<TableCell align="center"><i className={'fa fa-cog'}></i></TableCell>
-										</TableRow>
-									</TableHead>
-									<TableBody>
-										{ orders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((order) => (
-											<TableRow key={ order._id }>
-												<TableCell component="th" scope="row">
-													{ order.number }
-												</TableCell>
-												<TableCell component="th" scope="row">
-													{ order.date }
-												</TableCell>
-												<TableCell component="th" scope="row">
-													{ order.requested.profile.username }
-												</TableCell>
-												<TableCell component="th" scope="row">
-													{ order.requested.profile.username }
-												</TableCell>
-												<TableCell component="th" scope="row">
-													{ order.status}
-												</TableCell>
-												<TableCell align="right">
-													<IconButton onClick={ () => {
-													} }>
-														<VisibilityIcon/>
-													</IconButton>
-												</TableCell>
-											</TableRow>
-										)) }
-										{orders.length === 0 && (
-											<TableRow>
-												<TableCell align="center" colSpan={10} >
-													No hay datos
-												</TableCell>
-											</TableRow>
-										)}
-									</TableBody>
-								</Table>
-							</TableContainer>
-							<TablePagination
-								labelRowsPerPage={"Filas por página"}
-								rowsPerPageOptions={ [5, 10, 25, 100] }
-								component="div"
-								count={ orders.length }
-								rowsPerPage={ rowsPerPage }
-								page={ page }
-								onChangePage={ handleChangePage }
-								onChangeRowsPerPage={ handleChangeRowsPerPage }
-							/>
+		<Container maxWidth="lg" className={ classes.container }>
+			<Paper className={ classes.paper } elevation={ 10 }>
+				<Grid container direction="column">
+					<Grid item xs={ 12 }>
+						<Grid container direction="row" justify="space-between" alignItems="center">
+							<Grid item>
+								<Typography color="primary" component="span">
+									<Box fontSize={ 24 } fontWeight="fontWeightMedium" m={ 2 }>
+										MIS ORDENES
+									</Box>
+								</Typography>
+							</Grid>
+							<Grid item>
+								<BootstrapTooltip title="Solicitar orden">
+									<IconButton onClick={ () => {
+										history.push('/' + history.location.pathname.split('/')[1] + '/requestOrder');
+									} }>
+										<AddCircleIcon fontSize="large" color="primary"/>
+									</IconButton>
+								</BootstrapTooltip>
+							</Grid>
 						</Grid>
 					</Grid>
-				</CardContent>
-			</Card>
-		</Grid>
+					<Grid item xs={ 12 }>
+						<MuiPickersUtilsProvider utils={ DateFnsUtils }>
+							<DatePicker
+								className={ classes.date }
+								disableToolbar
+								variant="inline"
+								format="yyyy-MM-dd"
+								margin="normal"
+								id="Fecha de inicio"
+								label="Fecha de inicio"
+								value={ filters.startDate }
+								onChange={ (date) => setFilters({ ...filters, startDate: new Date(date) }) }
+							/>
+							<DatePicker
+								className={ classes.date }
+								disableToolbar
+								variant="inline"
+								format="yyyy-MM-dd"
+								margin="normal"
+								id="Fecha de fin"
+								label="Fecha de fin"
+								value={ filters.endDate }
+								onChange={ (date) => setFilters({ ...filters, endDate: new Date(date) }) }
+							/>
+						</MuiPickersUtilsProvider>
+					</Grid>
+					<Grid item xs={ 12 }>
+						<CustomTable
+							headers={ ordersHeaders }
+							data={ orders }
+							options={
+								{
+									edit: false,
+									remove: false,
+									view: true
+								}
+							}
+							handleView={ (idOrder) => {
+								history.push({
+									pathname: '/' + history.location.pathname.split('/')[1] + '/orderDetails',
+									state: { idOrder }
+								});
+							} }
+						/>
+					</Grid>
+				</Grid>
+			</Paper>
+		</Container>
 	);
 };

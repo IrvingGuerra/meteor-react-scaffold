@@ -27,7 +27,7 @@ const dashboardRoutes = [
 		name: 'Dashboard',
 		icon: DashboardIcon,
 		component: Dashboard,
-		layout: ['admin', 'client', 'specialist', 'labworker']
+		layout: ['admin']
 	},
 	{
 		path: '/reports',
@@ -41,26 +41,26 @@ const dashboardRoutes = [
 		name: 'Mis ordenes',
 		icon: AssignmentIcon,
 		component: MyOrders,
-		layout: ['admin']
+		layout: ['admin', 'specialist', 'labworker', 'client']
 	},
 	{
 		path: '/requestOrder',
 		name: 'Solicitar orden',
 		component: RequestOrder,
-		layout: ['admin']
+		layout: ['admin', 'specialist', 'labworker', 'client']
 	},
 	{
 		path: '/orderList',
 		name: 'Ordenes',
 		icon: FindInPageIcon,
 		component: ListOrders,
-		layout: ['admin']
+		layout: ['admin', 'specialist', 'labworker']
 	},
 	{
 		path: '/orderDetails',
 		name: 'Detalles de la orden',
 		component: OrderDetails,
-		layout: ['admin']
+		layout: ['admin', 'specialist', 'labworker', 'client']
 	},
 	{
 		path: '/templateList',

@@ -37,3 +37,27 @@ if (Meteor.isServer) {
 		], { warnings: false });
 	});
 }
+
+if (Meteor.isServer) {
+	Meteor.publish('allTemplates', function( ) {
+		ReactiveAggregate(this, Template, [
+			{
+				$lookup:
+					{
+						from: 'users',
+						let: { idCreator: '$idCreator' },
+						pipeline: [
+							{ $match: { '$expr': { '$eq': ['$_id', '$$idCreator'] } } },
+							{ $project: { 'profile.username': 1 } }
+						],
+						as: 'creator'
+					}
+			}, {
+				$unwind: {
+					path: '$creator',
+					preserveNullAndEmptyArrays: true
+				}
+			}
+		], { warnings: false });
+	});
+}

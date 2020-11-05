@@ -15,7 +15,7 @@ export const requestOrderMethod = new ValidatedMethod({
 			check(order, {
 				_id: Match.OneOf(String, null),
 				petName: String,
-				petSpecies: String,
+				petSpecie: String,
 				petBreed: String,
 				petGender: String,
 				petAge: String,
@@ -59,7 +59,7 @@ export const updateOrderMethod = new ValidatedMethod({
 				date: String,
 				idRequested: String,
 				petName: String,
-				petSpecies: String,
+				petSpecie: String,
 				petBreed: String,
 				petGender: String,
 				petAge: String,
@@ -146,6 +146,36 @@ export const getOrderMethod = new ValidatedMethod({
 		} catch (err) {
 			console.error('Error getting order: ', err);
 			throw new Meteor.Error('500', 'Error al obtener la orden');
+		}
+		return responseMessage;
+	}
+});
+
+export const changeStatusOrderMethod = new ValidatedMethod({
+	name: 'order.changeStatus',
+	mixins: [MethodHooks],
+	permissions: [Permissions.ORDERS.UPDATE.VALUE],
+	validate({ idOrder, status }) {
+		try {
+			check(idOrder, String);
+			check(status, String);
+		} catch (exception) {
+			console.log('La información introducida no es válida: ', exception);
+			throw new Meteor.Error('500', 'La información introducida no es válida');
+		}
+	},
+	run({ idOrder, status }) {
+		const responseMessage = new ResponseMessage();
+		try {
+			Order.update(idOrder, {
+				$set: {
+					status: status
+				}
+			});
+			responseMessage.create(true, 'Se ha actualizado el estatus de la orden.');
+		} catch (err) {
+			console.error('Error updating order: ', err);
+			throw new Meteor.Error('500', 'Error al actualizar el estatus de la orden');
 		}
 		return responseMessage;
 	}

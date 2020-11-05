@@ -3,12 +3,32 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
-import { Card, Fab, CardHeader, CardContent } from '@material-ui/core';
+import {
+	Paper,
+	Typography,
+	Box,
+	Container, InputLabel, Select, MenuItem, FormControl
+} from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import IconButton from '@material-ui/core/IconButton';
+import { useTracker } from 'react-meteor-hooks';
+import { Specie } from '../../../api/Pets/Species/Specie';
+import { Breed } from '../../../api/Pets/Breeds/Breed';
+import { Gender } from '../../../api/Pets/Genders/Gender';
 
 const useStyles = makeStyles((theme) => ({
-	heading: {
-		padding: theme.spacing(4, 4, 0, 4)
+	container: {
+		paddingTop: theme.spacing(2),
+		paddingBottom: theme.spacing(2)
+	},
+	form: {
+		margin: theme.spacing(2)
+	},
+	paper: {
+		padding: theme.spacing(2),
+		display: 'flex',
+		overflow: 'auto',
+		flexDirection: 'column'
 	},
 	submit: {
 		margin: theme.spacing(3, 0, 2)
@@ -16,26 +36,33 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function RequestOrder(props) {
+	const { history, loader, alert } = props;
 	const classes = useStyles();
 	const [form, setForm] = useState({
 		_id: null,
 		petName: '',
-		petSpecies: '',
+		petSpecie: '',
 		petBreed: '',
 		petGender: '',
 		petAge: ''
 	});
+
 	const handleSubmitForm = (e) => {
 		e.preventDefault();
+		loader.current.setLoader(true);
 		Meteor.call('order.request', form, (error, response) => {
+			loader.current.setLoader(false);
 			if (error) {
-				props.alert.current.setAlert('Error', error.reason, 'error');
+				alert.current.setAlert('Error', error.reason, 'error');
 				return;
 			}
-			props.alert.current.setAlert('Éxito', response._message);
-			props.history.goBack();
+			alert.current.setAlert('Éxito', response._message);
+			setTimeout(() => {
+				history.goBack();
+			}, 1000);
 		});
 	};
+
 	useEffect(() => {
 		if (props.location.state) {
 			const user = props.location.state.user;
@@ -44,100 +71,128 @@ export default function RequestOrder(props) {
 			});
 		}
 	}, []);
+
+	const species = useTracker(() => {
+		Meteor.subscribe('species');
+		return Specie.find({}).fetch();
+	}, []);
+
+	const breeds = useTracker(() => {
+		Meteor.subscribe('breeds');
+		return Breed.find({}).fetch();
+	}, []);
+
+	const genders = useTracker(() => {
+		Meteor.subscribe('genders');
+		return Gender.find({}).fetch();
+	}, []);
+
 	return (
-		<Grid item lg={ 8 } md={ 10 } sm={ 12 }>
-			<Card elevation={ 6 }>
-				<CardHeader
-					className={ classes.heading }
-					action={
-						<Fab color="primary" aria-label="add" onClick={ () => {
-							props.history.goBack();
-						} }>
-							<ArrowBackIcon/>
-						</Fab>
-					}
-					title="Solicitar orden"
-				/>
-				<CardContent>
-					<Grid container spacing={ 2 }>
-						<Grid item xs={ 12 }>
-							<form onSubmit={ handleSubmitForm }>
-								<Grid container spacing={ 2 }>
-									<Grid item xs={ 12 }>
-										<TextField
-											variant="outlined"
-											required
-											fullWidth
-											id="petName"
-											label="Nombre de la mascota"
-											name="petName"
-											value={ form.petName }
-											onChange={ e => setForm({ ...form, petName: e.target.value }) }
-										/>
-									</Grid>
-									<Grid item xs={ 6 }>
-										<TextField
-											variant="outlined"
-											required
-											fullWidth
-											id="petSpecies"
-											label="Especie"
-											name="petSpecies"
-											value={ form.petSpecies }
-											onChange={ e => setForm({ ...form, petSpecies: e.target.value }) }
-										/>
-									</Grid>
-									<Grid item xs={ 6 }>
-										<TextField
-											variant="outlined"
-											required
-											fullWidth
-											id="petBreed"
-											label="Raza"
-											name="petBreed"
-											value={ form.petBreed }
-											onChange={ e => setForm({ ...form, petBreed: e.target.value }) }
-										/>
-									</Grid>
-									<Grid item xs={ 6 }>
-										<TextField
-											variant="outlined"
-											required
-											fullWidth
-											id="petGender"
-											label="Género"
-											name="petGender"
-											value={ form.petGender }
-											onChange={ e => setForm({ ...form, petGender: e.target.value }) }
-										/>
-									</Grid>
-									<Grid item xs={ 6 }>
-										<TextField
-											variant="outlined"
-											required
-											fullWidth
-											id="petAge"
-											label="Edad"
-											name="petAge"
-											value={ form.petAge }
-											onChange={ e => setForm({ ...form, petAge: e.target.value }) }
-										/>
-									</Grid>
-								</Grid>
-								<Button
-									type="submit"
-									fullWidth
-									variant="contained"
-									color="primary"
-									className={ classes.submit }
-								>
-									{ form._id ? 'Actualizar' : 'Solicitar' }
-								</Button>
-							</form>
+		<Container maxWidth="lg" className={ classes.container }>
+			<Paper className={ classes.paper } elevation={ 10 }>
+				<Grid container direction="column">
+					<Grid item xs={ 12 }>
+						<Grid container direction="row" justify="flex-start" alignItems="center">
+							<Grid item>
+								<IconButton onClick={ () => {
+									history.goBack();
+								} }>
+									<ArrowBackIcon fontSize="large" color="primary"/>
+								</IconButton>
+							</Grid>
+							<Grid item>
+								<Typography color="primary" component="span">
+									<Box fontSize={ 24 } fontWeight="fontWeightMedium" m={ 2 }>
+										{ form._id ? 'VER ORDEN' : 'SOLICITAR ORDEN' }
+									</Box>
+								</Typography>
+							</Grid>
 						</Grid>
 					</Grid>
-				</CardContent>
-			</Card>
-		</Grid>
+					<Grid item xs={ 12 }>
+						<form className={ classes.form } onSubmit={ handleSubmitForm }>
+							<Grid container spacing={ 2 }>
+								<Grid item xs={ 12 }>
+									<TextField
+										variant="outlined"
+										required
+										fullWidth
+										id="petName"
+										label="Nombre de la mascota"
+										name="petName"
+										value={ form.petName }
+										onChange={ e => setForm({ ...form, petName: e.target.value }) }
+									/>
+								</Grid>
+								<Grid item xs={ 6 }>
+									<FormControl variant="outlined" fullWidth required>
+										<InputLabel id="demo-simple-select-outlined-label">Especie</InputLabel>
+										<Select
+											labelId="demo-simple-select-outlined-label"
+											id="demo-simple-select-outlined"
+											value={ form.petSpecie }
+											onChange={ e => setForm({ ...form, petSpecie: e.target.value }) }
+											label="Especie"
+										>
+											{species.map((specie, i) => <MenuItem key={i} value={specie._id}>{specie.name}</MenuItem>)}
+										</Select>
+									</FormControl>
+								</Grid>
+								<Grid item xs={ 6 }>
+									<FormControl variant="outlined" fullWidth required>
+										<InputLabel id="demo-simple-select-outlined-label">Raza</InputLabel>
+										<Select
+											labelId="demo-simple-select-outlined-label"
+											id="demo-simple-select-outlined"
+											value={ form.petBreed }
+											onChange={ e => setForm({ ...form, petBreed: e.target.value }) }
+											label="Raza"
+										>
+											{breeds.map((breed, i) => <MenuItem key={i} value={breed._id}>{breed.name}</MenuItem>)}
+										</Select>
+									</FormControl>
+								</Grid>
+								<Grid item xs={ 6 }>
+									<FormControl variant="outlined" fullWidth required>
+										<InputLabel id="demo-simple-select-outlined-label">Genero</InputLabel>
+										<Select
+											labelId="demo-simple-select-outlined-label"
+											id="demo-simple-select-outlined"
+											value={ form.petGender }
+											onChange={ e => setForm({ ...form, petGender: e.target.value }) }
+											label="Genero"
+										>
+											{genders.map((gender, i) => <MenuItem key={i} value={gender._id}>{gender.name}</MenuItem>)}
+										</Select>
+									</FormControl>
+								</Grid>
+								<Grid item xs={ 6 }>
+									<TextField
+										variant="outlined"
+										required
+										fullWidth
+										id="petAge"
+										label="Edad"
+										name="petAge"
+										type="number"
+										value={ form.petAge }
+										onChange={ e => setForm({ ...form, petAge: e.target.value }) }
+									/>
+								</Grid>
+							</Grid>
+							<Button
+								type="submit"
+								fullWidth
+								variant="contained"
+								color="primary"
+								className={ classes.submit }
+							>
+								{ form._id ? 'Actualizar' : 'Solicitar' }
+							</Button>
+						</form>
+					</Grid>
+				</Grid>
+			</Paper>
+		</Container>
 	);
 }

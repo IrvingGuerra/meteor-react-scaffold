@@ -63,7 +63,7 @@ export const CustomTable = (props) => {
 												<DeleteIcon color="secondary"/>
 											</IconButton>
 										) }
-										{ view && (
+										{ (view && element.status && element.status === 'attended') && (
 											<IconButton onClick={ () => handleView(element._id) }>
 												<VisibilityIcon color="primary"/>
 											</IconButton>

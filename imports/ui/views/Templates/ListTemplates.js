@@ -57,15 +57,13 @@ export default function ListTemplates(props) {
 		setPage(0);
 	};
 
-	const [templates, isLoading] = useTracker(() => {
-		Meteor.subscribe('templates');
-		const subscription = Meteor.subscribe('templates', {
+	const templates = useTracker(() => {
+		Meteor.subscribe('templates', {
 			startDate: filters.startDate,
 			endDate: filters.endDate
 		});
 		const data = Template.find({}).fetch();
-		console.log(data);
-		return [data, !subscription.ready()];
+		return data;
 	}, []);
 
 	const deleteTemplate = () => {

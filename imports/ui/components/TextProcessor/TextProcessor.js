@@ -29,6 +29,8 @@ export default function TextProcessor(props) {
 		showGrid: false
 	});
 
+	const [downloadMode, setDownloadMode] = useState(false);
+
 	const createCanvas = (number) => {
 		const canvas = document.createElement('CANVAS');
 		canvas.setAttribute('id', 'doc' + number)
@@ -82,6 +84,8 @@ export default function TextProcessor(props) {
 				actualPage: 0,
 				lastElementSelected: null
 			});
+			//Check download mode
+			setDownloadMode(props.location.state.downloadMode)
 			return;
 		}
 		createCanvas(doc.actualPage);
@@ -91,7 +95,6 @@ export default function TextProcessor(props) {
 			...doc,
 			pages: copyPages
 		});
-		//add listeners
 	}, []);
 
 	const save = (doc) => {
@@ -301,11 +304,13 @@ export default function TextProcessor(props) {
 	return (
 		<Card elevation={ 6 }>
 			<div className="textProcessorHeaderTitleContainer">
-				<BootstrapTooltip title={ STRINGS.save }>
-					<button type="button" className="noButton" onClick={ () => save(doc) }>
-						<i className="fa fa-save iconSave"/>
-					</button>
-				</BootstrapTooltip>
+				{!downloadMode && (
+					<BootstrapTooltip title={ STRINGS.save }>
+						<button type="button" className="noButton" onClick={ () => save(doc) }>
+							<i className="fa fa-save iconSave"/>
+						</button>
+					</BootstrapTooltip>
+				)}
 				<BootstrapTooltip title={ STRINGS.download }>
 					<button type="button" className="noButton" onClick={ downloadDocument }>
 						<i id="download" className="fa fa-download iconDownload"/>
@@ -315,22 +320,27 @@ export default function TextProcessor(props) {
 					value={ doc.title }
 					className="textProcessorHeaderTitleText"
 					placeholder="Trámite 1"
+					readOnly={downloadMode}
 					type="text"
 					onChange={ (value) => setDoc({ ...doc, title: value.target.value }) }
 				/>
-				<BootstrapTooltip title={ STRINGS.signature }>
-					<button type="button" className="noButton" onClick={ () => modeSignature() }>
-						<i id="signature" className="fa fa-signature iconSave"/>
-					</button>
-				</BootstrapTooltip>
+				{!downloadMode && (
+					<BootstrapTooltip title={ STRINGS.signature }>
+						<button type="button" className="noButton" onClick={ () => modeSignature() }>
+							<i id="signature" className="fa fa-signature iconSave"/>
+						</button>
+					</BootstrapTooltip>
+				)}
 			</div>
-			<TextProcessorTabs
-				doc={ doc }
-				_handleNewPage={ _handleNewPage }
-				_handlePrevPage={ _handlePrevPage }
-				_handleNextPage={ _handleNextPage }
-				_handleGrid={ _handleGrid }
-			/>
+			{!downloadMode && (
+				<TextProcessorTabs
+					doc={ doc }
+					_handleNewPage={ _handleNewPage }
+					_handlePrevPage={ _handlePrevPage }
+					_handleNextPage={ _handleNextPage }
+					_handleGrid={ _handleGrid }
+				/>
+			)}
 			<div className="textProcessorBody">
 				<div id="docPaper" className="docPaper"/>
 			</div>
