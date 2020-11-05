@@ -173,18 +173,12 @@ export default function OrderDetails(props) {
 											onChange={ e => setNewStatus(e.target.value) }
 											label="Estatus"
 										>
-											{form.status === 'attended' ? (
-												<MenuItem key={ 5 } value="attended">Atendido</MenuItem>
-											):(
-												<>
-													<MenuItem key={ 1 } value="open">Abierto</MenuItem>
-													<MenuItem key={ 2 } value="awaitingSample">En espera de muestra</MenuItem>
-													<MenuItem key={ 3 } value="process">En proceso</MenuItem>
-													<MenuItem key={ 4 } value="awaitingResults">En espera de
-													resultados</MenuItem>
-													<MenuItem key={ 5 } value="attended">Atendido</MenuItem>
-												</>
-											)}
+											<MenuItem key={ 1 } value="open">Abierto</MenuItem>
+											<MenuItem key={ 2 } value="awaitingSample">En espera de muestra</MenuItem>
+											<MenuItem key={ 3 } value="process">En proceso</MenuItem>
+											<MenuItem key={ 4 } value="awaitingResults">En espera de
+												resultados</MenuItem>
+											<MenuItem key={ 5 } value="attended">Atendido</MenuItem>
 										</Select>
 									</FormControl>
 								</Grid>

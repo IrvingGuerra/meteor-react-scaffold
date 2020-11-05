@@ -12,6 +12,7 @@ import { useWorker } from '@koale/useworker';
 const grid = 18;
 
 export default function TextProcessor(props) {
+	const { history, loader, alert } = props;
 
 	const [doc, setDoc] = useState({
 		_id: null,
@@ -48,44 +49,58 @@ export default function TextProcessor(props) {
 		document.getElementById('doc' + number).parentNode.style.display = 'block';
 	};
 
+	const setDocWithTemplate = (template) => {
+		const pagesArrayJsons = [];
+		template.pages.forEach((page, i) => {
+			createCanvas(i);
+			let c = new fabric.Canvas('doc' + i);
+			if (i !== 0) hideCanvas(i);
+			c.loadFromJSON(page.canvas, c.renderAll.bind(c), (o, object) => {
+				if (!props.location.state.canEdit) {
+					// Just can edit id label
+					if (object.id === 'input') {
+						object.set('selectable', true);
+						object.set('lockMovementX', true);
+						object.set('lockMovementY', true);
+					} else if (object.id && object.id.includes('result')) {
+						object.set('selectable', true);
+					} else {
+						object.set('selectable', false);
+					}
+				}
+			});
+			pagesArrayJsons.push({
+				canvas: c,
+				margin: page.margin,
+				paperSize: page.paperSize
+			});
+		});
+		setDoc({
+			_id: template._id,
+			title: template.title,
+			pages: pagesArrayJsons,
+			actualPage: 0,
+			lastElementSelected: null
+		});
+		//Check download mode
+		setDownloadMode(props.location.state.downloadMode)
+	}
+
 	useEffect(() => {
 		if (props.location.state) {
-			// Load all pages (template is in bd, here is doc)
-			const template = props.location.state.template;
-			const pagesArrayJsons = [];
-			template.pages.forEach((page, i) => {
-				createCanvas(i);
-				let c = new fabric.Canvas('doc' + i);
-				if (i !== 0) hideCanvas(i);
-				c.loadFromJSON(page.canvas, c.renderAll.bind(c), (o, object) => {
-					if (!props.location.state.canEdit) {
-						// Just can edit id label
-						if (object.id === 'input') {
-							object.set('selectable', true);
-							object.set('lockMovementX', true);
-							object.set('lockMovementY', true);
-						} else if (object.id && object.id.includes('result')) {
-							object.set('selectable', true);
-						} else {
-							object.set('selectable', false);
-						}
+			if(props.location.state.idTemplate){
+				loader.current.setLoader(true);
+				Meteor.call('template.get', props.location.state.idTemplate , (error, response) => {
+					loader.current.setLoader(false);
+					if (error) {
+						alert.current.setAlert('Error', error.reason, 'error');
+						return;
 					}
-				});
-				pagesArrayJsons.push({
-					canvas: c,
-					margin: page.margin,
-					paperSize: page.paperSize
-				});
-			});
-			setDoc({
-				_id: props.location.state.template._id,
-				title: props.location.state.template.title,
-				pages: pagesArrayJsons,
-				actualPage: 0,
-				lastElementSelected: null
-			});
-			//Check download mode
-			setDownloadMode(props.location.state.downloadMode)
+					setDocWithTemplate(response._data)
+				})
+				return;
+			}
+			setDocWithTemplate(props.location.state.template)
 			return;
 		}
 		createCanvas(doc.actualPage);

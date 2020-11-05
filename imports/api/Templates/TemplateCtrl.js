@@ -6,6 +6,7 @@ import { Template } from './Template';
 
 import Permissions from '../../startup/server/Permissions';
 import Utilities from '../../startup/both/Utilities';
+import { Order } from '../Orders/Order';
 
 export const saveTemplateMethod = new ValidatedMethod({
 	name: 'template.save',
@@ -49,6 +50,31 @@ export const saveTemplateMethod = new ValidatedMethod({
 				console.error('Error updating template: ', err);
 				throw new Meteor.Error('500', 'Error al actualizar la plantilla');
 			}
+		}
+		return responseMessage;
+	}
+});
+
+export const getOrderMethod = new ValidatedMethod({
+	name: 'template.get',
+	mixins: [MethodHooks],
+	permissions: [Permissions.TEMPLATES.LIST.VALUE],
+	validate(idTemplate) {
+		try {
+			check(idTemplate, String);
+		} catch (exception) {
+			console.log('La información introducida no es válida: ', exception);
+			throw new Meteor.Error('500', 'La información introducida no es válida');
+		}
+	},
+	run(idTemplate) {
+		const responseMessage = new ResponseMessage();
+		try {
+			const template = Template.findOne(idTemplate);
+			responseMessage.create(true, 'Plantilla obtenida exitosamente', null, template);
+		} catch (err) {
+			console.error('Error getting template: ', err);
+			throw new Meteor.Error('500', 'Error al obtener la plantilla');
 		}
 		return responseMessage;
 	}

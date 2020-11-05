@@ -3,20 +3,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import {
 	Box,
 	Container,
-	TableContainer,
-	Table,
-	TableHead,
-	TableRow,
-	TableCell,
-	TableBody,
-	TablePagination,
 	IconButton,
 	Grid,
 	Typography,
 	Paper
 } from '@material-ui/core';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import BootstrapTooltip from '../../components/Tooltips/BootstrapTooltip';
 import { ModalDialog } from '../../components/Utilities/Modals/ModalDialog';

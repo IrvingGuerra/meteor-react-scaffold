@@ -33,6 +33,13 @@ if (Meteor.isServer) {
 					path: '$creator',
 					preserveNullAndEmptyArrays: true
 				}
+			},
+			{
+				$project: {
+					"title": 1,
+					"date": 1,
+					"creator": 1
+				}
 			}
 		], { warnings: false });
 	});
