@@ -147,25 +147,25 @@ export default function Cytology(props) {
 							</FormControl>
 						</Grid>
 						<Grid item>
-							<FormControl component="fieldset">
-								<FormLabel component="legend">Presenta:</FormLabel>
-								<RadioGroup
-									className={ classes.group }
-									aria-label="PresentValue"
-									name="PresentValue"
-									value={ data.PresentValue }
-								>
-									<FormControlLabel value="Nódulo / Masa"
-									                  control={ <Radio onClick={ handleClickRadio }/> }
-									                  label="Nódulo / Masa"/>
-									<FormControlLabel value="Tamaño del órgano"
-									                  control={ <Radio onClick={ handleClickRadio }/> }
-									                  label="Tamaño del órgano"/>
-									<FormControlLabel value="Otro" control={ <Radio onClick={ handleClickRadio }/> }
-									                  label="Otro"/>
-								</RadioGroup>
-							</FormControl>
-						</Grid>
+						<FormControl component="fieldset">
+							<FormLabel component="legend">Presenta:</FormLabel>
+							<RadioGroup
+								className={ classes.group }
+								aria-label="PresentValue"
+								name="PresentValue"
+								value={ data.PresentValue }
+							>
+								<FormControlLabel value="Nódulo / Masa"
+								                  control={ <Radio onClick={ handleClickRadio }/> }
+								                  label="Nódulo / Masa"/>
+								<FormControlLabel value="Tamaño del órgano"
+								                  control={ <Radio onClick={ handleClickRadio }/> }
+								                  label="Tamaño del órgano"/>
+								<FormControlLabel value="Otro" control={ <Radio onClick={ handleClickRadio }/> }
+								                  label="Otro"/>
+							</RadioGroup>
+						</FormControl>
+					</Grid>
 						<Grid item xs={ 12 }>
 							<TextField
 								disabled={ data.PresentValue !== 'Otro' }

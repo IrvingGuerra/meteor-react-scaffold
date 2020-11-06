@@ -207,7 +207,7 @@ export default function RequestOrder(props) {
 		Bacteriological: false,
 		BacteriologicalGeneral: false,
 		SensidiscoAdd: false,
-		Sensidisco: false,
+		Salmonella: false,
 		BloodCultureGeneral: false,
 		BloodCulture: false,
 		MycologicalGeneral: false,
@@ -256,6 +256,7 @@ export default function RequestOrder(props) {
 		Lipasa: false,
 		Pancreas: false,
 		Protein: false,
+		ProteinC: false,
 		Trypsin: false,
 		Other: false,
 		OtherValue: ''
