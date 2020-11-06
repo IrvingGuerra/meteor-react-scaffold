@@ -8,7 +8,7 @@ import Sidebar, { drawerWidth } from '../components/Sidebar/Sidebar';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { Copyright } from '../views/Auth/login';
+import { Copyright } from '../views/Auth/Login';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -54,7 +54,7 @@ const SwitchRoutes = ({ profile, props }) => {
 				}
 				return null;
 			}) }
-			<Redirect from={ '/' + profile } to={ '/' + profile + '/dashboard' }/>
+			<Redirect from={ '/' + profile } to={ '/' + profile + '/myOrderList' }/>
 		</Switch>
 	);
 };

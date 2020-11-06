@@ -1,6 +1,7 @@
 {
   "private": {
-    "ROOT_URL": "http://meteor-react-scaffold",
-    "STORAGE_PATH": "/Users/irvingguerra/Documents/meteor-react-scaffold/.uploads"
+    "ROOT_URL": "http://localhost:3000",
+    "STORAGE_PATH": "/Users/irvingguerra/Documents/meteor-react-scaffold/.uploads",
+    "MAIL_URL": "smtp://guerravargasirvinggo:190997Tsukune@smtp.gmail.com:587"
   }
 }

@@ -23,13 +23,6 @@ import CreateGender from './views/Pets/Create/CreateGender';
 
 const dashboardRoutes = [
 	{
-		path: '/dashboard',
-		name: 'Dashboard',
-		icon: DashboardIcon,
-		component: Dashboard,
-		layout: ['admin']
-	},
-	{
 		path: '/reports',
 		name: 'Reportes',
 		icon: AssessmentIcon,

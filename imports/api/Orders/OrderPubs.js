@@ -4,11 +4,12 @@ import { Order } from './Order';
 
 if (Meteor.isServer) {
 	Meteor.publish('orders', function(data) {
+		let query = {
+			date: { $gte: data.startDate.toISOString().substring(0, 10), $lte: data.endDate.toISOString().substring(0, 10) }
+		};
 		ReactiveAggregate(this, Order, [
 			{
-				$match: {
-					date: { $gte: data.startDate.toISOString().substring(0, 10), $lte: data.endDate.toISOString().substring(0, 10) }
-				}
+				$match: query
 			},
 			{
 				$lookup:

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
@@ -29,6 +29,9 @@ import Complementary from '../../components/RequestOrder/Complementary';
 import Infectious from '../../components/RequestOrder/Infectious';
 import Toxicology from '../../components/RequestOrder/Toxicology';
 import Histopathology from '../../components/RequestOrder/Histopathology';
+import DateFnsUtils from '@date-io/date-fns';
+import { DatePicker, TimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import Utilities from '../../../startup/both/Utilities';
 
 const useStyles = makeStyles((theme) => ({
 	container: {
@@ -54,11 +57,18 @@ export default function RequestOrder(props) {
 	const classes = useStyles();
 	const [form, setForm] = useState({
 		_id: null,
+		petOwner: '',
+		clinic: '',
+		phone: '',
 		petName: '',
 		petSpecie: '',
 		petBreed: '',
 		petGender: '',
-		petAge: ''
+		petAge: '',
+		EFG: '',
+		TX: '',
+		samplingDate: new Date(Utilities.currentLocalDate()),
+		samplingHour: new Date()
 	});
 
 	const [biochemistry, setBiochemistry] = useState({
@@ -351,7 +361,6 @@ export default function RequestOrder(props) {
 		form.infectious = infectious;
 		form.toxicology = toxicology;
 		form.histopathology = histopathology;
-
 		Meteor.call('order.request', form, (error, response) => {
 			loader.current.setLoader(false);
 			if (error) {
@@ -364,18 +373,6 @@ export default function RequestOrder(props) {
 			}, 1000);
 		});
 	};
-
-	/*
-	useEffect(() => {
-		if (props.location.state) {
-			const user = props.location.state.user;
-			setForm({
-				_id: user._id
-			});
-		}
-	}, []);
-
-	 */
 
 	const species = useTracker(() => {
 		Meteor.subscribe('species');
@@ -417,6 +414,44 @@ export default function RequestOrder(props) {
 					<Grid item xs={ 12 }>
 						<form className={ classes.form } onSubmit={ handleSubmitForm }>
 							<Grid container spacing={ 2 }>
+								<Grid item xs={ 12 }>
+									<TextField
+										variant="outlined"
+										required
+										fullWidth
+										id="petOwner"
+										label="Propietario"
+										name="petOwner"
+										value={ form.petOwner }
+										onChange={ e => setForm({ ...form, petOwner: e.target.value }) }
+									/>
+								</Grid>
+								<Grid item xs={ 6 }>
+									<TextField
+										variant="outlined"
+										required
+										fullWidth
+										id="clinic"
+										label="Clinica"
+										name="clinic"
+										value={ form.clinic }
+										onChange={ e => setForm({ ...form, clinic: e.target.value }) }
+									/>
+								</Grid>
+								<Grid item xs={ 6 }>
+									<TextField
+										variant="outlined"
+										required
+										fullWidth
+										id="phone"
+										label="Teléfono"
+										name="phone"
+										type="tel"
+										pattern="[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}"
+										value={ form.phone }
+										onChange={ e => setForm({ ...form, phone: e.target.value }) }
+									/>
+								</Grid>
 								<Grid item xs={ 12 }>
 									<TextField
 										variant="outlined"
@@ -486,6 +521,61 @@ export default function RequestOrder(props) {
 										value={ form.petAge }
 										onChange={ e => setForm({ ...form, petAge: e.target.value }) }
 									/>
+								</Grid>
+								<Grid item xs={12}>
+									<TextField
+										id="outlined-multiline-static"
+										label="Signos clínicos / EFG:"
+										required
+										fullWidth
+										multiline
+										rows={4}
+										variant="outlined"
+										value={ form.EFG }
+										onChange={ e => setForm({ ...form, EFG: e.target.value }) }
+									/>
+								</Grid>
+								<Grid item xs={12}>
+									<TextField
+										id="outlined-multiline-static"
+										label="Tx reciente previo al muestreo:"
+										required
+										fullWidth
+										multiline
+										rows={4}
+										variant="outlined"
+										value={ form.TX }
+										onChange={ e => setForm({ ...form, TX: e.target.value }) }
+									/>
+								</Grid>
+								<Grid item xs={6}>
+									<MuiPickersUtilsProvider utils={ DateFnsUtils }>
+										<DatePicker
+											disableToolbar
+											variant="outlined"
+											fullWidth
+											format="yyyy-MM-dd"
+											margin="normal"
+											id="Fecha de muestreo"
+											label="Fecha de muestreo"
+											value={ form.samplingDate }
+											onChange={ (date) => setForm({ ...form, samplingDate: new Date(date) }) }
+										/>
+									</MuiPickersUtilsProvider>
+								</Grid>
+								<Grid item xs={6}>
+									<MuiPickersUtilsProvider utils={ DateFnsUtils }>
+										<TimePicker
+											disableToolbar
+											variant="outlined"
+											fullWidth
+											margin="normal"
+											id="Hora de muestreo"
+											label="Hora de muestreo"
+											value={ form.samplingHour }
+											onChange={ (date) => setForm({ ...form, samplingHour: new Date(date) }) }
+										/>
+									</MuiPickersUtilsProvider>
 								</Grid>
 								<Grid item xs={ 12 }>
 									<Biochemistry

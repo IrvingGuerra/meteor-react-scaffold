@@ -59,6 +59,8 @@ export default function ListTemplates(props) {
 		Meteor.subscribe('templates', {
 			startDate: filters.startDate,
 			endDate: filters.endDate
+		}, {
+			sort: { date: -1 }
 		});
 		const templates = Template.find({}).fetch();
 		templates.map((template) => {
@@ -66,7 +68,7 @@ export default function ListTemplates(props) {
 			delete template.creator;
 			delete template.idCreator;
 			delete template.pages;
-		})
+		});
 		return templates;
 	}, []);
 
@@ -87,6 +89,16 @@ export default function ListTemplates(props) {
 		setIdDelete(id);
 		const template = templates.filter(template => template._id === id)[0];
 		modal.setModal('Eliminar Plantilla', '¿Esta seguro de eliminar la plantilla ' + template.title + '?');
+	};
+
+	const copyTemplate = (idTemplate) => {
+		Meteor.call('template.copy', idTemplate, (error, response) => {
+			if (error) {
+				props.alert.current.setAlert('Error', error.reason, 'error');
+				return;
+			}
+			props.alert.current.setAlert('Éxito', response._message);
+		});
 	};
 
 	return (
@@ -147,6 +159,7 @@ export default function ListTemplates(props) {
 								{
 									edit: true,
 									remove: true,
+									copy: true,
 									view: false
 								}
 							}
@@ -159,15 +172,15 @@ export default function ListTemplates(props) {
 							handleRemove={ (idTemplate) => {
 								confirmDelete(idTemplate);
 							} }
+							handleCopy={ (idTemplate) => {
+								copyTemplate(idTemplate);
+							} }
 						/>
 					</Grid>
 				</Grid>
 			</Paper>
 			<ModalDialog modal={ modal } _handleAccept={ deleteTemplate }/>
 		</Container>
-
-
-
 
 	);
 };

@@ -40,6 +40,8 @@ import Complementary from '../../components/RequestOrder/Complementary';
 import Infectious from '../../components/RequestOrder/Infectious';
 import Toxicology from '../../components/RequestOrder/Toxicology';
 import Histopathology from '../../components/RequestOrder/Histopathology';
+import { DatePicker, MuiPickersUtilsProvider, TimePicker } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
 
 const useStyles = makeStyles((theme) => ({
 	container: {
@@ -113,7 +115,6 @@ export default function OrderDetails(props) {
 					alert.current.setAlert('Error', error.reason, 'error');
 					return;
 				}
-				console.log(response._data);
 				setForm(response._data);
 				setNewStatus(response._data.status)
 			});
@@ -166,6 +167,44 @@ export default function OrderDetails(props) {
 						<form className={ classes.form }
 						      onSubmit={ (e) => form.status === 'open' ? handleAssignAnalyses(e) : handleUpdateStatus(e) }>
 							<Grid container spacing={ 2 }>
+								<Grid item xs={ 12 }>
+									<TextField
+										variant="outlined"
+										required
+										fullWidth
+										id="petOwner"
+										label="Propietario"
+										name="petOwner"
+										value={ form.petOwner }
+										onChange={ e => setForm({ ...form, petOwner: e.target.value }) }
+									/>
+								</Grid>
+								<Grid item xs={ 6 }>
+									<TextField
+										variant="outlined"
+										required
+										fullWidth
+										id="clinic"
+										label="Clinica"
+										name="clinic"
+										value={ form.clinic }
+										onChange={ e => setForm({ ...form, clinic: e.target.value }) }
+									/>
+								</Grid>
+								<Grid item xs={ 6 }>
+									<TextField
+										variant="outlined"
+										required
+										fullWidth
+										id="phone"
+										label="Teléfono"
+										name="phone"
+										type="tel"
+										pattern="[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}"
+										value={ form.phone }
+										onChange={ e => setForm({ ...form, phone: e.target.value }) }
+									/>
+								</Grid>
 								<Grid item xs={ 6 }>
 									<TextField
 										variant="outlined"
@@ -254,7 +293,61 @@ export default function OrderDetails(props) {
 										onChange={ e => setForm({ ...form, petAge: e.target.value }) }
 									/>
 								</Grid>
-
+								<Grid item xs={12}>
+									<TextField
+										id="outlined-multiline-static"
+										label="Signos clínicos / EFG:"
+										required
+										fullWidth
+										multiline
+										rows={4}
+										variant="outlined"
+										value={ form.EFG }
+										onChange={ e => setForm({ ...form, EFG: e.target.value }) }
+									/>
+								</Grid>
+								<Grid item xs={12}>
+									<TextField
+										id="outlined-multiline-static"
+										label="Tx reciente previo al muestreo:"
+										required
+										fullWidth
+										multiline
+										rows={4}
+										variant="outlined"
+										value={ form.TX }
+										onChange={ e => setForm({ ...form, TX: e.target.value }) }
+									/>
+								</Grid>
+								<Grid item xs={6}>
+									<MuiPickersUtilsProvider utils={ DateFnsUtils }>
+										<DatePicker
+											disableToolbar
+											variant="outlined"
+											fullWidth
+											format="yyyy-MM-dd"
+											margin="normal"
+											id="Fecha de muestreo"
+											label="Fecha de muestreo"
+											value={ form.samplingDate }
+											onChange={ (date) => setForm({ ...form, samplingDate: new Date(date) }) }
+										/>
+									</MuiPickersUtilsProvider>
+								</Grid>
+								<Grid item xs={6}>
+									<MuiPickersUtilsProvider utils={ DateFnsUtils }>
+										<TimePicker
+											disableToolbar
+											variant="outlined"
+											fullWidth
+											margin="normal"
+											id="Hora de muestreo"
+											label="Hora de muestreo"
+											value={ form.samplingHour }
+											onChange={ (date) => setForm({ ...form, samplingHour: new Date(date) }) }
+										/>
+									</MuiPickersUtilsProvider>
+								</Grid>
 								{form._id && (
 									<Grid item xs={ 12 }>
 										<Biochemistry

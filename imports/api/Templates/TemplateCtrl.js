@@ -6,7 +6,6 @@ import { Template } from './Template';
 
 import Permissions from '../../startup/server/Permissions';
 import Utilities from '../../startup/both/Utilities';
-import { Order } from '../Orders/Order';
 
 export const saveTemplateMethod = new ValidatedMethod({
 	name: 'template.save',
@@ -55,7 +54,7 @@ export const saveTemplateMethod = new ValidatedMethod({
 	}
 });
 
-export const getOrderMethod = new ValidatedMethod({
+export const getTemplateMethod = new ValidatedMethod({
 	name: 'template.get',
 	mixins: [MethodHooks],
 	permissions: [Permissions.TEMPLATES.LIST.VALUE],
@@ -79,6 +78,38 @@ export const getOrderMethod = new ValidatedMethod({
 		return responseMessage;
 	}
 });
+
+
+export const copyTemplateMethod = new ValidatedMethod({
+	name: 'template.copy',
+	mixins: [MethodHooks],
+	permissions: [Permissions.TEMPLATES.LIST.VALUE],
+	validate(idTemplate) {
+		try {
+			check(idTemplate, String);
+		} catch (exception) {
+			console.log('La información introducida no es válida: ', exception);
+			throw new Meteor.Error('500', 'La información introducida no es válida');
+		}
+	},
+	run(idTemplate) {
+		const responseMessage = new ResponseMessage();
+		try {
+			const template = Template.findOne(idTemplate);
+			delete template._id;
+			template.title = 'Copia de ' + template.title;
+			template.date = Utilities.currentLocalISODate();
+			template.idCreator = Meteor.userId();
+			Template.insert(template);
+			responseMessage.create(true, 'Plantilla copiada exitosamente', null, template);
+		} catch (err) {
+			console.error('Error copying template: ', err);
+			throw new Meteor.Error('500', 'Error al copiar la plantilla');
+		}
+		return responseMessage;
+	}
+});
+
 
 export const deleteTemplateMethod = new ValidatedMethod({
 	name: 'template.delete',

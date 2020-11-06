@@ -14,11 +14,18 @@ export const requestOrderMethod = new ValidatedMethod({
 		try {
 			check(order, {
 				_id: Match.OneOf(String, null),
+				petOwner: String,
+				clinic: String,
+				phone: String,
 				petName: String,
 				petSpecie: String,
 				petBreed: String,
 				petGender: String,
 				petAge: String,
+				EFG: String,
+				TX: String,
+				samplingDate: Date,
+				samplingHour: Date,
 				biochemistry: Object,
 				analytes: Object,
 				hemostasis: Object,

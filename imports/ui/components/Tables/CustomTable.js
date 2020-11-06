@@ -12,10 +12,11 @@ import IconButton from '@material-ui/core/IconButton';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import VisibilityIcon from '@material-ui/icons/Visibility';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
 
 export const CustomTable = (props) => {
-	const { headers, data, options, handleEdit, handleRemove, handleView } = props;
-	const { edit, remove, view } = options;
+	const { headers, data, options, handleEdit, handleRemove, handleCopy, handleView } = props;
+	const { edit, remove, copy, view } = options;
 	const [page, setPage] = useState(0);
 	const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -61,6 +62,11 @@ export const CustomTable = (props) => {
 										{ remove && (
 											<IconButton aria-label="delete" onClick={ () => handleRemove(element._id) }>
 												<DeleteIcon color="secondary"/>
+											</IconButton>
+										) }
+										{ copy && (
+											<IconButton onClick={ () => handleCopy(element._id) }>
+												<FileCopyIcon color="primary"/>
 											</IconButton>
 										) }
 										{ (view && element.status && element.status === 'attended') && (

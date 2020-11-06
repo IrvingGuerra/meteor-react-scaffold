@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
 	Grid,
 	Paper,
 	Container,
 	Typography,
-	Box
+	Box, InputLabel, Select, MenuItem, FormControl
 } from '@material-ui/core';
 import { useTracker } from 'react-meteor-hooks';
 import { Order } from '../../../api/Orders/Order';
@@ -22,6 +22,10 @@ const useStyles = makeStyles((theme) => ({
 	date: {
 		marginLeft: theme.spacing(2)
 	},
+	formControl: {
+		margin: theme.spacing(1),
+		minWidth: 200,
+	},
 	paper: {
 		padding: theme.spacing(2),
 		display: 'flex',
@@ -30,28 +34,37 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
+const useOrders = (filters) => useTracker(() => {
+	Meteor.subscribe('orders', {
+		startDate: filters.startDate,
+		endDate: filters.endDate
+	}, {
+		sort: { date: -1 }
+	});
+	let filter = {};
+	if(filters.status !== 'all' ){
+		filter = {status: filters.status}
+	}
+	const orders = Order.find(filter).fetch();
+	orders.map((order) => {
+		order.requestedName = order.requested.profile.username;
+		delete order.requested;
+		delete order.idRequested;
+	});
+	return orders;
+}, [filters]);
+
 const ListOrders = (props) => {
 	const { history } = props;
 	const classes = useStyles();
 	// Filters
 	const [filters, setFilters] = useState({
 		startDate: new Date(Utilities.currentLocalDate()),
-		endDate: new Date(Utilities.currentLocalDate())
+		endDate: new Date(Utilities.currentLocalDate()),
+		status: 'all'
 	});
 
-	const orders = useTracker(() => {
-		Meteor.subscribe('orders', {
-			startDate: filters.startDate,
-			endDate: filters.endDate
-		});
-		const orders = Order.find({}).fetch();
-		orders.map((order) => {
-			order.requestedName = order.requested.profile.username;
-			delete order.requested;
-			delete order.idRequested;
-		});
-		return orders;
-	}, []);
+	const orders = useOrders(filters);
 
 	const ordersHeaders = ['Numero de orden', 'Estatus', 'Fecha', 'Solicitó'];
 
@@ -95,6 +108,24 @@ const ListOrders = (props) => {
 								onChange={ (date) => setFilters({ ...filters, endDate: new Date(date) }) }
 							/>
 						</MuiPickersUtilsProvider>
+						<FormControl variant="outlined" className={classes.formControl}>
+							<InputLabel id="demo-simple-select-outlined-label">Estatus</InputLabel>
+							<Select
+								labelId="demo-simple-select-outlined-label"
+								id="demo-simple-select-outlined"
+								value={ filters.status }
+								onChange={ e => setFilters({ ...filters, status: e.target.value }) }
+								label="Estatus"
+							>
+								<MenuItem key={ 1 } value="all" >Todos los status</MenuItem>
+								<MenuItem key={ 2 } value="open">Abierto</MenuItem>
+								<MenuItem key={ 3 } value="awaitingSample">En espera de muestra</MenuItem>
+								<MenuItem key={ 4 } value="process">En proceso</MenuItem>
+								<MenuItem key={ 5 } value="awaitingResults">En espera de
+									resultados</MenuItem>
+								<MenuItem key={ 6 } value="attended">Atendido</MenuItem>
+							</Select>
+						</FormControl>
 					</Grid>
 					<Grid item xs={ 12 }>
 						<CustomTable
