@@ -13,13 +13,11 @@ import {
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import TextField from '@material-ui/core/TextField';
-import { accordionStyles, hasTrue } from './Biochemistry';
+import { accordionStyles } from './Biochemistry';
 
-export default function Hematology(props) {
+export default function Histopathology(props) {
 	const { data, setData } = props;
 	const classes = accordionStyles();
-	const [headerColor, setHeaderColor] = useState(false);
-	const [open, setOpen] = useState(false);
 
 	const handleChange = (event) => {
 		setData({ ...data, [event.target.name]: event.target.checked });
@@ -37,22 +35,31 @@ export default function Hematology(props) {
 		}
 	};
 
+	const [headerColor, setHeaderColor] = useState(false);
+
+	const hasTrue = (object) => {
+		let boolean = false;
+		Object.keys(object).forEach(key => {
+			if (object[key]) {
+				boolean = true;
+			}
+		});
+		return boolean;
+	};
+
 	useEffect(() => {
 		setHeaderColor(hasTrue(data));
 	}, [data]);
 
 	return (
-		<Accordion className={ classes.accordion } onChange={ (e, state) => {
-			e.preventDefault();
-			setOpen(state);
-		} }>
+		<Accordion className={ classes.accordion }>
 			<AccordionSummary
 				className={ headerColor ? classes.accordionSummaryColor : classes.accordionSummary }
 				expandIcon={ <ExpandMoreIcon/> }
 				aria-controls="panel1a-content"
 				id="panel1a-header"
 			>
-				<Typography>HEMATOLOGÍA E INMUNOHEMATOLOGÍA</Typography>
+				<Typography>HISTOPATOLOGÍA</Typography>
 			</AccordionSummary>
 			<AccordionDetails>
 				<Grid container direction="column" justify="center" alignItems="stretch">
@@ -62,7 +69,7 @@ export default function Hematology(props) {
 
 							</Grid>
 							<Grid item xs={ 6 }>
-
+								
 							</Grid>
 						</Grid>
 					</Grid>

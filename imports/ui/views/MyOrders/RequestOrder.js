@@ -21,6 +21,14 @@ import Hemostasis from '../../components/RequestOrder/Hemostasis';
 import NonConventional from '../../components/RequestOrder/NonConventional';
 import UrinaryTract from '../../components/RequestOrder/UrinaryTract';
 import Cytology from '../../components/RequestOrder/Cytology';
+import Hematology from '../../components/RequestOrder/Hematology';
+import Parasitology from '../../components/RequestOrder/Parasitology';
+import Bacteriology from '../../components/RequestOrder/Bacteriology';
+import Endocrinology from '../../components/RequestOrder/Endocrinology';
+import Complementary from '../../components/RequestOrder/Complementary';
+import Infectious from '../../components/RequestOrder/Infectious';
+import Toxicology from '../../components/RequestOrder/Toxicology';
+import Histopathology from '../../components/RequestOrder/Histopathology';
 
 const useStyles = makeStyles((theme) => ({
 	container: {
@@ -488,6 +496,38 @@ export default function RequestOrder(props) {
 									<Cytology
 										data={cytology}
 										setData={setCytology}
+									/>
+									<Hematology
+										data={hematology}
+										setData={setHematology}
+									/>
+									<Parasitology
+										data={parasitology}
+										setData={setParasitology}
+									/>
+									<Bacteriology
+										data={bacteriology}
+										setData={setBacteriology}
+									/>
+									<Endocrinology
+										data={endocrinology}
+										setData={setEndocrinology}
+									/>
+									<Complementary
+										data={complementary}
+										setData={setComplementary}
+									/>
+									<Infectious
+										data={infectious}
+										setData={setInfectious}
+									/>
+									<Toxicology
+										data={toxicology}
+										setData={setToxicology}
+									/>
+									<Histopathology
+										data={histopathology}
+										setData={setHistopathology}
 									/>
 								</Grid>
 							</Grid>
