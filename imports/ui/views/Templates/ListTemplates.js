@@ -44,6 +44,23 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
+const useTemplates = (filters) => useTracker(() => {
+	Meteor.subscribe('templates', {
+		startDate: filters.startDate,
+		endDate: filters.endDate
+	}, {
+		sort: { date: -1 }
+	});
+	const templates = Template.find({}).fetch();
+	templates.map((template) => {
+		template.creatorName = template.creator.profile.username;
+		delete template.creator;
+		delete template.idCreator;
+		delete template.pages;
+	});
+	return templates;
+}, [filters]);
+
 export default function ListTemplates(props) {
 	const { history, loader, alert } = props;
 	const classes = useStyles();
@@ -55,22 +72,7 @@ export default function ListTemplates(props) {
 	const modal = useModal();
 	const [idDelete, setIdDelete] = useState(null);
 
-	const templates = useTracker(() => {
-		Meteor.subscribe('templates', {
-			startDate: filters.startDate,
-			endDate: filters.endDate
-		}, {
-			sort: { date: -1 }
-		});
-		const templates = Template.find({}).fetch();
-		templates.map((template) => {
-			template.creatorName = template.creator.profile.username;
-			delete template.creator;
-			delete template.idCreator;
-			delete template.pages;
-		});
-		return templates;
-	}, []);
+	const templates = useTemplates(filters);
 
 	const templatesHeaders = ['Nombre de la plantilla', 'Fecha de creación', 'Creador de la plantilla'];
 
