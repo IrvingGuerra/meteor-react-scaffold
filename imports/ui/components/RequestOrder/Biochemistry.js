@@ -48,10 +48,17 @@ export default function Biochemistry(props) {
 		setData({ ...data, [event.target.name]: event.target.checked });
 	};
 
-	const handleChangeRadioAndText = (event) => {
+	const handleChangeText = (event) => {
 		setData({ ...data, [event.target.name]: event.target.value });
 	};
 
+	const handleClickRadio = (event) => {
+		if (event.target.value === data[event.target.name]) {
+			setData({ ...data, [event.target.name]: '' });
+		} else {
+			setData({ ...data, [event.target.name]: event.target.value });
+		}
+	};
 	const [headerColor, setHeaderColor] = useState(false);
 
 	const hasTrue = (object) => {
@@ -65,7 +72,6 @@ export default function Biochemistry(props) {
 	};
 
 	useEffect(() => {
-		console.log(hasTrue(data));
 		setHeaderColor(hasTrue(data));
 	}, [data]);
 
@@ -127,10 +133,13 @@ export default function Biochemistry(props) {
 												aria-label="HepaticProfileValue"
 												name="HepaticProfileValue"
 												value={ data.HepaticProfileValue }
-												onChange={ handleChangeRadioAndText }
 											>
-												<FormControlLabel disabled={!data.HepaticProfile} value="one" control={ <Radio/> } label="Uno"/>
-												<FormControlLabel disabled={!data.HepaticProfile}value ="two" control={ <Radio/> } label="Dos"/>
+												<FormControlLabel disabled={ !data.HepaticProfile } value="one"
+												                  control={ <Radio onClick={ handleClickRadio }/> }
+												                  label="Uno"/>
+												<FormControlLabel disabled={ !data.HepaticProfile } value="two"
+												                  control={ <Radio onClick={ handleClickRadio }/> }
+												                  label="Dos"/>
 											</RadioGroup>
 										</FormControl>
 									</Grid>
@@ -164,13 +173,16 @@ export default function Biochemistry(props) {
 										<FormControl component="fieldset">
 											<RadioGroup
 												className={ classes.group }
-											            aria-label="DiabeticProfileValue"
-											            name="DiabeticProfileValue"
-											            value={ data.DiabeticProfileValue }
-											            onChange={ handleChangeRadioAndText }
+												aria-label="DiabeticProfileValue"
+												name="DiabeticProfileValue"
+												value={ data.DiabeticProfileValue }
 											>
-												<FormControlLabel disabled={!data.DiabeticProfile} value="one" control={ <Radio/> } label="Uno"/>
-												<FormControlLabel disabled={!data.DiabeticProfile} value="two" control={ <Radio/> } label="Dos"/>
+												<FormControlLabel disabled={ !data.DiabeticProfile } value="one"
+												                  control={ <Radio onClick={ handleClickRadio }/> }
+												                  label="Uno"/>
+												<FormControlLabel disabled={ !data.DiabeticProfile } value="two"
+												                  control={ <Radio onClick={ handleClickRadio }/> }
+												                  label="Dos"/>
 											</RadioGroup>
 										</FormControl>
 									</Grid>
@@ -234,13 +246,16 @@ export default function Biochemistry(props) {
 										<FormControl component="fieldset">
 											<RadioGroup
 												className={ classes.group }
-											            aria-label="ConvulsionsProfileValue"
-											            name="ConvulsionsProfileValue"
-											            value={ data.ConvulsionsProfileValue }
-											            onChange={ handleChangeRadioAndText }
+												aria-label="ConvulsionsProfileValue"
+												name="ConvulsionsProfileValue"
+												value={ data.ConvulsionsProfileValue }
 											>
-												<FormControlLabel disabled={!data.ConvulsionsProfile} value="one" control={ <Radio/> } label="Uno"/>
-												<FormControlLabel disabled={!data.ConvulsionsProfile} value="two" control={ <Radio/> } label="Dos"/>
+												<FormControlLabel disabled={ !data.ConvulsionsProfile } value="one"
+												                  control={ <Radio onClick={ handleClickRadio }/> }
+												                  label="Uno"/>
+												<FormControlLabel disabled={ !data.ConvulsionsProfile } value="two"
+												                  control={ <Radio onClick={ handleClickRadio }/> }
+												                  label="Dos"/>
 											</RadioGroup>
 										</FormControl>
 									</Grid>
@@ -278,7 +293,7 @@ export default function Biochemistry(props) {
 											label="Otro"
 											name="OtherValue"
 											value={ data.OtherValue }
-											onChange={ handleChangeRadioAndText }
+											onChange={ handleChangeText }
 										/>
 									</Grid>
 								</Grid>
@@ -385,7 +400,7 @@ export default function Biochemistry(props) {
 										label="Otro"
 										name="OtherValueBig"
 										value={ data.OtherValueBig }
-										onChange={ handleChangeRadioAndText }
+										onChange={ handleChangeText }
 									/>
 								</Grid>
 							</Grid>

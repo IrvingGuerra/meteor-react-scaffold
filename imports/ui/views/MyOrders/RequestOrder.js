@@ -17,6 +17,10 @@ import { Breed } from '../../../api/Pets/Breeds/Breed';
 import { Gender } from '../../../api/Pets/Genders/Gender';
 import Biochemistry from '../../components/RequestOrder/Biochemistry';
 import Analytes from '../../components/RequestOrder/Analytes';
+import Hemostasis from '../../components/RequestOrder/Hemostasis';
+import NonConventional from '../../components/RequestOrder/NonConventional';
+import UrinaryTract from '../../components/RequestOrder/UrinaryTract';
+import Cytology from '../../components/RequestOrder/Cytology';
 
 const useStyles = makeStyles((theme) => ({
 	container: {
@@ -70,7 +74,7 @@ export default function RequestOrder(props) {
 		NeonatalProfile: false,
 		FullProfileBig: false,
 		OtherBig: false,
-		OtherValueBig: '',
+		OtherValueBig: ''
 	})
 
 	const [analytes, setAnalytes] = useState({
@@ -81,23 +85,54 @@ export default function RequestOrder(props) {
 		Ammonia: false,
 		GLDH: false,
 		Lipase: false,
-		Electrolyte: false,
+		Electrolyte: false
 	})
 
 	const [hemostasis, setHemostasis] = useState({
-		value: false,
+		Count: false,
+		Factor: false,
+		ProfileCID: false,
+		ProfileFull: false,
+		Time: false,
+		TTP: false,
+		TP: false,
+		Reactions: false,
+		ReactionsValue: '',
+		BleedingTime: false,
+		Other: false,
+		OtherValue: ''
 	})
 
 	const [nonConventional, setNonConventional] = useState({
-		value: false,
+		BloodCount: false,
+		BasicProfile: false,
+		FullProfile: false
 	})
 
 	const [urinaryTract, setUrinaryTract] = useState({
-		value: false,
+		MethodValue: false,
+		Analysis: false,
+		Cytology: false,
+		Protein: false,
+		Cortisol: false,
+		ProteinUrinalysis: false,
+		Urinalysis: false,
+		UrinalysisWith: false,
+		UrineCulture: false,
+		Other: false,
+		OtherValue: ''
 	})
 
 	const [cytology, setCytology] = useState({
-		value: false,
+		Liquid: false,
+		LiquidValue: '',
+		Tumors: false,
+		SitesNumber: 0,
+		ObtainingValue: '',
+		PresentValue: '',
+		PresentValueOther: '',
+		PresentInValue: '',
+		PresentInValueOther: '',
 	})
 
 	const [hematology, setHematology] = useState({
@@ -279,6 +314,22 @@ export default function RequestOrder(props) {
 									<Analytes
 										data={analytes}
 										setData={setAnalytes}
+									/>
+									<Hemostasis
+										data={hemostasis}
+										setData={setHemostasis}
+									/>
+									<NonConventional
+										data={nonConventional}
+										setData={setNonConventional}
+									/>
+									<UrinaryTract
+										data={urinaryTract}
+										setData={setUrinaryTract}
+									/>
+									<Cytology
+										data={cytology}
+										setData={setCytology}
 									/>
 								</Grid>
 							</Grid>

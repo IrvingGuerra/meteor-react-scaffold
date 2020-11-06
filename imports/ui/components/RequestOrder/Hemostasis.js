@@ -6,13 +6,16 @@ import {
 	Typography,
 	FormControlLabel,
 	Checkbox,
-	Grid
+	Grid,
+	FormControl,
+	RadioGroup,
+	Radio
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import TextField from '@material-ui/core/TextField';
 import { accordionStyles } from './Biochemistry';
 
-export default function Analytes(props) {
+export default function Hemostasis(props) {
 	const { data, setData } = props;
 	const classes = accordionStyles();
 
@@ -56,7 +59,7 @@ export default function Analytes(props) {
 				aria-controls="panel1a-content"
 				id="panel1a-header"
 			>
-				<Typography>ANALITOS INDIVIDUALES</Typography>
+				<Typography>HEMOSTASIA</Typography>
 			</AccordionSummary>
 			<AccordionDetails>
 				<Grid container direction="column" justify="center" alignItems="stretch">
@@ -68,49 +71,78 @@ export default function Analytes(props) {
 										<FormControlLabel
 											control={
 												<Checkbox
-													checked={ data.RoutineAnalyte }
+													checked={ data.Count }
 													onChange={ handleChange }
-													name="RoutineAnalyte"
+													name="Count"
 													color="primary"
 												/>
 											}
-											label="Analito(s) de rutina:"
-										/>
-									</Grid>
-									<Grid item xs={ 12 }>
-										<TextField
-											disabled={ !data.RoutineAnalyte }
-											fullWidth
-											name="RoutineAnalyteValue"
-											label="Analito(s) de rutina:"
-											value={ data.RoutineAnalyteValue }
-											onChange={ handleChangeText }
+											label="Conteo y evaluación plaquetaria"
 										/>
 									</Grid>
 									<Grid item>
 										<FormControlLabel
 											control={
 												<Checkbox
-													checked={ data.FAIE }
+													checked={ data.Factor }
 													onChange={ handleChange }
-													name="FAIE"
+													name="Factor"
 													color="primary"
 												/>
 											}
-											label="FAIE"
+											label="Factor de Von Willebran"
 										/>
 									</Grid>
 									<Grid item>
 										<FormControlLabel
 											control={
 												<Checkbox
-													checked={ data.Acid }
+													checked={ data.ProfileCID }
 													onChange={ handleChange }
-													name="Acid"
+													name="ProfileCID"
 													color="primary"
 												/>
 											}
-											label="Ácido fólico y cianocobalamina"
+											label="Perfil CID"
+										/>
+									</Grid>
+									<Grid item>
+										<FormControlLabel
+											control={
+												<Checkbox
+													checked={ data.ProfileFull }
+													onChange={ handleChange }
+													name="ProfileFull"
+													color="primary"
+												/>
+											}
+											label="Perfil de hemostasia	completo"
+										/>
+									</Grid>
+									<Grid item>
+										<FormControlLabel
+											control={
+												<Checkbox
+													checked={ data.Time }
+													onChange={ handleChange }
+													name="Time"
+													color="primary"
+												/>
+											}
+											label="Tiempos de coagulación (TP + TTP)"
+										/>
+									</Grid>
+									<Grid item>
+										<FormControlLabel
+											control={
+												<Checkbox
+													checked={ data.TTP }
+													onChange={ handleChange }
+													name="TTP"
+													color="primary"
+												/>
+											}
+											label="TTP"
 										/>
 									</Grid>
 								</Grid>
@@ -121,52 +153,80 @@ export default function Analytes(props) {
 										<FormControlLabel
 											control={
 												<Checkbox
-													checked={ data.Ammonia }
+													checked={ data.TP }
 													onChange={ handleChange }
-													name="Ammonia"
+													name="TP"
 													color="primary"
 												/>
 											}
-											label="Amoniaco"
+											label="TP"
 										/>
 									</Grid>
 									<Grid item>
 										<FormControlLabel
 											control={
 												<Checkbox
-													checked={ data.GLDH }
+													checked={ data.Reactions }
 													onChange={ handleChange }
-													name="GLDH"
+													name="Reactions"
 													color="primary"
 												/>
 											}
-											label="GLDH"
+											label="Reacciones cruzadas de compatibilidad"
+										/>
+									</Grid>
+									<Grid item>
+										<FormControl component="fieldset">
+											<RadioGroup
+												className={ classes.group }
+												aria-label="ReactionsValue"
+												name="ReactionsValue"
+												value={ data.ReactionsValue }
+											>
+												<FormControlLabel disabled={ !data.Reactions } value="one"
+												                  control={ <Radio onClick={ handleClickRadio }/> }
+												                  label="1 donador"/>
+												<FormControlLabel disabled={ !data.Reactions } value="two"
+												                  control={ <Radio onClick={ handleClickRadio }/> }
+												                  label="2 donadores"/>
+											</RadioGroup>
+										</FormControl>
+									</Grid>
+									<Grid item>
+										<FormControlLabel
+											control={
+												<Checkbox
+													checked={ data.BleedingTime }
+													onChange={ handleChange }
+													name="BleedingTime"
+													color="primary"
+												/>
+											}
+											label="Tiempo de sangrado"
 										/>
 									</Grid>
 									<Grid item>
 										<FormControlLabel
 											control={
 												<Checkbox
-													checked={ data.Lipase }
+													checked={ data.Other }
 													onChange={ handleChange }
-													name="Lipase"
+													name="Other"
 													color="primary"
 												/>
 											}
-											label="Lipasa sérica"
+											label="Otro"
 										/>
 									</Grid>
-									<Grid item>
-										<FormControlLabel
-											control={
-												<Checkbox
-													checked={ data.Electrolyte }
-													onChange={ handleChange }
-													name="Electrolyte"
-													color="primary"
-												/>
-											}
-											label="Electrolito individual (Na,K y Cl)"
+									<Grid item xs={ 12 }>
+										<TextField
+											disabled={ !data.Other }
+											fullWidth
+											id="other"
+											label="Otro"
+											name="OtherValue"
+											value={ data.OtherValue }
+											onChange={ handleChangeText }
 										/>
 									</Grid>
 								</Grid>
