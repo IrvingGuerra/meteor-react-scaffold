@@ -72,7 +72,7 @@ const dashboardRoutes = [
 		path: '/editTemplate',
 		name: 'Editar plantilla',
 		component: CreateTemplate,
-		layout: ['admin']
+		layout: ['admin', 'specialist', 'labworker', 'client']
 	},
 	{
 		path: '/userList',
