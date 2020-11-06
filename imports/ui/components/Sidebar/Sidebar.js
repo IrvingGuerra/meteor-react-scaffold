@@ -73,7 +73,7 @@ export default function Sidebar(props) {
         >
             <div className={classes.drawerHeader}>
                 <Typography variant="h6" noWrap>
-                    SCAFFOLD
+                    LABVET ANALIZA
                 </Typography>
                 <IconButton onClick={props.handleDrawerToggle}>
                     {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}

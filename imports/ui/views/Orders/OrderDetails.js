@@ -26,6 +26,20 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import { Specie } from '../../../api/Pets/Species/Specie';
 import { Breed } from '../../../api/Pets/Breeds/Breed';
 import { Gender } from '../../../api/Pets/Genders/Gender';
+import Biochemistry from '../../components/RequestOrder/Biochemistry';
+import Analytes from '../../components/RequestOrder/Analytes';
+import Hemostasis from '../../components/RequestOrder/Hemostasis';
+import NonConventional from '../../components/RequestOrder/NonConventional';
+import UrinaryTract from '../../components/RequestOrder/UrinaryTract';
+import Cytology from '../../components/RequestOrder/Cytology';
+import Hematology from '../../components/RequestOrder/Hematology';
+import Parasitology from '../../components/RequestOrder/Parasitology';
+import Bacteriology from '../../components/RequestOrder/Bacteriology';
+import Endocrinology from '../../components/RequestOrder/Endocrinology';
+import Complementary from '../../components/RequestOrder/Complementary';
+import Infectious from '../../components/RequestOrder/Infectious';
+import Toxicology from '../../components/RequestOrder/Toxicology';
+import Histopathology from '../../components/RequestOrder/Histopathology';
 
 const useStyles = makeStyles((theme) => ({
 	container: {
@@ -99,6 +113,7 @@ export default function OrderDetails(props) {
 					alert.current.setAlert('Error', error.reason, 'error');
 					return;
 				}
+				console.log(response._data);
 				setForm(response._data);
 				setNewStatus(response._data.status)
 			});
@@ -239,6 +254,53 @@ export default function OrderDetails(props) {
 										onChange={ e => setForm({ ...form, petAge: e.target.value }) }
 									/>
 								</Grid>
+
+								{form._id && (
+									<Grid item xs={ 12 }>
+										<Biochemistry
+											data={form.biochemistry}
+										/>
+										<Analytes
+											data={form.analytes}
+										/>
+										<Hemostasis
+											data={form.hemostasis}
+										/>
+										<NonConventional
+											data={form.nonConventional}
+										/>
+										<UrinaryTract
+											data={form.urinaryTract}
+										/>
+										<Cytology
+											data={form.cytology}
+										/>
+										<Hematology
+											data={form.hematology}
+										/>
+										<Parasitology
+											data={form.parasitology}
+										/>
+										<Bacteriology
+											data={form.bacteriology}
+										/>
+										<Endocrinology
+											data={form.endocrinology}
+										/>
+										<Complementary
+											data={form.complementary}
+										/>
+										<Infectious
+											data={form.infectious}
+										/>
+										<Toxicology
+											data={form.toxicology}
+										/>
+										<Histopathology
+											data={form.histopathology}
+										/>
+									</Grid>
+								)}
 
 								{ form.status === 'open' && (
 									<Grid item xs={ 12 }>

@@ -78,7 +78,21 @@ export const updateOrderMethod = new ValidatedMethod({
 				petGender: String,
 				petAge: String,
 				status: String,
-				analyses: [Object]
+				analyses: [Object],
+				biochemistry: Object,
+				analytes: Object,
+				hemostasis: Object,
+				nonConventional: Object,
+				urinaryTract: Object,
+				cytology: Object,
+				hematology: Object,
+				parasitology: Object,
+				bacteriology: Object,
+				endocrinology: Object,
+				complementary: Object,
+				infectious: Object,
+				toxicology: Object,
+				histopathology: Object
 			});
 			check(status, String);
 		} catch (exception) {

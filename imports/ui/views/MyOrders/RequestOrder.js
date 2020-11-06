@@ -338,6 +338,20 @@ export default function RequestOrder(props) {
 		e.preventDefault();
 		loader.current.setLoader(true);
 		form.biochemistry = biochemistry;
+		form.analytes = analytes;
+		form.hemostasis = hemostasis;
+		form.nonConventional = nonConventional;
+		form.urinaryTract = urinaryTract;
+		form.cytology = cytology;
+		form.hematology = hematology;
+		form.parasitology = parasitology;
+		form.bacteriology = bacteriology;
+		form.endocrinology = endocrinology;
+		form.complementary = complementary;
+		form.infectious = infectious;
+		form.toxicology = toxicology;
+		form.histopathology = histopathology;
+
 		Meteor.call('order.request', form, (error, response) => {
 			loader.current.setLoader(false);
 			if (error) {
