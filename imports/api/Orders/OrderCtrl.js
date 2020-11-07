@@ -209,11 +209,20 @@ export const changeStatusOrderMethod = new ValidatedMethod({
 	run({ idOrder, status }) {
 		const responseMessage = new ResponseMessage();
 		try {
-			Order.update(idOrder, {
-				$set: {
-					status: status
-				}
-			});
+			if (status === 'attended'){
+				Order.update(idOrder, {
+					$set: {
+						status: status,
+						closingDate: Utilities.currentLocalISODate()
+					}
+				});
+			}else{
+				Order.update(idOrder, {
+					$set: {
+						status: status
+					}
+				});
+			}
 			responseMessage.create(true, 'Se ha actualizado el estatus de la orden.');
 		} catch (err) {
 			console.error('Error updating order: ', err);
