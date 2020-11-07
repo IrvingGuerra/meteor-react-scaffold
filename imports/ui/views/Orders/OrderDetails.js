@@ -42,6 +42,7 @@ import Toxicology from '../../components/RequestOrder/Toxicology';
 import Histopathology from '../../components/RequestOrder/Histopathology';
 import { DatePicker, MuiPickersUtilsProvider, TimePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
 	container: {
@@ -64,6 +65,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function OrderDetails(props) {
 	const { history, loader, alert } = props;
+	const user = useSelector(state => state.user);
 	const classes = useStyles();
 	const [form, setForm] = useState({
 		_id: null,
@@ -220,20 +222,40 @@ export default function OrderDetails(props) {
 								<Grid item xs={ 6 }>
 									<FormControl variant="outlined" fullWidth required>
 										<InputLabel id="demo-simple-select-outlined-label">Estatus</InputLabel>
-										<Select
-											labelId="demo-simple-select-outlined-label"
-											id="demo-simple-select-outlined"
-											value={ newStatus }
-											onChange={ e => setNewStatus(e.target.value) }
-											label="Estatus"
-										>
-											<MenuItem key={ 1 } value="open">Abierto</MenuItem>
-											<MenuItem key={ 2 } value="awaitingSample">En espera de muestra</MenuItem>
-											<MenuItem key={ 3 } value="process">En proceso</MenuItem>
-											<MenuItem key={ 4 } value="awaitingResults">En espera de
-												resultados</MenuItem>
-											<MenuItem key={ 5 } value="attended">Atendido</MenuItem>
-										</Select>
+										{(form.status === 'awaitingSample') && (
+											<Select
+												value={ newStatus }
+												onChange={ e => setNewStatus(e.target.value) }
+												label="Estatus"
+											>
+
+												<MenuItem key={ 2 } value="awaitingSample">En espera de muestra</MenuItem>
+												<MenuItem key={ 3 } value="process">En proceso</MenuItem>
+											</Select>
+										)}
+										{(form.status === 'process' && (user.profile.profile === 'specialist' || user.profile.profile === 'admin')) && (
+											<Select
+												value={ newStatus }
+												onChange={ e => setNewStatus(e.target.value) }
+												label="Estatus"
+											>
+												<MenuItem key={ 3 } value="process">En proceso</MenuItem>
+												<MenuItem key={ 4 } value="awaitingResults">En espera de
+													resultados</MenuItem>
+											</Select>
+										)}
+										{(form.status === 'awaitingResults' && (user.profile.profile === 'specialist' || user.profile.profile === 'admin')) && (
+											<Select
+												value={ newStatus }
+												onChange={ e => setNewStatus(e.target.value) }
+												label="Estatus"
+											>
+												<MenuItem key={ 3 } value="process">En proceso</MenuItem>
+												<MenuItem key={ 4 } value="awaitingResults">En espera de
+													resultados</MenuItem>
+												<MenuItem key={ 5 } value="attended">Atendido</MenuItem>
+											</Select>
+										)}
 									</FormControl>
 								</Grid>
 								<Grid item xs={ 6 }>
@@ -395,11 +417,12 @@ export default function OrderDetails(props) {
 									</Grid>
 								)}
 
-								{ form.status === 'open' && (
+								{ (form.status === 'open' || form.status === 'awaitingSample' || form.status === 'process') && (
 									<Grid item xs={ 12 }>
 										<Autocomplete
 											multiple
 											id="tags-standard"
+											defaultValue={form.analyses}
 											options={ templates.map((template) => template) }
 											getOptionLabel={ (template) => template.title }
 											renderTags={ (value, getTagProps) =>
@@ -461,6 +484,17 @@ export default function OrderDetails(props) {
 									</Grid>
 								) }
 							</Grid>
+							{(form.status !== 'open' && form.status !== 'awaitingResults' && form.status !== 'attended')  && (
+								<Button
+									fullWidth
+									variant="contained"
+									color="primary"
+									className={ classes.submit }
+									onClick={handleAssignAnalyses}
+								>
+									Actualizar analisis
+								</Button>
+							)}
 							{form.status !== 'attended' && (
 								<Button
 									type="submit"
