@@ -27,6 +27,7 @@ import { CustomTable } from '../../components/Tables/CustomTable';
 import BootstrapTooltip from '../../components/Tooltips/BootstrapTooltip';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { useSelector } from 'react-redux';
+import { getStatusName } from '../Orders/ListOrders';
 
 const useStyles = makeStyles((theme) => ({
 	container: {
@@ -62,6 +63,7 @@ const useOrders = (filters, user) => useTracker(() => {
 	const orders = Order.find(filter).fetch();
 	orders.map((order) => {
 		order.requestedName = order.requested.profile.username;
+		order.status = getStatusName(order.status);
 		delete order.requested;
 		delete order.idRequested;
 	});

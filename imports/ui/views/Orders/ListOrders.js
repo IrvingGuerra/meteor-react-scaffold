@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	formControl: {
 		margin: theme.spacing(1),
-		minWidth: 200,
+		minWidth: 200
 	},
 	paper: {
 		padding: theme.spacing(2),
@@ -34,6 +34,21 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
+export const getStatusName = (status) => {
+	switch (status) {
+		case 'open':
+			return 'Abierto';
+		case 'awaitingSample':
+			return 'En espera de muestra';
+		case 'process':
+			return 'En proceso';
+		case 'awaitingResults':
+			return 'En espera de resultados';
+		case 'attended':
+			return 'Atendido';
+	}
+};
+
 const useOrders = (filters) => useTracker(() => {
 	Meteor.subscribe('orders', {
 		startDate: filters.startDate,
@@ -42,12 +57,13 @@ const useOrders = (filters) => useTracker(() => {
 		sort: { date: -1 }
 	});
 	let filter = {};
-	if(filters.status !== 'all' ){
-		filter = {status: filters.status}
+	if (filters.status !== 'all') {
+		filter = { status: filters.status };
 	}
 	const orders = Order.find(filter).fetch();
 	orders.map((order) => {
 		order.requestedName = order.requested.profile.username;
+		order.status = getStatusName(order.status);
 		delete order.requested;
 		delete order.idRequested;
 	});
@@ -108,7 +124,7 @@ const ListOrders = (props) => {
 								onChange={ (date) => setFilters({ ...filters, endDate: new Date(date) }) }
 							/>
 						</MuiPickersUtilsProvider>
-						<FormControl variant="outlined" className={classes.formControl}>
+						<FormControl variant="outlined" className={ classes.formControl }>
 							<InputLabel id="demo-simple-select-outlined-label">Estatus</InputLabel>
 							<Select
 								labelId="demo-simple-select-outlined-label"
@@ -117,7 +133,7 @@ const ListOrders = (props) => {
 								onChange={ e => setFilters({ ...filters, status: e.target.value }) }
 								label="Estatus"
 							>
-								<MenuItem key={ 1 } value="all" >Todos los status</MenuItem>
+								<MenuItem key={ 1 } value="all">Todos los status</MenuItem>
 								<MenuItem key={ 2 } value="open">Abierto</MenuItem>
 								<MenuItem key={ 3 } value="awaitingSample">En espera de muestra</MenuItem>
 								<MenuItem key={ 4 } value="process">En proceso</MenuItem>
