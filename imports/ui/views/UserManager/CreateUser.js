@@ -45,11 +45,17 @@ export default function CreateUser(props) {
 		username: '',
 		email: '',
 		password: '',
+		confirmPassword: '',
 		profile: 'admin'
 	});
 
 	const handleSubmitForm = (e) => {
 		e.preventDefault();
+		if( form.password !== form.confirmPassword ){
+			alert.current.setAlert('Error','Contraseñas no coinciden', 'error');
+			return;
+		}
+		delete form.confirmPassword;
 		loader.current.setLoader(true);
 		Meteor.call('user.save', { user: form }, (error, response) => {
 			loader.current.setLoader(false);
@@ -187,6 +193,19 @@ export default function CreateUser(props) {
 										id="password"
 										value={ form.password }
 										onChange={ e => setForm({ ...form, password: e.target.value }) }
+									/>
+								</Grid>
+								<Grid item xs={ 12 }>
+									<TextField
+										variant="outlined"
+										required
+										fullWidth
+										name="password"
+										label="Confirm Password"
+										type="password"
+										id="password"
+										value={ form.confirmPassword }
+										onChange={ e => setForm({ ...form, confirmPassword: e.target.value }) }
 									/>
 								</Grid>
 							</Grid>

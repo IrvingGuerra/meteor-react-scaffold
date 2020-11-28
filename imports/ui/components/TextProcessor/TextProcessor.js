@@ -55,6 +55,7 @@ export default function TextProcessor(props) {
 			createCanvas(i);
 			let c = new fabric.Canvas('doc' + i);
 			if (i !== 0) hideCanvas(i);
+			console.log("Entra aqui");;
 			c.loadFromJSON(page.canvas, c.renderAll.bind(c), (o, object) => {
 				if (!props.location.state.canEdit) {
 					// Just can edit id label
@@ -64,6 +65,34 @@ export default function TextProcessor(props) {
 						object.set('lockMovementY', true);
 					} else if (object.id && object.id.includes('result')) {
 						object.set('selectable', true);
+					} else if (object.id && object.id.includes('autoValue')) {
+						switch (object.id) {
+							case 'autoValuePropietario':
+								object.set('text', props.location.state.petOwner);
+								break;
+							case 'autoValueClinica':
+								object.set('text', props.location.state.clinic);
+								break;
+							case 'autoValueTelefono':
+								object.set('text', props.location.state.phone);
+								break;
+							case 'autoValueNombreMascota':
+								object.set('text', props.location.state.petName);
+								break;
+							case 'autoValueEspecie':
+								object.set('text', props.location.state.petSpecie);
+								break;
+							case 'autoValueRaza':
+								object.set('text', props.location.state.petBreed);
+								break;
+							case 'autoValueGenero':
+								object.set('text', props.location.state.petGender);
+								break;
+							case 'autoValueEdad':
+								object.set('text', props.location.state.petAge);
+								break;
+						}
+						object.set('selectable', false);
 					} else {
 						object.set('selectable', false);
 					}

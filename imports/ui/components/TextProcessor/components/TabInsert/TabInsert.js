@@ -1,6 +1,14 @@
 import React from 'react';
-import { Grid, makeStyles } from '@material-ui/core';
-import { addColumns, addComparison, addImage, addInput, addText, addTitle } from '../../js/insertFunctions';
+import { FormControl, Grid, InputLabel, makeStyles, MenuItem, Select } from '@material-ui/core';
+import {
+	addAutoValue,
+	addColumns,
+	addComparison,
+	addImage,
+	addInput,
+	addText,
+	addTitle
+} from '../../js/insertFunctions';
 import Divider from '@material-ui/core/Divider';
 import { STRINGS } from '../../constants/strings';
 import { BootstrapTooltip } from '../TabFont/TabFont';
@@ -92,6 +100,28 @@ export default function TabInsert(props) {
 						<i id='comparison' className="fa fa-less-than-equal ico"/>
 					</button>
 				</BootstrapTooltip>
+				<Divider orientation="vertical" flexItem/>
+				<FormControl variant="outlined">
+					<InputLabel id="demo-simple-select-outlined-label">#</InputLabel>
+					<Select
+						style={ { width: 50 } }
+						labelId="demo-simple-select-outlined-label"
+						id="demo-simple-select-outlined"
+						value=""
+						label="#"
+						placeholder="#"
+						onChange={ (value) => addAutoValue(doc, value.target.value)}
+					>
+						<MenuItem value='Propietario'>Propietario</MenuItem>
+						<MenuItem value='Clinica'>Clinica</MenuItem>
+						<MenuItem value='Telefono'>Teléfono</MenuItem>
+						<MenuItem value='NombreMascota'>Nombre de mascota</MenuItem>
+						<MenuItem value='Especie'>Especie</MenuItem>
+						<MenuItem value='Raza'>Raza</MenuItem>
+						<MenuItem value='Genero'>Genero</MenuItem>
+						<MenuItem value='Edad'>Edad</MenuItem>
+					</Select>
+				</FormControl>
 			</Grid>
 		</Grid>
 	);

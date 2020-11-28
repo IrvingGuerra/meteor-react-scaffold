@@ -77,6 +77,25 @@ export const addInput = (doc) => {
 	doc.pages[doc.actualPage].canvas.add(eje);
 };
 
+export const addAutoValue = (doc, value) => {
+	const eje = new fabric.NewTextBox('#'+value, {
+		left: doc.pages[doc.actualPage].margin,
+		top: getTop(doc, 18),
+		width: 50,
+		fontFamily: 'Arial',
+		fontSize: 15,
+		fontWeight: 'normal',
+		fill: '#000000', //Font Color
+		textAlign: 'left',
+		backgroundColor: '#ffffff',
+		borderColor: 'blue',
+		editingBorderColor: 'green',
+		padding: 0,
+		id: 'autoValue'+value
+	});
+	doc.pages[doc.actualPage].canvas.add(eje);
+};
+
 export const addImage = (doc) => {
 	const file = document.querySelector('#addImage').files[0];
 	const reader = new FileReader();

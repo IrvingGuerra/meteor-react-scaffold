@@ -70,6 +70,9 @@ export default function OrderDetails(props) {
 	const [form, setForm] = useState({
 		_id: null,
 		number: '',
+		petOwner: '',
+		clinic: '',
+		phone: '',
 		petName: '',
 		petSpecie: '',
 		petBreed: '',
@@ -465,6 +468,14 @@ export default function OrderDetails(props) {
 																			template: analysis,
 																			canEdit: false,
 																			orderId: form._id,
+																			petOwner: form.petOwner,
+																			clinic: form.clinic,
+																			phone: form.phone,
+																			petName: form.petName,
+																			petSpecie: species.filter(g => g._id === form.petSpecie)[0].name,
+																			petBreed: breeds.filter(g => g._id === form.petBreed)[0].name,
+																			petGender: genders.filter(g => g._id === form.petGender)[0].name,
+																			petAge: form.petAge,
 																			downloadMode: form.status === 'attended'
 																		}
 																	});
