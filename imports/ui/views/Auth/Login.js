@@ -19,8 +19,8 @@ export function Copyright() {
 	return (
 		<Typography variant="body2" color="textSecondary" align="center">
 			{ 'Copyright © ' }
-			<Link color="inherit" href="https://material-ui.com/">
-				Your Website
+			<Link color="inherit" href="https://sis.labvetanaliza.com/">
+				LabvetAnaliza
 			</Link>{ ' ' }
 			{ new Date().getFullYear() }
 			{ '.' }
@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 		height: '100vh'
 	},
 	image: {
-		backgroundImage: 'url(https://source.unsplash.com/random)',
+		backgroundImage: 'url(https://sis.labvetanaliza.com/img/backgroundLogin.png)',
 		backgroundRepeat: 'no-repeat',
 		backgroundColor:
 			theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
