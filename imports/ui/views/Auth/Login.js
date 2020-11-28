@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 		height: '100vh'
 	},
 	image: {
-		backgroundImage: 'url(http://51.81.32.175/img/backgroundLogin.png)',
+		backgroundImage: 'url(/img/backgroundLogin.png)',
 		backgroundRepeat: 'no-repeat',
 		backgroundColor:
 			theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
@@ -92,7 +92,9 @@ export default function Login(props) {
 	return (
 		<Grid container component="main" className={ classes.root }>
 			<CssBaseline/>
-			<Grid item xs={ false } sm={ 4 } md={ 7 } className={ classes.image }/>
+			<Grid item xs={ false } sm={ 4 } md={ 7 } className={ classes.image }>
+
+			</Grid>
 			<Grid item xs={ 12 } sm={ 8 } md={ 5 } component={ Paper } elevation={ 6 } square>
 				<div className={ classes.paper }>
 					<Avatar className={ classes.avatar }>

@@ -70,6 +70,9 @@ export default function System(props) {
 		if (!user.profile) {
 			props.history.push('/');
 		}
+		if(!Meteor.userId()){
+			props.history.push('/');
+		}
 		if (!hasPermissions(user.profile.profile)) {
 			props.history.push('/' + user.profile.profile);
 		}
