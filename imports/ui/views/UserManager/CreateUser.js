@@ -43,6 +43,7 @@ export default function CreateUser(props) {
 		firstname: '',
 		lastname: '',
 		username: '',
+		phone: '',
 		email: '',
 		password: '',
 		confirmPassword: '',
@@ -84,6 +85,7 @@ export default function CreateUser(props) {
 					firstname: response._data.profile.firstname,
 					lastname: response._data.profile.lastname,
 					username: response._data.profile.username,
+					phone: response._data.profile.phone,
 					email: response._data.emails[0].address,
 					password: '',
 					profile: response._data.profile.profile
@@ -125,7 +127,7 @@ export default function CreateUser(props) {
 										id="firstname"
 										label="Nombre"
 										name="firstname"
-										value={ form.firstname }
+										value={ form.firstname || "" }
 										onChange={ e => setForm({ ...form, firstname: e.target.value }) }
 									/>
 								</Grid>
@@ -137,7 +139,7 @@ export default function CreateUser(props) {
 										id="lastname"
 										label="Apellidos"
 										name="lastname"
-										value={ form.lastname }
+										value={ form.lastname || "" }
 										onChange={ e => setForm({ ...form, lastname: e.target.value }) }
 									/>
 								</Grid>
@@ -149,19 +151,31 @@ export default function CreateUser(props) {
 										id="username"
 										label="Nombre de usuario"
 										name="username"
-										value={ form.username }
+										value={ form.username || "" }
 										onChange={ e => setForm({ ...form, username: e.target.value }) }
+									/>
+								</Grid>
+								<Grid item xs={ 12 }>
+									<TextField
+										variant="outlined"
+										required
+										fullWidth
+										id="phone"
+										label="Teléfono"
+										name="phone"
+										value={ form.phone || "" }
+										onChange={ e => setForm({ ...form, phone: e.target.value }) }
 									/>
 								</Grid>
 								<Grid item xs={ 12 }>
 									<FormControl variant="outlined" fullWidth required>
 										<InputLabel id="demo-simple-select-outlined-label">Perfil</InputLabel>
 										<Select
-											labelId="demo-simple-select-outlined-label"
-											id="demo-simple-select-outlined"
-											value={ form.profile }
+											labelId="selectProfileLabel"
+											id="selectProfile"
+											value={ form.profile || 'admin' }
 											onChange={ e => setForm({ ...form, profile: e.target.value }) }
-											label="Perfil"
+											label="selectProfileLabel"
 										>
 											<MenuItem value='admin'>Admin</MenuItem>
 											<MenuItem value='specialist'>Especialista</MenuItem>
@@ -178,7 +192,7 @@ export default function CreateUser(props) {
 										id="email"
 										label="Email Address"
 										name="email"
-										value={ form.email }
+										value={ form.email || "" }
 										onChange={ e => setForm({ ...form, email: e.target.value }) }
 									/>
 								</Grid>
@@ -191,7 +205,7 @@ export default function CreateUser(props) {
 										label="Password"
 										type="password"
 										id="password"
-										value={ form.password }
+										value={ form.password || "" }
 										onChange={ e => setForm({ ...form, password: e.target.value }) }
 									/>
 								</Grid>
@@ -200,11 +214,11 @@ export default function CreateUser(props) {
 										variant="outlined"
 										required
 										fullWidth
-										name="password"
+										name="confirmPassword"
 										label="Confirm Password"
 										type="password"
-										id="password"
-										value={ form.confirmPassword }
+										id="confirmPassword"
+										value={ form.confirmPassword || "" }
 										onChange={ e => setForm({ ...form, confirmPassword: e.target.value }) }
 									/>
 								</Grid>

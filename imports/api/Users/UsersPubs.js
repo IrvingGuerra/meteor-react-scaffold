@@ -13,3 +13,15 @@ if (Meteor.isServer) {
 		], { warnings: false });
 	})
 }
+
+if (Meteor.isServer) {
+	Meteor.publish('clients', function() {
+		ReactiveAggregate(this, Meteor.users, [
+			{
+				$project: {
+					"profile": 1
+				}
+			}
+		], { warnings: false });
+	})
+}

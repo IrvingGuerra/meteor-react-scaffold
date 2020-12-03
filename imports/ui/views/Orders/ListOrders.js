@@ -66,7 +66,9 @@ const useOrders = (filters) => useTracker(() => {
 		order.status = getStatusName(order.status);
 		delete order.requested;
 		delete order.idRequested;
+		delete order.closingDate;
 	});
+	console.log(orders);
 	return orders;
 }, [filters]);
 

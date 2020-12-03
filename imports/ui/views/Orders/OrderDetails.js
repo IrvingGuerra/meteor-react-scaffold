@@ -71,13 +71,18 @@ export default function OrderDetails(props) {
 		_id: null,
 		number: '',
 		petOwner: '',
+		MVZ: '',
 		clinic: '',
-		phone: '',
 		petName: '',
 		petSpecie: '',
 		petBreed: '',
 		petGender: '',
 		petAge: '',
+		kind: '',
+		EFG: '',
+		TX: '',
+		observation1: '',
+		observation2: '',
 		status: '',
 		analyses: []
 	});
@@ -146,6 +151,11 @@ export default function OrderDetails(props) {
 		return Gender.find({}).fetch();
 	}, []);
 
+	const clients = useTracker(() => {
+		Meteor.subscribe('clients');
+		return Meteor.users.find({'profile.profile':"client"}).fetch();
+	}, []);
+
 	return (
 		<Container maxWidth="lg" className={ classes.container }>
 			<Paper className={ classes.paper } elevation={ 10 }>
@@ -172,7 +182,7 @@ export default function OrderDetails(props) {
 						<form className={ classes.form }
 						      onSubmit={ (e) => form.status === 'open' ? handleAssignAnalyses(e) : handleUpdateStatus(e) }>
 							<Grid container spacing={ 2 }>
-								<Grid item xs={ 12 }>
+								<Grid item xs={ 6 }>
 									<TextField
 										variant="outlined"
 										required
@@ -189,26 +199,27 @@ export default function OrderDetails(props) {
 										variant="outlined"
 										required
 										fullWidth
-										id="clinic"
-										label="Clinica"
-										name="clinic"
-										value={ form.clinic }
-										onChange={ e => setForm({ ...form, clinic: e.target.value }) }
+										id="MVZ"
+										label="MVZ"
+										name="MVZ"
+										value={ form.MVZ }
+										onChange={ e => setForm({ ...form, MVZ: e.target.value }) }
 									/>
 								</Grid>
 								<Grid item xs={ 6 }>
-									<TextField
-										variant="outlined"
-										required
-										fullWidth
-										id="phone"
-										label="Teléfono"
-										name="phone"
-										type="tel"
-										pattern="[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}"
-										value={ form.phone }
-										onChange={ e => setForm({ ...form, phone: e.target.value }) }
-									/>
+									<FormControl variant="outlined" fullWidth required>
+										<InputLabel id="demo-simple-select-outlined-label">Clínica</InputLabel>
+										<Select
+											labelId="selectClinicLabel"
+											id="selectClinic"
+											value={ form.clinic }
+											onChange={ e => setForm({ ...form, clinic: e.target.value }) }
+											label="selectClinicLabel"
+										>
+											{ clients.map((client, i) => <MenuItem key={ i }
+											                                       value={ client._id }>{ client.profile.username }</MenuItem>) }
+										</Select>
+									</FormControl>
 								</Grid>
 								<Grid item xs={ 6 }>
 									<TextField
@@ -222,45 +233,57 @@ export default function OrderDetails(props) {
 										onChange={ e => setForm({ ...form, petName: e.target.value }) }
 									/>
 								</Grid>
-								<Grid item xs={ 6 }>
-									<FormControl variant="outlined" fullWidth required>
-										<InputLabel id="demo-simple-select-outlined-label">Estatus</InputLabel>
-										{(form.status === 'awaitingSample') && (
-											<Select
-												value={ newStatus }
-												onChange={ e => setNewStatus(e.target.value) }
-												label="Estatus"
-											>
+								{form.status !== 'attended' && (
+									<Grid item xs={ 12 }>
+										<FormControl variant="outlined" fullWidth required>
+											<InputLabel id="demo-simple-select-outlined-label">Estatus</InputLabel>
+											{(form.status === 'open') && (
+												<Select
+													value={ 'open' }
+													onChange={ e => setNewStatus(e.target.value) }
+													label="Estatus"
+												>
 
-												<MenuItem key={ 2 } value="awaitingSample">En espera de muestra</MenuItem>
-												<MenuItem key={ 3 } value="process">En proceso</MenuItem>
-											</Select>
-										)}
-										{(form.status === 'process' && (user.profile.profile === 'specialist' || user.profile.profile === 'admin')) && (
-											<Select
-												value={ newStatus }
-												onChange={ e => setNewStatus(e.target.value) }
-												label="Estatus"
-											>
-												<MenuItem key={ 3 } value="process">En proceso</MenuItem>
-												<MenuItem key={ 4 } value="awaitingResults">En espera de
-													resultados</MenuItem>
-											</Select>
-										)}
-										{(form.status === 'awaitingResults' && (user.profile.profile === 'specialist' || user.profile.profile === 'admin')) && (
-											<Select
-												value={ newStatus }
-												onChange={ e => setNewStatus(e.target.value) }
-												label="Estatus"
-											>
-												<MenuItem key={ 3 } value="process">En proceso</MenuItem>
-												<MenuItem key={ 4 } value="awaitingResults">En espera de
-													resultados</MenuItem>
-												<MenuItem key={ 5 } value="attended">Atendido</MenuItem>
-											</Select>
-										)}
-									</FormControl>
-								</Grid>
+													<MenuItem key={ 1 } value="open">Abierto</MenuItem>
+												</Select>
+											)}
+											{(form.status === 'awaitingSample') && (
+												<Select
+													value={ newStatus }
+													onChange={ e => setNewStatus(e.target.value) }
+													label="Estatus"
+												>
+
+													<MenuItem key={ 2 } value="awaitingSample">En espera de muestra</MenuItem>
+													<MenuItem key={ 3 } value="process">En proceso</MenuItem>
+												</Select>
+											)}
+											{(form.status === 'process' && (user.profile.profile === 'specialist' || user.profile.profile === 'admin')) && (
+												<Select
+													value={ newStatus }
+													onChange={ e => setNewStatus(e.target.value) }
+													label="Estatus"
+												>
+													<MenuItem key={ 3 } value="process">En proceso</MenuItem>
+													<MenuItem key={ 4 } value="awaitingResults">En espera de
+														resultados</MenuItem>
+												</Select>
+											)}
+											{(form.status === 'awaitingResults' && (user.profile.profile === 'specialist' || user.profile.profile === 'admin')) && (
+												<Select
+													value={ newStatus }
+													onChange={ e => setNewStatus(e.target.value) }
+													label="Estatus"
+												>
+													<MenuItem key={ 3 } value="process">En proceso</MenuItem>
+													<MenuItem key={ 4 } value="awaitingResults">En espera de
+														resultados</MenuItem>
+													<MenuItem key={ 5 } value="attended">Atendido</MenuItem>
+												</Select>
+											)}
+										</FormControl>
+									</Grid>
+								)}
 								<Grid item xs={ 6 }>
 									<FormControl variant="outlined" fullWidth required>
 										<InputLabel id="demo-simple-select-outlined-label">Especie</InputLabel>
@@ -318,9 +341,22 @@ export default function OrderDetails(props) {
 										onChange={ e => setForm({ ...form, petAge: e.target.value }) }
 									/>
 								</Grid>
+								<Grid item xs={ 12 }>
+									<TextField
+										variant="outlined"
+										required
+										fullWidth
+										id="kind"
+										label="Tipo de muestra"
+										name="kind"
+										type="text"
+										value={ form.kind }
+										onChange={ e => setForm({ ...form, kind: e.target.value }) }
+									/>
+								</Grid>
 								<Grid item xs={12}>
 									<TextField
-										id="outlined-multiline-static"
+										id="EFG"
 										label="Signos clínicos / EFG:"
 										required
 										fullWidth
@@ -333,7 +369,7 @@ export default function OrderDetails(props) {
 								</Grid>
 								<Grid item xs={12}>
 									<TextField
-										id="outlined-multiline-static"
+										id="TX"
 										label="Tx reciente previo al muestreo:"
 										required
 										fullWidth
@@ -372,6 +408,32 @@ export default function OrderDetails(props) {
 											onChange={ (date) => setForm({ ...form, samplingHour: new Date(date) }) }
 										/>
 									</MuiPickersUtilsProvider>
+								</Grid>
+								<Grid item xs={12}>
+									<TextField
+										id="outlined-multiline-static"
+										label="Observación 1"
+										required
+										fullWidth
+										multiline
+										rows={4}
+										variant="outlined"
+										value={ form.observation1 }
+										onChange={ e => setForm({ ...form, observation1: e.target.value }) }
+									/>
+								</Grid>
+								<Grid item xs={12}>
+									<TextField
+										id="outlined-multiline-static"
+										label="Observación 2"
+										required
+										fullWidth
+										multiline
+										rows={4}
+										variant="outlined"
+										value={ form.observation2 }
+										onChange={ e => setForm({ ...form, observation2: e.target.value }) }
+									/>
 								</Grid>
 								{form._id && (
 									<Grid item xs={ 12 }>
@@ -468,14 +530,18 @@ export default function OrderDetails(props) {
 																			template: analysis,
 																			canEdit: false,
 																			orderId: form._id,
+																			number: form.number,
 																			petOwner: form.petOwner,
-																			clinic: form.clinic,
-																			phone: form.phone,
+																			MVZ: form.MVZ,
+																			clinic: clients.filter(g => g._id === form.clinic)[0].profile.username,
 																			petName: form.petName,
 																			petSpecie: species.filter(g => g._id === form.petSpecie)[0].name,
 																			petBreed: breeds.filter(g => g._id === form.petBreed)[0].name,
 																			petGender: genders.filter(g => g._id === form.petGender)[0].name,
 																			petAge: form.petAge,
+																			kind: form.kind,
+																			samplingDate: form.samplingDate,
+																			samplingHour: form.samplingHour,
 																			downloadMode: form.status === 'attended'
 																		}
 																	});

@@ -58,17 +58,20 @@ export default function RequestOrder(props) {
 	const [form, setForm] = useState({
 		_id: null,
 		petOwner: '',
+		MVZ: '',
 		clinic: '',
-		phone: '',
 		petName: '',
 		petSpecie: '',
 		petBreed: '',
 		petGender: '',
 		petAge: '',
+		kind: '',
 		EFG: '',
 		TX: '',
 		samplingDate: new Date(Utilities.currentLocalDate()),
-		samplingHour: new Date()
+		samplingHour: new Date(),
+		observation1: '',
+		observation2: '',
 	});
 
 	const [biochemistry, setBiochemistry] = useState({
@@ -389,6 +392,11 @@ export default function RequestOrder(props) {
 		return Gender.find({}).fetch();
 	}, []);
 
+	const clients = useTracker(() => {
+		Meteor.subscribe('clients');
+		return Meteor.users.find({'profile.profile':"client"}).fetch();
+	}, []);
+
 	return (
 		<Container maxWidth="lg" className={ classes.container }>
 			<Paper className={ classes.paper } elevation={ 10 }>
@@ -414,7 +422,7 @@ export default function RequestOrder(props) {
 					<Grid item xs={ 12 }>
 						<form className={ classes.form } onSubmit={ handleSubmitForm }>
 							<Grid container spacing={ 2 }>
-								<Grid item xs={ 12 }>
+								<Grid item xs={ 6 }>
 									<TextField
 										variant="outlined"
 										required
@@ -431,28 +439,29 @@ export default function RequestOrder(props) {
 										variant="outlined"
 										required
 										fullWidth
-										id="clinic"
-										label="Clinica"
-										name="clinic"
-										value={ form.clinic }
-										onChange={ e => setForm({ ...form, clinic: e.target.value }) }
+										id="MVZ"
+										label="MVZ"
+										name="MVZ"
+										value={ form.MVZ }
+										onChange={ e => setForm({ ...form, MVZ: e.target.value }) }
 									/>
 								</Grid>
 								<Grid item xs={ 6 }>
-									<TextField
-										variant="outlined"
-										required
-										fullWidth
-										id="phone"
-										label="Teléfono"
-										name="phone"
-										type="tel"
-										pattern="[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}"
-										value={ form.phone }
-										onChange={ e => setForm({ ...form, phone: e.target.value }) }
-									/>
+									<FormControl variant="outlined" fullWidth required>
+										<InputLabel id="demo-simple-select-outlined-label">Clínica</InputLabel>
+										<Select
+											labelId="selectClinicLabel"
+											id="selectClinic"
+											value={ form.clinic }
+											onChange={ e => setForm({ ...form, clinic: e.target.value }) }
+											label="selectClinicLabel"
+										>
+											{ clients.map((client, i) => <MenuItem key={ i }
+											                                     value={ client._id }>{ client.profile.username }</MenuItem>) }
+										</Select>
+									</FormControl>
 								</Grid>
-								<Grid item xs={ 12 }>
+								<Grid item xs={ 6 }>
 									<TextField
 										variant="outlined"
 										required
@@ -468,11 +477,11 @@ export default function RequestOrder(props) {
 									<FormControl variant="outlined" fullWidth required>
 										<InputLabel id="demo-simple-select-outlined-label">Especie</InputLabel>
 										<Select
-											labelId="demo-simple-select-outlined-label"
-											id="demo-simple-select-outlined"
+											labelId="selectPetSpecieLabel"
+											id="selectPetSpecie"
 											value={ form.petSpecie }
 											onChange={ e => setForm({ ...form, petSpecie: e.target.value }) }
-											label="Especie"
+											label="selectPetSpecieLabel"
 										>
 											{ species.map((specie, i) => <MenuItem key={ i }
 											                                       value={ specie._id }>{ specie.name }</MenuItem>) }
@@ -483,11 +492,11 @@ export default function RequestOrder(props) {
 									<FormControl variant="outlined" fullWidth required>
 										<InputLabel id="demo-simple-select-outlined-label">Raza</InputLabel>
 										<Select
-											labelId="demo-simple-select-outlined-label"
-											id="demo-simple-select-outlined"
+											labelId="selectPetBreedLabel"
+											id="selectPetBreed"
 											value={ form.petBreed }
 											onChange={ e => setForm({ ...form, petBreed: e.target.value }) }
-											label="Raza"
+											label="selectPetBreedLabel"
 										>
 											{ breeds.map((breed, i) => <MenuItem key={ i }
 											                                     value={ breed._id }>{ breed.name }</MenuItem>) }
@@ -498,11 +507,11 @@ export default function RequestOrder(props) {
 									<FormControl variant="outlined" fullWidth required>
 										<InputLabel id="demo-simple-select-outlined-label">Genero</InputLabel>
 										<Select
-											labelId="demo-simple-select-outlined-label"
-											id="demo-simple-select-outlined"
+											labelId="selectPetGenderLabel"
+											id="selectPetGender"
 											value={ form.petGender }
 											onChange={ e => setForm({ ...form, petGender: e.target.value }) }
-											label="Genero"
+											label="selectPetGenderLabel"
 										>
 											{ genders.map((gender, i) => <MenuItem key={ i }
 											                                       value={ gender._id }>{ gender.name }</MenuItem>) }
@@ -520,6 +529,19 @@ export default function RequestOrder(props) {
 										type="number"
 										value={ form.petAge }
 										onChange={ e => setForm({ ...form, petAge: e.target.value }) }
+									/>
+								</Grid>
+								<Grid item xs={ 12 }>
+									<TextField
+										variant="outlined"
+										required
+										fullWidth
+										id="kind"
+										label="Tipo de muestra"
+										name="kind"
+										type="text"
+										value={ form.kind }
+										onChange={ e => setForm({ ...form, kind: e.target.value }) }
 									/>
 								</Grid>
 								<Grid item xs={12}>
@@ -576,6 +598,32 @@ export default function RequestOrder(props) {
 											onChange={ (date) => setForm({ ...form, samplingHour: new Date(date) }) }
 										/>
 									</MuiPickersUtilsProvider>
+								</Grid>
+								<Grid item xs={12}>
+									<TextField
+										id="outlined-multiline-static"
+										label="Observación 1"
+										required
+										fullWidth
+										multiline
+										rows={4}
+										variant="outlined"
+										value={ form.observation1 }
+										onChange={ e => setForm({ ...form, observation1: e.target.value }) }
+									/>
+								</Grid>
+								<Grid item xs={12}>
+									<TextField
+										id="outlined-multiline-static"
+										label="Observación 2"
+										required
+										fullWidth
+										multiline
+										rows={4}
+										variant="outlined"
+										value={ form.observation2 }
+										onChange={ e => setForm({ ...form, observation2: e.target.value }) }
+									/>
 								</Grid>
 								<Grid item xs={ 12 }>
 									<Biochemistry

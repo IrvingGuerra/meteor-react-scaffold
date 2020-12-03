@@ -102,24 +102,28 @@ export default function TabInsert(props) {
 				</BootstrapTooltip>
 				<Divider orientation="vertical" flexItem/>
 				<FormControl variant="outlined">
-					<InputLabel id="demo-simple-select-outlined-label">#</InputLabel>
+					<InputLabel id="demo-simple-select-outlined-label">#Tags</InputLabel>
 					<Select
-						style={ { width: 50 } }
+						style={ { width: 100 } }
 						labelId="demo-simple-select-outlined-label"
 						id="demo-simple-select-outlined"
 						value=""
-						label="#"
-						placeholder="#"
+						label="#Tags"
+						placeholder="#Tags"
 						onChange={ (value) => addAutoValue(doc, value.target.value)}
 					>
+						<MenuItem value='NumeroOrden'>Número de orden</MenuItem>
 						<MenuItem value='Propietario'>Propietario</MenuItem>
-						<MenuItem value='Clinica'>Clinica</MenuItem>
-						<MenuItem value='Telefono'>Teléfono</MenuItem>
+						<MenuItem value='MVZ'>MVZ</MenuItem>
+						<MenuItem value='Clinica'>Clínica</MenuItem>
 						<MenuItem value='NombreMascota'>Nombre de mascota</MenuItem>
 						<MenuItem value='Especie'>Especie</MenuItem>
 						<MenuItem value='Raza'>Raza</MenuItem>
 						<MenuItem value='Genero'>Genero</MenuItem>
 						<MenuItem value='Edad'>Edad</MenuItem>
+						<MenuItem value='FechaMuestreo'>Fecha de muestreo</MenuItem>}
+						<MenuItem value='HoraMuestreo'>Hora de muestreo</MenuItem>
+						<MenuItem value='TipoMuestra'>Tipo de muestra</MenuItem>
 					</Select>
 				</FormControl>
 			</Grid>

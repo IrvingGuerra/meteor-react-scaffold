@@ -16,6 +16,7 @@ export const saveUserMethod = new ValidatedMethod({
 				firstname: String,
 				lastname: String,
 				username: String,
+				phone: String,
 				profile: String,
 				email: String,
 				password: String
@@ -45,6 +46,7 @@ export const saveUserMethod = new ValidatedMethod({
 						'profile.username': user.username,
 						'profile.firstname': user.firstname,
 						'profile.lastname': user.lastname,
+						'profile.phone': user.phone,
 						'profile.profile': user.profile
 					}
 				});

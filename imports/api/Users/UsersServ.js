@@ -25,6 +25,7 @@ export default {
 				"profile.firstname": user.firstname,
 				"profile.lastname": user.lastname,
 				"profile.username": user.username,
+				"profile.phone": user.phone,
 				"profile.profile": user.profile,
 			}
 		});

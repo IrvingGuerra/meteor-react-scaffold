@@ -83,7 +83,7 @@ export default function MyOrders(props) {
 
 	const orders = useOrders(filters, user);
 
-	const ordersHeaders = ['Numero de orden', 'Estatus', 'Fecha'];
+	const ordersHeaders = ['Numero de orden', 'Estatus', 'Fecha', 'Solicitó'];
 
 	return (
 		<Container maxWidth="lg" className={ classes.container }>

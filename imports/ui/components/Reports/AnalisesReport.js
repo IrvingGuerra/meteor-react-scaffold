@@ -22,6 +22,7 @@ import BootstrapTooltip from '../../components/Tooltips/BootstrapTooltip';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { useSelector } from 'react-redux';
 import { ExportCSV } from './ExportCSV';
+import { getStatusName } from '../../views/Orders/ListOrders';
 
 const useStyles = makeStyles((theme) => ({
 	container: {
@@ -50,9 +51,9 @@ const useOrders = (filters, user) => useTracker(() => {
 	}, {
 		sort: { date: -1 }
 	});
-	let filter = {};
+	let filter = { 'status': 'attended' };
 	if(filters.profile !== 'all' ){
-		filter = {'requested.profile.profile': filters.profile}
+		filter = { 'status': 'attended', 'requested.profile.profile': filters.profile}
 	}
 	const orders = Order.find(filter).fetch();
 	orders.map((order) => {
@@ -61,6 +62,7 @@ const useOrders = (filters, user) => useTracker(() => {
 		order.timePromedio = Math.round((date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24)) + ' dia(s)';
 		order.requestedName = order.requested.profile.username;
 		order.requestedProfile = order.requested.profile.profile;
+		order.status = getStatusName(order.status);
 		delete order.requested;
 		delete order.idRequested;
 	});

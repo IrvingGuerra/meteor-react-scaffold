@@ -69,7 +69,7 @@ export const CustomTable = (props) => {
 												<FileCopyIcon color="primary"/>
 											</IconButton>
 										) }
-										{ (view && element.status && element.status === 'attended') && (
+										{ (view && element.status && element.status === 'Atendido') && (
 											<IconButton onClick={ () => handleView(element._id) }>
 												<VisibilityIcon color="primary"/>
 											</IconButton>

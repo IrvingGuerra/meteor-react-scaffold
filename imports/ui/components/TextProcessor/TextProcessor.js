@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Card } from '@material-ui/core';
 import './TextProcessor.css';
-import { DOC_MARGIN, PAPER_SIZES } from './constants';
+import { PAPER_SIZES } from './constants';
 import { fabric } from './js/init';
 import TextProcessorTabs from './components/TextProcessorTabs/TextProcessorTabs';
 import { STRINGS } from './constants/strings';
 import { BootstrapTooltip } from './components/TabFont/TabFont';
 import { _handleClickDown, _handleKeyDown, _handleKeyUp } from './js/events';
+import { format } from 'date-fns'
 import { useWorker } from '@koale/useworker';
 
 const grid = 18;
@@ -55,7 +56,6 @@ export default function TextProcessor(props) {
 			createCanvas(i);
 			let c = new fabric.Canvas('doc' + i);
 			if (i !== 0) hideCanvas(i);
-			console.log("Entra aqui");;
 			c.loadFromJSON(page.canvas, c.renderAll.bind(c), (o, object) => {
 				if (!props.location.state.canEdit) {
 					// Just can edit id label
@@ -66,15 +66,19 @@ export default function TextProcessor(props) {
 					} else if (object.id && object.id.includes('result')) {
 						object.set('selectable', true);
 					} else if (object.id && object.id.includes('autoValue')) {
+						//Tags
 						switch (object.id) {
+							case 'autoValueNumeroOrden':
+								object.set('text', props.location.state.number.toString());
+								break;
 							case 'autoValuePropietario':
 								object.set('text', props.location.state.petOwner);
 								break;
+							case 'autoValueMVZ':
+								object.set('text', props.location.state.MVZ);
+								break;
 							case 'autoValueClinica':
 								object.set('text', props.location.state.clinic);
-								break;
-							case 'autoValueTelefono':
-								object.set('text', props.location.state.phone);
 								break;
 							case 'autoValueNombreMascota':
 								object.set('text', props.location.state.petName);
@@ -90,6 +94,15 @@ export default function TextProcessor(props) {
 								break;
 							case 'autoValueEdad':
 								object.set('text', props.location.state.petAge);
+								break;
+							case 'autoValueFechaMuestreo':
+								object.set('text', format(props.location.state.samplingDate, 'yyyy-MM-dd'));
+								break;
+							case 'autoValueHoraMuestreo':
+								object.set('text', format(props.location.state.samplingHour, 'hh:mm aa'));
+								break;
+							case 'autoValueTipoMuestra':
+								object.set('text', props.location.state.kind);
 								break;
 						}
 						object.set('selectable', false);
