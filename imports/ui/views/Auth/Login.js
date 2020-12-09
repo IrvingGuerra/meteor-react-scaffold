@@ -132,7 +132,7 @@ export default function Login(props) {
 						/>
 						<FormControlLabel
 							control={ <Checkbox value="remember" color="primary"/> }
-							label="Recuardame"
+							label="Recordarme"
 						/>
 						<Button
 							type="submit"

@@ -37,7 +37,8 @@ const useTemplates = (filters) => useTracker(() => {
 	});
 	return {
 		templates: Template.find({}).fetch(),
-		loading: !subscription.ready()
+		loading: !subscription.ready(),
+		templatesSubscription: subscription
 	};
 }, [filters]);
 
@@ -163,6 +164,5 @@ export default function ListTemplates(props) {
 			</Paper>
 			<ModalDialog modal={ modal } _handleAccept={ deleteTemplate }/>
 		</Container>
-
 	);
 };

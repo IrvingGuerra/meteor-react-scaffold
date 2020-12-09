@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
 	Grid,
@@ -34,45 +34,14 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-export const getStatusName = (status) => {
-	switch (status) {
-		case 'open':
-			return 'Abierto';
-		case 'awaitingSample':
-			return 'En espera de muestra';
-		case 'process':
-			return 'En proceso';
-		case 'awaitingResults':
-			return 'En espera de resultados';
-		case 'attended':
-			return 'Atendido';
-	}
-};
-
 const useOrders = (filters) => useTracker(() => {
-	Meteor.subscribe('orders', {
-		startDate: filters.startDate,
-		endDate: filters.endDate
-	}, {
-		sort: { date: -1 }
-	});
-	let filter = {};
-	if (filters.status !== 'all') {
-		filter = { status: filters.status };
-	}
-	const orders = Order.find(filter).fetch();
-	orders.map((order) => {
-		order.requestedName = order.requested.profile.username;
-		order.status = getStatusName(order.status);
-		delete order.requested;
-		delete order.idRequested;
-		delete order.closingDate;
-	});
-	console.log(orders);
-	return orders;
+	Meteor.subscribe('orders', filters, { sort: { date: -1 } });
+	return Order.find({}).fetch();
 }, [filters]);
 
-const ListOrders = (props) => {
+
+
+export default function ListOrders(props) {
 	const { history } = props;
 	const classes = useStyles();
 	// Filters
@@ -169,5 +138,3 @@ const ListOrders = (props) => {
 		</Container>
 	);
 };
-
-export default ListOrders;

@@ -52,6 +52,26 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
+const useClients = () => useTracker(() => {
+	Meteor.subscribe('users', 'client');
+	return Meteor.users.find({}).fetch();
+}, []);
+
+const useSpecies = () => useTracker(() => {
+	Meteor.subscribe('species');
+	return Specie.find({}).fetch();
+}, []);
+
+const useBreeds= (specie) => useTracker(() => {
+	Meteor.subscribe('breeds', specie);
+	return Breed.find({}).fetch();
+}, [specie]);
+
+const useGenders= () => useTracker(() => {
+	Meteor.subscribe('genders');
+	return Gender.find({}).fetch();
+}, []);
+
 export default function RequestOrder(props) {
 	const { history, loader, alert } = props;
 	const classes = useStyles();
@@ -377,25 +397,13 @@ export default function RequestOrder(props) {
 		});
 	};
 
-	const species = useTracker(() => {
-		Meteor.subscribe('species');
-		return Specie.find({}).fetch();
-	}, []);
+	const clients = useClients();
 
-	const breeds = useTracker(() => {
-		Meteor.subscribe('breeds');
-		return Breed.find({}).fetch();
-	}, []);
+	const species = useSpecies();
 
-	const genders = useTracker(() => {
-		Meteor.subscribe('genders');
-		return Gender.find({}).fetch();
-	}, []);
+	const breeds = useBreeds(form.petSpecie);
 
-	const clients = useTracker(() => {
-		Meteor.subscribe('clients');
-		return Meteor.users.find({'profile.profile':"client"}).fetch();
-	}, []);
+	const genders = useGenders();
 
 	return (
 		<Container maxWidth="lg" className={ classes.container }>
@@ -457,7 +465,7 @@ export default function RequestOrder(props) {
 											label="selectClinicLabel"
 										>
 											{ clients.map((client, i) => <MenuItem key={ i }
-											                                     value={ client._id }>{ client.profile.username }</MenuItem>) }
+											                                     value={ client._id }>{ client.username }</MenuItem>) }
 										</Select>
 									</FormControl>
 								</Grid>

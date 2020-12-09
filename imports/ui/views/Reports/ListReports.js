@@ -2,7 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Accordion, AccordionDetails, AccordionSummary, Container, Typography } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import AnalisesReport from '../../components/Reports/AnalisesReport';
+import AnalysesReport from '../../components/Reports/AnalysesReport';
 
 const useStyles = makeStyles((theme) => ({
 	heading: {
@@ -27,7 +27,7 @@ export default function ListReports(props) {
 					<Typography>Análisis realizados</Typography>
 				</AccordionSummary>
 				<AccordionDetails>
-					<AnalisesReport { ...props } />
+					<AnalysesReport { ...props } />
 				</AccordionDetails>
 			</Accordion>
 		</Container>

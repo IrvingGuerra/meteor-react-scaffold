@@ -17,12 +17,10 @@ import { Order } from '../../../api/Orders/Order';
 import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import Utilities from '../../../startup/both/Utilities';
-import { CustomTable } from '../../components/Tables/CustomTable';
+import { CustomTable } from '../Tables/CustomTable';
 import BootstrapTooltip from '../../components/Tooltips/BootstrapTooltip';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
-import { useSelector } from 'react-redux';
 import { ExportCSV } from './ExportCSV';
-import { getStatusName } from '../../views/Orders/ListOrders';
 
 const useStyles = makeStyles((theme) => ({
 	container: {
@@ -34,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	formControl: {
 		margin: theme.spacing(1),
-		minWidth: 200,
+		minWidth: 200
 	},
 	paper: {
 		padding: theme.spacing(2),
@@ -44,43 +42,30 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-const useOrders = (filters, user) => useTracker(() => {
-	Meteor.subscribe('analisesReport', {
-		startDate: filters.startDate,
-		endDate: filters.endDate
-	}, {
-		sort: { date: -1 }
-	});
-	let filter = { 'status': 'attended' };
-	if(filters.profile !== 'all' ){
-		filter = { 'status': 'attended', 'requested.profile.profile': filters.profile}
-	}
-	const orders = Order.find(filter).fetch();
-	orders.map((order) => {
-		const date1 = new Date(order.date);
-		const date2 = new Date(order.closingDate);
-		order.timePromedio = Math.round((date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24)) + ' dia(s)';
-		order.requestedName = order.requested.profile.username;
-		order.requestedProfile = order.requested.profile.profile;
-		order.status = getStatusName(order.status);
-		delete order.requested;
-		delete order.idRequested;
-	});
-	return orders;
+const useOrders = (filters) => useTracker(() => {
+	Meteor.subscribe('analysesReport', filters, { sort: { date: -1 } });
+	return Order.find({}).fetch();
 }, [filters]);
 
-export default function AnalisesReport(props) {
+const useUsers = (profile) => useTracker(() => {
+	Meteor.subscribe('users', profile);
+	return Meteor.users.find({}).fetch();
+}, [profile]);
+
+export default function AnalysesReport(props) {
 	const { history } = props;
-	const user = useSelector(state => state.user);
 	const classes = useStyles();
 	// Filters
 	const [filters, setFilters] = useState({
 		startDate: new Date(Utilities.currentLocalDate()),
 		endDate: new Date(Utilities.currentLocalDate()),
-		profile: 'all'
+		profile: 'all',
+		idRequest: 'all'
 	});
 
-	const orders = useOrders(filters, user);
+	const orders = useOrders(filters);
+
+	const users = useUsers(filters.profile);
 
 	const ordersHeaders = ['Numero de orden', 'Estatus', 'Fecha de apertura', 'Fecha de cierre', 'Dias entre apertura y cierre', 'Solicitó', 'Perfil solicitó'];
 
@@ -109,7 +94,7 @@ export default function AnalisesReport(props) {
 						</Grid>
 					</Grid>
 					<Grid item xs={ 12 }>
-						<ExportCSV csvData={orders} fileName={"Analisis realizados"}/>
+						<ExportCSV csvData={ orders } fileName={ 'Analisis realizados' }/>
 					</Grid>
 					<Grid item xs={ 12 }>
 						<MuiPickersUtilsProvider utils={ DateFnsUtils }>
@@ -136,7 +121,7 @@ export default function AnalisesReport(props) {
 								onChange={ (date) => setFilters({ ...filters, endDate: new Date(date) }) }
 							/>
 						</MuiPickersUtilsProvider>
-						<FormControl variant="outlined" className={classes.formControl}>
+						<FormControl variant="outlined" className={ classes.formControl }>
 							<InputLabel id="demo-simple-select-outlined-label">Perfil</InputLabel>
 							<Select
 								labelId="demo-simple-select-outlined-label"
@@ -145,11 +130,28 @@ export default function AnalisesReport(props) {
 								onChange={ e => setFilters({ ...filters, profile: e.target.value }) }
 								label="Perfil"
 							>
-								<MenuItem key={1} value="all" >Todos los perfiles</MenuItem>
-								<MenuItem key={2} value='admin'>Admin</MenuItem>
-								<MenuItem key={3} value='specialist'>Especialista</MenuItem>
-								<MenuItem key={4} value='labworker'>Laboratorista</MenuItem>
-								<MenuItem key={5} value='client'>Cliente</MenuItem>
+								<MenuItem key={ 1 } value="all">Todos los perfiles</MenuItem>
+								<MenuItem key={ 2 } value='admin'>Admin</MenuItem>
+								<MenuItem key={ 3 } value='specialist'>Especialista</MenuItem>
+								<MenuItem key={ 4 } value='labworker'>Laboratorista</MenuItem>
+								<MenuItem key={ 5 } value='client'>Cliente</MenuItem>
+							</Select>
+						</FormControl>
+						<FormControl variant="outlined" className={ classes.formControl }>
+							<InputLabel id="select-request">Solicito</InputLabel>
+							<Select
+								labelId="selectRequestLabel"
+								id="selectRequest"
+								value={ filters.idRequest }
+								onChange={ e => setFilters({ ...filters, idRequest: e.target.value }) }
+								label="selectRequest"
+							>
+								<MenuItem key={ 1 } value="all">Todos los solicitantes</MenuItem>
+								{ users.map((user, index) => {
+									return (
+										<MenuItem key={ index } value={ user._id }>{ user.username }</MenuItem>
+									);
+								}) }
 							</Select>
 						</FormControl>
 					</Grid>

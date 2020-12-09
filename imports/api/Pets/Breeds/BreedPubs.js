@@ -3,8 +3,17 @@ import { ReactiveAggregate } from 'meteor/tunguska:reactive-aggregate';
 import { Breed } from './Breed';
 
 if (Meteor.isServer) {
-	Meteor.publish('breeds', function( ) {
+	Meteor.publish('breeds', function(specie) {
+		let query = {};
+		if(specie && specie !== ''){
+			query = {
+				idSpecie: specie
+			}
+		}
 		ReactiveAggregate(this, Breed, [
+			{
+				$match: query
+			},
 			{
 				$lookup:
 					{

@@ -28,24 +28,18 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
+const useUsers = () => useTracker(() => {
+	Meteor.subscribe('users');
+	return Meteor.users.find({ _id: { $ne: Meteor.userId() } }).fetch();
+}, []);
+
 const ListUsers = (props) => {
 	const { history, loader, alert } = props;
 	const classes = useStyles();
 	const modal = useModal();
 	const [idDelete, setIdDelete] = useState(null);
 
-	const users = useTracker(() => {
-		Meteor.subscribe('users');
-		const users = Meteor.users.find({ _id: { $ne: Meteor.userId() } }).fetch();
-		users.map((user) => {
-			user.username = user.profile.username;
-			user.emailUser = user.emails[0].address;
-			user.profileUser = user.profile.profile;
-			delete user.emails;
-			delete user.profile;
-		})
-		return users;
-	}, []);
+	const users = useUsers();
 
 	const usersHeaders = ['Nombre de usuario', 'Correo eléctronico', 'Perfil'];
 
