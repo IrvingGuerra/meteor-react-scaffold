@@ -17,7 +17,7 @@ import {
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import { useTracker } from 'react-meteor-hooks';
+import { useTracker } from 'meteor/react-meteor-data';
 import { Template } from '../../../api/Templates/Template';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 
@@ -62,6 +62,13 @@ const useStyles = makeStyles((theme) => ({
 		margin: theme.spacing(3, 0, 2)
 	}
 }));
+
+// Publications
+
+const useTemplates = () => useTracker(() => {
+	Meteor.subscribe('allTemplates');
+	return Template.find({}).fetch();
+}, []);
 
 export default function OrderDetails(props) {
 	const { history, loader, alert } = props;
@@ -131,11 +138,6 @@ export default function OrderDetails(props) {
 		}
 	}, []);
 
-	const templates = useTracker(() => {
-		Meteor.subscribe('allTemplates');
-		return Template.find({}).fetch();
-	}, []);
-
 	const species = useTracker(() => {
 		Meteor.subscribe('species');
 		return Specie.find({}).fetch();
@@ -155,6 +157,8 @@ export default function OrderDetails(props) {
 		Meteor.subscribe('clients');
 		return Meteor.users.find({'profile.profile':"client"}).fetch();
 	}, []);
+
+	const templates = useTemplates();
 
 	return (
 		<Container maxWidth="lg" className={ classes.container }>

@@ -11,7 +11,7 @@ import {
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import BootstrapTooltip from '../../components/Tooltips/BootstrapTooltip';
 import { ModalDialog } from '../../components/Utilities/Modals/ModalDialog';
-import { useTracker } from 'react-meteor-hooks';
+import { useTracker } from 'meteor/react-meteor-data';
 import useModal from '../../hooks/useModal';
 import { CustomTable } from '../../components/Tables/CustomTable';
 

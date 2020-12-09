@@ -6,7 +6,7 @@ import {
 import React, { useState } from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
-import { useTracker } from 'react-meteor-hooks';
+import { useTracker } from 'meteor/react-meteor-data';
 import { Specie } from '../../../../api/Pets/Species/Specie';
 import useModal from '../../../hooks/useModal';
 import { ModalDialog } from '../../../components/Utilities/Modals/ModalDialog';

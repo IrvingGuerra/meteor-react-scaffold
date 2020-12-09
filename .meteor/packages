@@ -25,3 +25,4 @@ alanning:roles
 mdg:validated-method
 lacosta:method-hooks
 tunguska:reactive-aggregate
+react-meteor-data

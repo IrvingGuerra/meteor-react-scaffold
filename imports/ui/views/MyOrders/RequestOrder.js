@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import IconButton from '@material-ui/core/IconButton';
-import { useTracker } from 'react-meteor-hooks';
+import { useTracker } from 'meteor/react-meteor-data';
 import { Specie } from '../../../api/Pets/Species/Specie';
 import { Breed } from '../../../api/Pets/Breeds/Breed';
 import { Gender } from '../../../api/Pets/Genders/Gender';

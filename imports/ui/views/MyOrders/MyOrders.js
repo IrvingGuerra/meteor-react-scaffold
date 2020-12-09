@@ -14,7 +14,7 @@ import {
 	CardContent,
 	Fab, Grid, Paper, Typography, Box, Container, InputLabel, Select, MenuItem, FormControl
 } from '@material-ui/core';
-import { useTracker } from 'react-meteor-hooks';
+import { useTracker } from 'meteor/react-meteor-data';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';

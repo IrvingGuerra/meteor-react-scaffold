@@ -15,7 +15,7 @@ import {
 	IconButton
 } from '@material-ui/core';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import { useTracker } from 'react-meteor-hooks';
+import { useTracker } from 'meteor/react-meteor-data';
 import { Specie } from '../../../../api/Pets/Species/Specie';
 
 const useStyles = makeStyles((theme) => ({

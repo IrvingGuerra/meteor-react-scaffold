@@ -27,3 +27,14 @@ export const LoaderPage = forwardRef((props, ref) => {
 		</Backdrop>
 	);
 });
+
+
+export const FullLoader = () => {
+	const classes = useStyles();
+
+	return (
+		<Backdrop className={ classes.backdrop } open={ true }>
+			<CircularProgress/>
+		</Backdrop>
+	);
+}

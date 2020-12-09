@@ -1,23 +1,6 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import {
-	TableContainer,
-	Table,
-	TableHead,
-	TableRow,
-	TableCell,
-	TableBody,
-	TablePagination,
-	IconButton,
-	Card,
-	CardHeader,
-	CardContent,
-	Fab, Grid, Paper, Typography, Box, Container
-} from '@material-ui/core';
-import { useTracker } from 'react-meteor-hooks';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
-import AddIcon from '@material-ui/icons/Add';
+import { IconButton, Grid, Paper, Typography, Box, Container } from '@material-ui/core';
 import { Template } from '../../../api/Templates/Template';
 import { ModalDialog } from '../../components/Utilities/Modals/ModalDialog';
 import useModal from '../../hooks/useModal';
@@ -27,6 +10,7 @@ import Utilities from '../../../startup/both/Utilities';
 import BootstrapTooltip from '../../components/Tooltips/BootstrapTooltip';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { CustomTable } from '../../components/Tables/CustomTable';
+import { useTracker } from 'meteor/react-meteor-data';
 
 const useStyles = makeStyles((theme) => ({
 	container: {
@@ -45,24 +29,20 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const useTemplates = (filters) => useTracker(() => {
-	Meteor.subscribe('templates', {
+	const subscription = Meteor.subscribe('templates', {
 		startDate: filters.startDate,
 		endDate: filters.endDate
 	}, {
 		sort: { date: -1 }
 	});
-	const templates = Template.find({}).fetch();
-	templates.map((template) => {
-		template.creatorName = template.creator.profile.username;
-		delete template.creator;
-		delete template.idCreator;
-		delete template.pages;
-	});
-	return templates;
+	return {
+		templates: Template.find({}).fetch(),
+		loading: !subscription.ready()
+	};
 }, [filters]);
 
 export default function ListTemplates(props) {
-	const { history, loader, alert } = props;
+	const { history, loader } = props;
 	const classes = useStyles();
 	// Filters
 	const [filters, setFilters] = useState({
@@ -72,7 +52,7 @@ export default function ListTemplates(props) {
 	const modal = useModal();
 	const [idDelete, setIdDelete] = useState(null);
 
-	const templates = useTemplates(filters);
+	const { templates } = useTemplates(filters);
 
 	const templatesHeaders = ['Nombre de la plantilla', 'Fecha de creación', 'Creador de la plantilla'];
 

@@ -2,13 +2,12 @@ import React, { useEffect } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import routes from '../routes.js';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Navbar from '../components/Navbars/Navbar';
 import Sidebar, { drawerWidth } from '../components/Sidebar/Sidebar';
-import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { Copyright } from '../views/Auth/Login';
+import { logout } from '../../redux/actions';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -60,6 +59,7 @@ const SwitchRoutes = ({ profile, props }) => {
 };
 export default function System(props) {
 	const classes = useStyles();
+	const dispatch = useDispatch();
 	const user = useSelector(state => state.user);
 
 	function hasPermissions(profile) {
@@ -71,6 +71,8 @@ export default function System(props) {
 			props.history.push('/');
 		}
 		if(!Meteor.userId()){
+			dispatch(logout());
+			localStorage.removeItem('state');
 			props.history.push('/');
 		}
 		if (!hasPermissions(user.profile.profile)) {
