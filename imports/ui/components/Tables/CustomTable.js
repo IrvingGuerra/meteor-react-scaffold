@@ -15,8 +15,7 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import WarningIcon from '@material-ui/icons/Warning';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import BootstrapTooltip from '../../components/Tooltips/BootstrapTooltip'
-import { STRINGS } from '../TextProcessor/constants/strings';
+import BootstrapTooltip from '../../components/Tooltips/BootstrapTooltip';
 
 export const CustomTable = (props) => {
 	const { headers, data, options, handleEdit, handleRemove, handleCopy, handleView } = props;
@@ -52,7 +51,7 @@ export const CustomTable = (props) => {
 						{ data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((element, i) => {
 							const columns = [];
 							Object.keys(element).forEach(key => {
-								if (key !== '_id' && typeof element[key] === 'string' && !columns.includes(key)) {
+								if (key !== '_id' && (typeof element[key] === 'string' || typeof element[key] === 'number') && !columns.includes(key)) {
 									columns.push(key);
 								}
 							});

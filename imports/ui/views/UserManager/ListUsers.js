@@ -30,7 +30,11 @@ const useStyles = makeStyles((theme) => ({
 
 const useUsers = () => useTracker(() => {
 	Meteor.subscribe('users');
-	return Meteor.users.find({ _id: { $ne: Meteor.userId() } }).fetch();
+	const users = Meteor.users.find({ _id: { $ne: Meteor.userId() } }).fetch();
+	users.map((user) => {
+		user.emailUser = user.emailUser[0];
+	})
+	return users;
 }, []);
 
 const ListUsers = (props) => {
