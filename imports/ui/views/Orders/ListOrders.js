@@ -13,6 +13,7 @@ import { DatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import Utilities from '../../../startup/both/Utilities';
 import { CustomTable } from '../../components/Tables/CustomTable';
+import { getStatusSpanish } from '../../../utils';
 
 const useStyles = makeStyles((theme) => ({
 	container: {
@@ -36,7 +37,11 @@ const useStyles = makeStyles((theme) => ({
 
 const useOrders = (filters) => useTracker(() => {
 	Meteor.subscribe('orders', filters, { sort: { date: -1 } });
-	return Order.find({}).fetch();
+	const orders = Order.find({}).fetch();
+	orders.map((order => {
+		order.status = getStatusSpanish(order.status);
+	}))
+	return orders;
 }, [filters]);
 
 

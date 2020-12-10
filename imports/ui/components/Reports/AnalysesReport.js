@@ -21,6 +21,7 @@ import { CustomTable } from '../Tables/CustomTable';
 import BootstrapTooltip from '../../components/Tooltips/BootstrapTooltip';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { ExportCSV } from './ExportCSV';
+import { getStatusSpanish } from '../../../utils';
 
 const useStyles = makeStyles((theme) => ({
 	container: {
@@ -44,7 +45,14 @@ const useStyles = makeStyles((theme) => ({
 
 const useOrders = (filters) => useTracker(() => {
 	Meteor.subscribe('analysesReport', filters, { sort: { date: -1 } });
-	return Order.find({}).fetch();
+	const orders = Order.find({}).fetch();
+	orders.map((order => {
+		order.status = getStatusSpanish(order.status);
+		const date1 = new Date(order.date);
+		const date2 = new Date(order.closingDate);
+		order.timeAverage = Math.round((date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24)) + ' dia(s)';
+	}))
+	return orders;
 }, [filters]);
 
 const useUsers = (profile) => useTracker(() => {
@@ -67,7 +75,7 @@ export default function AnalysesReport(props) {
 
 	const users = useUsers(filters.profile);
 
-	const ordersHeaders = ['Numero de orden', 'Estatus', 'Fecha de apertura', 'Fecha de cierre', 'Dias entre apertura y cierre', 'Solicitó', 'Perfil solicitó'];
+	const ordersHeaders = ['Numero de orden', 'Estatus', 'Fecha de apertura', 'Fecha de cierre', 'Solicitó', 'Perfil solicitó', 'Dias entre apertura y cierre'];
 
 	return (
 		<Container maxWidth="lg" className={ classes.container }>

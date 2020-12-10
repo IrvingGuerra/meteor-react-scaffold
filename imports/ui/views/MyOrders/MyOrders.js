@@ -13,6 +13,7 @@ import { CustomTable } from '../../components/Tables/CustomTable';
 import BootstrapTooltip from '../../components/Tooltips/BootstrapTooltip';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import { useSelector } from 'react-redux';
+import { getStatusSpanish } from '../../../utils';
 
 const useStyles = makeStyles((theme) => ({
 	container: {
@@ -36,7 +37,11 @@ const useStyles = makeStyles((theme) => ({
 
 const useOrders = (filters) => useTracker(() => {
 	Meteor.subscribe('orders', filters, { sort: { date: -1 } });
-	return Order.find({}).fetch();
+	const orders = Order.find({}).fetch();
+	orders.map((order => {
+		order.status = getStatusSpanish(order.status);
+	}))
+	return orders;
 }, [filters]);
 
 export default function MyOrders(props) {

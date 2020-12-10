@@ -38,27 +38,6 @@ if (Meteor.isServer) {
 				}
 			}, {
 				$addFields: {
-					status: {
-						$function:
-							{
-								body: `function(status) {
-									switch (status) {
-										case 'open':
-											return 'Abierto';
-										case 'awaitingSample':
-											return 'En espera de muestra';
-										case 'process':
-											return 'En proceso';
-										case 'awaitingResults':
-											return 'En espera de resultados';
-										case 'attended':
-											return 'Atendido';
-									}
-								}`,
-								args: ['$status'],
-								lang: 'js'
-							}
-					},
 					requestedName: '$requested.profile.username'
 				}
 			},
@@ -88,7 +67,7 @@ if (Meteor.isServer) {
 			queryRequest = { '$and': [{ '$eq': ['$_id', '$$idRequested'] }, { '$eq': ['$profile.profile', profile] }] };
 		}
 		if (idRequest !== 'all') {
-			queryRequest = { '$eq': ['$_id', idRequest] };
+			query.idRequested = idRequest;
 		}
 		ReactiveAggregate(this, Order, [
 			{
@@ -109,39 +88,6 @@ if (Meteor.isServer) {
 				$unwind: '$requested'
 			}, {
 				$addFields: {
-					status: {
-						$function:
-							{
-								body: `function(status) {
-									switch (status) {
-										case 'open':
-											return 'Abierto';
-										case 'awaitingSample':
-											return 'En espera de muestra';
-										case 'process':
-											return 'En proceso';
-										case 'awaitingResults':
-											return 'En espera de resultados';
-										case 'attended':
-											return 'Atendido';
-									}
-								}`,
-								args: ['$status'],
-								lang: 'js'
-							}
-					},
-					timeAverage: {
-						$function:
-							{
-								body: `function(date, closingDate) {
-									const date1 = new Date(date);
-									const date2 = new Date(closingDate);
-									return Math.round((date2.getTime() - date1.getTime()) / (1000 * 60 * 60 * 24)) + ' dia(s)';
-								}`,
-								args: ['$date', '$closingDate'],
-								lang: 'js'
-							}
-					},
 					requestedName: '$requested.profile.username',
 					requestedProfile: '$requested.profile.profile'
 				}
