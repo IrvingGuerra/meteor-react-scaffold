@@ -7,13 +7,15 @@ import TextProcessorTabs from './components/TextProcessorTabs/TextProcessorTabs'
 import { STRINGS } from './constants/strings';
 import { BootstrapTooltip } from './components/TabFont/TabFont';
 import { _handleClickDown, _handleKeyDown, _handleKeyUp } from './js/events';
-import { format } from 'date-fns'
+import { format } from 'date-fns';
 import { useWorker } from '@koale/useworker';
+import { useSelector } from 'react-redux';
 
 const grid = 18;
 
 export default function TextProcessor(props) {
 	const { history, loader, alert } = props;
+	const user = useSelector(state => state.user);
 
 	const [doc, setDoc] = useState({
 		_id: null,
@@ -35,7 +37,7 @@ export default function TextProcessor(props) {
 
 	const createCanvas = (number) => {
 		const canvas = document.createElement('CANVAS');
-		canvas.setAttribute('id', 'doc' + number)
+		canvas.setAttribute('id', 'doc' + number);
 		canvas.setAttribute('width', (PAPER_SIZES.LETTER.W * 3.7795275591).toString());
 		canvas.setAttribute('height', (PAPER_SIZES.LETTER.H * 3.7795275591).toString());
 		canvas.setAttribute('style', 'border: 1px solid black');
@@ -125,24 +127,24 @@ export default function TextProcessor(props) {
 			lastElementSelected: null
 		});
 		//Check download mode
-		setDownloadMode(props.location.state.downloadMode)
-	}
+		setDownloadMode(props.location.state.downloadMode);
+	};
 
 	useEffect(() => {
 		if (props.location.state) {
-			if(props.location.state.idTemplate){
+			if (props.location.state.idTemplate) {
 				loader.current.setLoader(true);
-				Meteor.call('template.get', props.location.state.idTemplate , (error, response) => {
+				Meteor.call('template.get', props.location.state.idTemplate, (error, response) => {
 					loader.current.setLoader(false);
 					if (error) {
 						alert.current.setAlert('Error', error.reason, 'error');
 						return;
 					}
-					setDocWithTemplate(response._data)
-				})
+					setDocWithTemplate(response._data);
+				});
 				return;
 			}
-			setDocWithTemplate(props.location.state.template)
+			setDocWithTemplate(props.location.state.template);
 			return;
 		}
 		createCanvas(doc.actualPage);
@@ -152,6 +154,37 @@ export default function TextProcessor(props) {
 			...doc,
 			pages: copyPages
 		});
+	}, []);
+
+	useEffect(() => {
+		Meteor.call('template.changeEditing', {
+			_id: props.location.state.idTemplate,
+			editing: {
+				status: true,
+				who: user.profile.username
+			}
+		}, (err, res) => {
+			if (err) {
+				props.alert.current.setAlert('Error', err.reason, 'error');
+				return;
+			}
+			props.alert.current.setAlert('Éxito', res._message);
+		});
+		return () => {
+			Meteor.call('template.changeEditing', {
+				_id: props.location.state.idTemplate,
+				editing: {
+					status: false,
+					who: null
+				}
+			}, (err, res) => {
+				if (err) {
+					props.alert.current.setAlert('Error', err.reason, 'error');
+					return;
+				}
+				props.alert.current.setAlert('Éxito', res._message);
+			});
+		};
 	}, []);
 
 	const save = (doc) => {
@@ -262,8 +295,8 @@ export default function TextProcessor(props) {
 			});
 			page.canvas.setZoom(1);
 		});
-		const blob  = await pdfWorker(doc.title, btoa(JSON.stringify(arrayCanvas)));
-		const iframe = "<iframe width='100%' height='100%' src='" + atob(blob) + "'></iframe>"
+		const blob = await pdfWorker(doc.title, btoa(JSON.stringify(arrayCanvas)));
+		const iframe = '<iframe width=\'100%\' height=\'100%\' src=\'' + atob(blob) + '\'></iframe>';
 		const x = window.open();
 		x.document.open();
 		x.document.write(iframe);
@@ -361,13 +394,13 @@ export default function TextProcessor(props) {
 	return (
 		<Card elevation={ 6 }>
 			<div className="textProcessorHeaderTitleContainer">
-				{!downloadMode && (
+				{ !downloadMode && (
 					<BootstrapTooltip title={ STRINGS.save }>
 						<button type="button" className="noButton" onClick={ () => save(doc) }>
 							<i className="fa fa-save iconSave"/>
 						</button>
 					</BootstrapTooltip>
-				)}
+				) }
 				<BootstrapTooltip title={ STRINGS.download }>
 					<button type="button" className="noButton" onClick={ downloadDocument }>
 						<i id="download" className="fa fa-download iconDownload"/>
@@ -377,19 +410,19 @@ export default function TextProcessor(props) {
 					value={ doc.title }
 					className="textProcessorHeaderTitleText"
 					placeholder="Trámite 1"
-					readOnly={downloadMode}
+					readOnly={ downloadMode }
 					type="text"
 					onChange={ (value) => setDoc({ ...doc, title: value.target.value }) }
 				/>
-				{!downloadMode && (
+				{ !downloadMode && (
 					<BootstrapTooltip title={ STRINGS.signature }>
 						<button type="button" className="noButton" onClick={ () => modeSignature() }>
 							<i id="signature" className="fa fa-signature iconSave"/>
 						</button>
 					</BootstrapTooltip>
-				)}
+				) }
 			</div>
-			{!downloadMode && (
+			{ !downloadMode && (
 				<TextProcessorTabs
 					doc={ doc }
 					_handleNewPage={ _handleNewPage }
@@ -397,7 +430,7 @@ export default function TextProcessor(props) {
 					_handleNextPage={ _handleNextPage }
 					_handleGrid={ _handleGrid }
 				/>
-			)}
+			) }
 			<div className="textProcessorBody">
 				<div id="docPaper" className="docPaper"/>
 			</div>

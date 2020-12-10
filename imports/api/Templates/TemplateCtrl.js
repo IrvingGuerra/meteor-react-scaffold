@@ -30,6 +30,10 @@ export const saveTemplateMethod = new ValidatedMethod({
 				delete template._id;
 				template.date = Utilities.currentLocalISODate();
 				template.idCreator = Meteor.userId();
+				template.editing = {
+					status: true,
+					who: Meteor.userId()
+				}
 				Template.insert(template);
 				responseMessage.create(true, 'Se ha creado una plantilla.');
 			} catch (err) {
@@ -79,7 +83,6 @@ export const getTemplateMethod = new ValidatedMethod({
 	}
 });
 
-
 export const copyTemplateMethod = new ValidatedMethod({
 	name: 'template.copy',
 	mixins: [MethodHooks],
@@ -100,6 +103,10 @@ export const copyTemplateMethod = new ValidatedMethod({
 			template.title = 'Copia de ' + template.title;
 			template.date = Utilities.currentLocalISODate();
 			template.idCreator = Meteor.userId();
+			template.editing = {
+				status: false,
+				who: null
+			}
 			Template.insert(template);
 			responseMessage.create(true, 'Plantilla copiada exitosamente', null, template);
 		} catch (err) {
@@ -109,7 +116,6 @@ export const copyTemplateMethod = new ValidatedMethod({
 		return responseMessage;
 	}
 });
-
 
 export const deleteTemplateMethod = new ValidatedMethod({
 	name: 'template.delete',
@@ -131,6 +137,70 @@ export const deleteTemplateMethod = new ValidatedMethod({
 		} catch (err) {
 			console.error('Error removing template: ', err);
 			throw new Meteor.Error('500', 'Error al eliminar la plantilla');
+		}
+		return responseMessage;
+	}
+});
+
+export const availabilityTemplateMethod = new ValidatedMethod({
+	name: 'template.availability',
+	mixins: [MethodHooks],
+	permissions: [Permissions.TEMPLATES.LIST.VALUE],
+	validate(title) {
+		try {
+			check(title, String);
+		} catch (exception) {
+			console.log('La información introducida no es válida: ', exception);
+			throw new Meteor.Error('500', 'La información introducida no es válida');
+		}
+	},
+	run(title) {
+		const responseMessage = new ResponseMessage();
+		try {
+			const template = Template.findOne({ 'title': title });
+			if (template) {
+				responseMessage.create(true, 'La plantilla existe', null, template);
+			} else {
+				responseMessage.create(false, 'No existe una plantilla con el titulo: ' + title);
+			}
+		} catch (err) {
+			console.error('Error checking template availability: ', err);
+			throw new Meteor.Error('500', 'Error al comprobar disponibilidad de la plantilla');
+		}
+		return responseMessage;
+	}
+});
+
+export const changeEditingTemplateMethod = new ValidatedMethod({
+	name: 'template.changeEditing',
+	mixins: [MethodHooks],
+	permissions: [Permissions.TEMPLATES.UPDATE.VALUE],
+	validate(template) {
+		try {
+			check(template, {
+				_id: String,
+				editing: Object
+			});
+		} catch (exception) {
+			console.log('La información introducida no es válida: ', exception);
+			throw new Meteor.Error('500', 'La información introducida no es válida');
+		}
+	},
+	run(template) {
+		const responseMessage = new ResponseMessage();
+		try {
+			Template.update(template._id, {
+				$set: {
+					editing: {
+						status: template.editing.status,
+						who: template.editing.who
+					}
+				}
+			});
+			responseMessage.create(true, 'Estado de edición actualizado exitosamente');
+		} catch (err) {
+			console.error('Error copying template: ', err);
+			throw new Meteor.Error('500', 'Error al actualizar estado de edición');
 		}
 		return responseMessage;
 	}

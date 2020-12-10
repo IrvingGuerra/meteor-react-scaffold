@@ -17,6 +17,7 @@ import {
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import { useTracker } from 'meteor/react-meteor-data';
 import { Template } from '../../../api/Templates/Template';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
@@ -70,6 +71,26 @@ const useTemplates = () => useTracker(() => {
 	return Template.find({}).fetch();
 }, []);
 
+const useSpecies = () => useTracker(() => {
+	Meteor.subscribe('species');
+	return Specie.find({}).fetch();
+}, []);
+
+const useBreeds= (specie) => useTracker(() => {
+	Meteor.subscribe('breeds', specie);
+	return Breed.find({}).fetch();
+}, [specie]);
+
+const useGenders= () => useTracker(() => {
+	Meteor.subscribe('genders');
+	return Gender.find({}).fetch();
+}, []);
+
+const useClients = () => useTracker(() => {
+	Meteor.subscribe('users', 'client');
+	return Meteor.users.find({}).fetch();
+}, []);
+
 export default function OrderDetails(props) {
 	const { history, loader, alert } = props;
 	const user = useSelector(state => state.user);
@@ -93,7 +114,7 @@ export default function OrderDetails(props) {
 		status: '',
 		analyses: []
 	});
-	const [newStatus, setNewStatus] = useState('')
+	const [newStatus, setNewStatus] = useState('');
 
 	const handleAssignAnalyses = (e) => {
 		e.preventDefault();
@@ -133,39 +154,61 @@ export default function OrderDetails(props) {
 					return;
 				}
 				setForm(response._data);
-				setNewStatus(response._data.status)
+				setNewStatus(response._data.status);
 			});
 		}
 	}, []);
 
-	const species = useTracker(() => {
-		Meteor.subscribe('species');
-		return Specie.find({}).fetch();
-	}, []);
+	const species = useSpecies();
 
-	const breeds = useTracker(() => {
-		Meteor.subscribe('breeds');
-		return Breed.find({}).fetch();
-	}, []);
+	const breeds = useBreeds(form.petSpecie)
 
-	const genders = useTracker(() => {
-		Meteor.subscribe('genders');
-		return Gender.find({}).fetch();
-	}, []);
+	const genders = useGenders();
 
-	const clients = useTracker(() => {
-		Meteor.subscribe('clients');
-		return Meteor.users.find({'profile.profile':"client"}).fetch();
-	}, []);
+	const clients = useClients();
 
 	const templates = useTemplates();
+
+	const generateOrder = () => {
+		Meteor.call('template.availability', 'ORDEN', (error, response) => {
+			if (error) {
+				alert.current.setAlert('Error', error.reason, 'error');
+				return;
+			}
+			if (response._isStatus){
+				history.push({
+					pathname: '/' + history.location.pathname.split('/')[1] + '/editTemplate',
+					state: {
+						template: response._data,
+						canEdit: false,
+						orderId: form._id,
+						number: form.number,
+						petOwner: form.petOwner,
+						MVZ: form.MVZ,
+						clinic: clients.filter(g => g._id === form.clinic)[0].username,
+						petName: form.petName,
+						petSpecie: species.filter(g => g._id === form.petSpecie)[0].name,
+						petBreed: breeds.filter(g => g._id === form.petBreed)[0].name,
+						petGender: genders.filter(g => g._id === form.petGender)[0].name,
+						petAge: form.petAge,
+						kind: form.kind,
+						samplingDate: form.samplingDate,
+						samplingHour: form.samplingHour,
+						downloadMode: true
+					}
+				});
+			}else{
+				alert.current.setAlert('Error', response._message, 'error');
+			}
+		});
+	}
 
 	return (
 		<Container maxWidth="lg" className={ classes.container }>
 			<Paper className={ classes.paper } elevation={ 10 }>
 				<Grid container direction="column">
 					<Grid item xs={ 12 }>
-						<Grid container direction="row" justify="flex-start" alignItems="center">
+						<Grid container direction="row" justify="space-between" alignItems="center">
 							<Grid item>
 								<IconButton onClick={ () => {
 									history.goBack();
@@ -179,6 +222,11 @@ export default function OrderDetails(props) {
 										DETALLES DE LA ORDEN
 									</Box>
 								</Typography>
+							</Grid>
+							<Grid item>
+								<IconButton onClick={generateOrder}>
+									<CloudDownloadIcon fontSize="large" color="primary"/>
+								</IconButton>
 							</Grid>
 						</Grid>
 					</Grid>
@@ -221,7 +269,7 @@ export default function OrderDetails(props) {
 											label="selectClinicLabel"
 										>
 											{ clients.map((client, i) => <MenuItem key={ i }
-											                                       value={ client._id }>{ client.profile.username }</MenuItem>) }
+											                                       value={ client._id }>{ client.username }</MenuItem>) }
 										</Select>
 									</FormControl>
 								</Grid>
@@ -237,11 +285,11 @@ export default function OrderDetails(props) {
 										onChange={ e => setForm({ ...form, petName: e.target.value }) }
 									/>
 								</Grid>
-								{form.status !== 'attended' && (
+								{ form.status !== 'attended' && (
 									<Grid item xs={ 12 }>
 										<FormControl variant="outlined" fullWidth required>
 											<InputLabel id="demo-simple-select-outlined-label">Estatus</InputLabel>
-											{(form.status === 'open') && (
+											{ (form.status === 'open') && (
 												<Select
 													value={ 'open' }
 													onChange={ e => setNewStatus(e.target.value) }
@@ -250,19 +298,20 @@ export default function OrderDetails(props) {
 
 													<MenuItem key={ 1 } value="open">Abierto</MenuItem>
 												</Select>
-											)}
-											{(form.status === 'awaitingSample') && (
+											) }
+											{ (form.status === 'awaitingSample') && (
 												<Select
 													value={ newStatus }
 													onChange={ e => setNewStatus(e.target.value) }
 													label="Estatus"
 												>
 
-													<MenuItem key={ 2 } value="awaitingSample">En espera de muestra</MenuItem>
+													<MenuItem key={ 2 } value="awaitingSample">En espera de
+														muestra</MenuItem>
 													<MenuItem key={ 3 } value="process">En proceso</MenuItem>
 												</Select>
-											)}
-											{(form.status === 'process' && (user.profile.profile === 'specialist' || user.profile.profile === 'admin')) && (
+											) }
+											{ (form.status === 'process' && (user.profile.profile === 'specialist' || user.profile.profile === 'admin')) && (
 												<Select
 													value={ newStatus }
 													onChange={ e => setNewStatus(e.target.value) }
@@ -272,8 +321,8 @@ export default function OrderDetails(props) {
 													<MenuItem key={ 4 } value="awaitingResults">En espera de
 														resultados</MenuItem>
 												</Select>
-											)}
-											{(form.status === 'awaitingResults' && (user.profile.profile === 'specialist' || user.profile.profile === 'admin')) && (
+											) }
+											{ (form.status === 'awaitingResults' && (user.profile.profile === 'specialist' || user.profile.profile === 'admin')) && (
 												<Select
 													value={ newStatus }
 													onChange={ e => setNewStatus(e.target.value) }
@@ -284,10 +333,10 @@ export default function OrderDetails(props) {
 														resultados</MenuItem>
 													<MenuItem key={ 5 } value="attended">Atendido</MenuItem>
 												</Select>
-											)}
+											) }
 										</FormControl>
 									</Grid>
-								)}
+								) }
 								<Grid item xs={ 6 }>
 									<FormControl variant="outlined" fullWidth required>
 										<InputLabel id="demo-simple-select-outlined-label">Especie</InputLabel>
@@ -358,33 +407,33 @@ export default function OrderDetails(props) {
 										onChange={ e => setForm({ ...form, kind: e.target.value }) }
 									/>
 								</Grid>
-								<Grid item xs={12}>
+								<Grid item xs={ 12 }>
 									<TextField
 										id="EFG"
 										label="Signos clínicos / EFG:"
 										required
 										fullWidth
 										multiline
-										rows={4}
+										rows={ 4 }
 										variant="outlined"
 										value={ form.EFG }
 										onChange={ e => setForm({ ...form, EFG: e.target.value }) }
 									/>
 								</Grid>
-								<Grid item xs={12}>
+								<Grid item xs={ 12 }>
 									<TextField
 										id="TX"
 										label="Tx reciente previo al muestreo:"
 										required
 										fullWidth
 										multiline
-										rows={4}
+										rows={ 4 }
 										variant="outlined"
 										value={ form.TX }
 										onChange={ e => setForm({ ...form, TX: e.target.value }) }
 									/>
 								</Grid>
-								<Grid item xs={6}>
+								<Grid item xs={ 6 }>
 									<MuiPickersUtilsProvider utils={ DateFnsUtils }>
 										<DatePicker
 											disableToolbar
@@ -399,7 +448,7 @@ export default function OrderDetails(props) {
 										/>
 									</MuiPickersUtilsProvider>
 								</Grid>
-								<Grid item xs={6}>
+								<Grid item xs={ 6 }>
 									<MuiPickersUtilsProvider utils={ DateFnsUtils }>
 										<TimePicker
 											disableToolbar
@@ -413,85 +462,85 @@ export default function OrderDetails(props) {
 										/>
 									</MuiPickersUtilsProvider>
 								</Grid>
-								<Grid item xs={12}>
+								<Grid item xs={ 12 }>
 									<TextField
 										id="outlined-multiline-static"
 										label="Observación 1"
 										required
 										fullWidth
 										multiline
-										rows={4}
+										rows={ 4 }
 										variant="outlined"
 										value={ form.observation1 }
 										onChange={ e => setForm({ ...form, observation1: e.target.value }) }
 									/>
 								</Grid>
-								<Grid item xs={12}>
+								<Grid item xs={ 12 }>
 									<TextField
 										id="outlined-multiline-static"
 										label="Observación 2"
 										required
 										fullWidth
 										multiline
-										rows={4}
+										rows={ 4 }
 										variant="outlined"
 										value={ form.observation2 }
 										onChange={ e => setForm({ ...form, observation2: e.target.value }) }
 									/>
 								</Grid>
-								{form._id && (
+								{ form._id && (
 									<Grid item xs={ 12 }>
 										<Biochemistry
-											data={form.biochemistry}
+											data={ form.biochemistry }
 										/>
 										<Analytes
-											data={form.analytes}
+											data={ form.analytes }
 										/>
 										<Hemostasis
-											data={form.hemostasis}
+											data={ form.hemostasis }
 										/>
 										<NonConventional
-											data={form.nonConventional}
+											data={ form.nonConventional }
 										/>
 										<UrinaryTract
-											data={form.urinaryTract}
+											data={ form.urinaryTract }
 										/>
 										<Cytology
-											data={form.cytology}
+											data={ form.cytology }
 										/>
 										<Hematology
-											data={form.hematology}
+											data={ form.hematology }
 										/>
 										<Parasitology
-											data={form.parasitology}
+											data={ form.parasitology }
 										/>
 										<Bacteriology
-											data={form.bacteriology}
+											data={ form.bacteriology }
 										/>
 										<Endocrinology
-											data={form.endocrinology}
+											data={ form.endocrinology }
 										/>
 										<Complementary
-											data={form.complementary}
+											data={ form.complementary }
 										/>
 										<Infectious
-											data={form.infectious}
+											data={ form.infectious }
 										/>
 										<Toxicology
-											data={form.toxicology}
+											data={ form.toxicology }
 										/>
 										<Histopathology
-											data={form.histopathology}
+											data={ form.histopathology }
 										/>
 									</Grid>
-								)}
+								) }
 
 								{ (form.status === 'open' || form.status === 'awaitingSample' || form.status === 'process') && (
 									<Grid item xs={ 12 }>
 										<Autocomplete
 											multiple
 											id="tags-standard"
-											defaultValue={form.analyses}
+											defaultValue={ form.analyses }
 											options={ templates.map((template) => template) }
 											getOptionLabel={ (template) => template.title }
 											renderTags={ (value, getTagProps) =>
@@ -537,7 +586,7 @@ export default function OrderDetails(props) {
 																			number: form.number,
 																			petOwner: form.petOwner,
 																			MVZ: form.MVZ,
-																			clinic: clients.filter(g => g._id === form.clinic)[0].profile.username,
+																			clinic: clients.filter(g => g._id === form.clinic)[0].username,
 																			petName: form.petName,
 																			petSpecie: species.filter(g => g._id === form.petSpecie)[0].name,
 																			petBreed: breeds.filter(g => g._id === form.petBreed)[0].name,
@@ -550,11 +599,11 @@ export default function OrderDetails(props) {
 																		}
 																	});
 																} }>
-																	{form.status === 'attended' ? (
+																	{ form.status === 'attended' ? (
 																		<VisibilityIcon/>
 																	) : (
 																		<NavigateNextIcon/>
-																	)}
+																	) }
 																</IconButton>
 															</ListItemSecondaryAction>
 														</ListItem>
@@ -565,18 +614,18 @@ export default function OrderDetails(props) {
 									</Grid>
 								) }
 							</Grid>
-							{(form.status !== 'open' && form.status !== 'awaitingResults' && form.status !== 'attended')  && (
+							{ (form.status !== 'open' && form.status !== 'awaitingResults' && form.status !== 'attended') && (
 								<Button
 									fullWidth
 									variant="contained"
 									color="primary"
 									className={ classes.submit }
-									onClick={handleAssignAnalyses}
+									onClick={ handleAssignAnalyses }
 								>
 									Actualizar analisis
 								</Button>
-							)}
-							{form.status !== 'attended' && (
+							) }
+							{ form.status !== 'attended' && (
 								<Button
 									type="submit"
 									fullWidth
@@ -590,7 +639,7 @@ export default function OrderDetails(props) {
 										'Actualizar estatus'
 									) }
 								</Button>
-							)}
+							) }
 						</form>
 					</Grid>
 				</Grid>

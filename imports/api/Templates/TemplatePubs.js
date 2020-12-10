@@ -45,7 +45,8 @@ if (Meteor.isServer) {
 				$project: {
 					'title': 1,
 					'date': 1,
-					'creatorName': 1
+					'creatorName': 1,
+					'editing': 1
 				}
 			}
 		], { warnings: false });

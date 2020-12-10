@@ -143,7 +143,8 @@ export default function ListTemplates(props) {
 									edit: true,
 									remove: true,
 									copy: true,
-									view: false
+									view: false,
+									editing: true
 								}
 							}
 							handleEdit={ (idTemplate) => {

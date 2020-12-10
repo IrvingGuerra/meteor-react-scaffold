@@ -13,10 +13,14 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
+import WarningIcon from '@material-ui/icons/Warning';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import BootstrapTooltip from '../../components/Tooltips/BootstrapTooltip'
+import { STRINGS } from '../TextProcessor/constants/strings';
 
 export const CustomTable = (props) => {
 	const { headers, data, options, handleEdit, handleRemove, handleCopy, handleView } = props;
-	const { edit, remove, copy, view } = options;
+	const { edit, remove, copy, view, editing } = options; // editing, just for real time observer
 	const [page, setPage] = useState(0);
 	const [rowsPerPage, setRowsPerPage] = useState(5);
 
@@ -39,13 +43,16 @@ export const CustomTable = (props) => {
 							{ (edit || remove || view) && (
 								<TableCell align="center"><i className={ 'fa fa-cog' }/></TableCell>
 							) }
+							{ (editing) && (
+								<TableCell align="center"><i className={ 'fa fa-edit' }/></TableCell>
+							) }
 						</TableRow>
 					</TableHead>
 					<TableBody>
 						{ data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((element, i) => {
 							const columns = [];
 							Object.keys(element).forEach(key => {
-								if (key !== '_id' && !columns.includes(key)) {
+								if (key !== '_id' && typeof element[key] === 'string' && !columns.includes(key)) {
 									columns.push(key);
 								}
 							});
@@ -75,6 +82,19 @@ export const CustomTable = (props) => {
 											</IconButton>
 										) }
 									</TableCell>
+									{ editing && (
+										<TableCell align="center">
+											{ (editing && element.editing.status) ? (
+												<BootstrapTooltip title={element.editing.who + ' esta editando esta plantilla' } >
+													<WarningIcon color="primary"/>
+												</BootstrapTooltip>
+											) : (
+												<BootstrapTooltip title="No hay nadie editando esta plantilla" >
+													<CheckCircleIcon color="primary"/>
+												</BootstrapTooltip>
+											) }
+										</TableCell>
+									) }
 								</TableRow>
 							);
 						}) }
