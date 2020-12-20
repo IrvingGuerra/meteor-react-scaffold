@@ -27,7 +27,7 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import { Specie } from '../../../api/Pets/Species/Specie';
 import { Breed } from '../../../api/Pets/Breeds/Breed';
 import { Gender } from '../../../api/Pets/Genders/Gender';
-import Biochemistry from '../../components/RequestOrder/Biochemistry';
+import Biochemistry, { hasTrue } from '../../components/RequestOrder/Biochemistry';
 import Analytes from '../../components/RequestOrder/Analytes';
 import Hemostasis from '../../components/RequestOrder/Hemostasis';
 import NonConventional from '../../components/RequestOrder/NonConventional';
@@ -583,6 +583,7 @@ export default function OrderDetails(props) {
 																			template: analysis,
 																			canEdit: false,
 																			orderId: form._id,
+																			//Dinamics parameters
 																			number: form.number,
 																			petOwner: form.petOwner,
 																			MVZ: form.MVZ,
@@ -595,6 +596,27 @@ export default function OrderDetails(props) {
 																			kind: form.kind,
 																			samplingDate: form.samplingDate,
 																			samplingHour: form.samplingHour,
+																			//Tags extras
+																			EFG: form.EFG,
+																			TX: form.TX,
+																			observation1: form.observation1,
+																			observation2: form.observation2,
+																			//Extras
+																			biochemistry: hasTrue(form.biochemistry),
+																			analytes: hasTrue(form.analytes),
+																			hemostasis: hasTrue(form.hemostasis),
+																			nonConventional: hasTrue(form.nonConventional),
+																			urinaryTract: hasTrue(form.urinaryTract),
+																			cytology: hasTrue(form.cytology),
+																			hematology: hasTrue(form.hematology),
+																			parasitology: hasTrue(form.parasitology),
+																			bacteriology: hasTrue(form.bacteriology),
+																			endocrinology: hasTrue(form.endocrinology),
+																			complementary: hasTrue(form.complementary),
+																			infectious: hasTrue(form.infectious),
+																			toxicology: hasTrue(form.toxicology),
+																			histopathology: hasTrue(form.histopathology),
+																			//Download mode
 																			downloadMode: form.status === 'attended'
 																		}
 																	});

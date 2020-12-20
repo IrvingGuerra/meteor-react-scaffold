@@ -1,5 +1,5 @@
 import React from 'react';
-import { FormControl, Grid, InputLabel, makeStyles, MenuItem, Select } from '@material-ui/core';
+import { FormControl, Grid, InputLabel, makeStyles, MenuItem, Select, ListSubheader } from '@material-ui/core';
 import {
 	addAutoValue,
 	addColumns,
@@ -112,6 +112,7 @@ export default function TabInsert(props) {
 						placeholder="#Tags"
 						onChange={ (value) => addAutoValue(doc, value.target.value)}
 					>
+						<ListSubheader>Tags para plantillas</ListSubheader>
 						<MenuItem value='NumeroOrden'>Número de orden</MenuItem>
 						<MenuItem value='Propietario'>Propietario</MenuItem>
 						<MenuItem value='MVZ'>MVZ</MenuItem>
@@ -121,9 +122,29 @@ export default function TabInsert(props) {
 						<MenuItem value='Raza'>Raza</MenuItem>
 						<MenuItem value='Genero'>Genero</MenuItem>
 						<MenuItem value='Edad'>Edad</MenuItem>
+						<MenuItem value='TipoMuestra'>Tipo de muestra</MenuItem>
 						<MenuItem value='FechaMuestreo'>Fecha de muestreo</MenuItem>}
 						<MenuItem value='HoraMuestreo'>Hora de muestreo</MenuItem>
-						<MenuItem value='TipoMuestra'>Tipo de muestra</MenuItem>
+						<ListSubheader>Tags extras</ListSubheader>
+						<MenuItem value='EFG'>EFG</MenuItem>
+						<MenuItem value='TX'>TX</MenuItem>
+						<MenuItem value='Observacion1'>Observación 1</MenuItem>
+						<MenuItem value='Observacion2'>Observación 1</MenuItem>
+						<ListSubheader>Extras (Si/No)</ListSubheader>
+						<MenuItem value='Bioquimica'>Bioquimica</MenuItem>
+						<MenuItem value='AnalitosIndividuales'>Analitos Individuales</MenuItem>
+						<MenuItem value='Hemostasia'>Hemostasia</MenuItem>
+						<MenuItem value='AnimalesNoConvencionales'>Animales no Convencionales</MenuItem>
+						<MenuItem value='EvaluacionVias'>Evaluación de vías urinarias</MenuItem>
+						<MenuItem value='CitologiaClinica'>Citología clínica</MenuItem>
+						<MenuItem value='HematologiaInmunohematologia'>Hematología e inmunohematología</MenuItem>
+						<MenuItem value='Parasitologia'>Parasitología</MenuItem>
+						<MenuItem value='BacteriologiaMicologia'>Bacteriología y micología</MenuItem>
+						<MenuItem value='Endocrinologia'>Endocrinología</MenuItem>
+						<MenuItem value='Complemenatrias'>Complemenatrias</MenuItem>
+						<MenuItem value='EnfermedadesInfecciosas'>Enfermedades infecciosas</MenuItem>
+						<MenuItem value='Toxicologia'>Toxicología</MenuItem>
+						<MenuItem value='Histopatologia'>Histopatología</MenuItem>
 					</Select>
 				</FormControl>
 			</Grid>

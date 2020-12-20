@@ -13,6 +13,14 @@ import { useSelector } from 'react-redux';
 
 const grid = 18;
 
+const booleanSpanish = (value) => {
+	if(value === true){
+		return 'Si';
+	}else{
+		return 'No';
+	}
+};
+
 export default function TextProcessor(props) {
 	const { history, loader, alert } = props;
 	const user = useSelector(state => state.user);
@@ -106,6 +114,62 @@ export default function TextProcessor(props) {
 							case 'autoValueTipoMuestra':
 								object.set('text', props.location.state.kind);
 								break;
+							//EXTRAS TAGS
+							case 'autoValueEFG':
+								object.set('text', props.location.state.EFG);
+								break;
+							case 'autoValueTX':
+								object.set('text', props.location.state.TX);
+								break;
+							case 'autoValueObservacion1':
+								object.set('text', props.location.state.observation1);
+								break;
+							case 'autoValueObservacion2':
+								object.set('text', props.location.state.observation2);
+								break;
+							//BOOL
+							case 'autoValueBioquimica':
+								object.set('text', booleanSpanish(props.location.state.biochemistry));
+								break;
+							case 'autoValueAnalitosIndividuales':
+								object.set('text', booleanSpanish(props.location.state.analytes));
+								break;
+							case 'autoValueHemostasia':
+								object.set('text', booleanSpanish(props.location.state.hemostasis));
+								break;
+							case 'autoValueAnimalesNoConvencionales':
+								object.set('text', booleanSpanish(props.location.state.nonConventional));
+								break;
+							case 'autoValueEvaluacionVias':
+								object.set('text', booleanSpanish(props.location.state.urinaryTract));
+								break;
+							case 'autoValueCitologiaClinica':
+								object.set('text', booleanSpanish(props.location.state.cytology));
+								break;
+							case 'autoValueHematologiaInmunohematologia':
+								object.set('text', booleanSpanish(props.location.state.hematology));
+								break;
+							case 'autoValueParasitologia':
+								object.set('text', booleanSpanish(props.location.state.parasitology));
+								break;
+							case 'autoValueBacteriologiaMicologia':
+								object.set('text', booleanSpanish(props.location.state.bacteriology));
+								break;
+							case 'autoValueEndocrinologia':
+								object.set('text', booleanSpanish(props.location.state.endocrinology));
+								break;
+							case 'autoValueComplemenatrias':
+								object.set('text', booleanSpanish(props.location.state.complementary));
+								break;
+							case 'autoValueEnfermedadesInfecciosas':
+								object.set('text', booleanSpanish(props.location.state.infectious));
+								break;
+							case 'autoValueToxicologia':
+								object.set('text', booleanSpanish(props.location.state.toxicology));
+								break;
+							case 'autoValueHistopatologia':
+								object.set('text', booleanSpanish(props.location.state.histopathology));
+								break;
 						}
 						object.set('selectable', false);
 					} else {
@@ -157,25 +221,12 @@ export default function TextProcessor(props) {
 	}, []);
 
 	useEffect(() => {
-		Meteor.call('template.changeEditing', {
-			_id: props.location.state.idTemplate,
-			editing: {
-				status: true,
-				who: user.profile.username
-			}
-		}, (err, res) => {
-			if (err) {
-				props.alert.current.setAlert('Error', err.reason, 'error');
-				return;
-			}
-			props.alert.current.setAlert('Éxito', res._message);
-		});
-		return () => {
+		if(props.location.state && props.location.state.idTemplate){
 			Meteor.call('template.changeEditing', {
 				_id: props.location.state.idTemplate,
 				editing: {
-					status: false,
-					who: null
+					status: true,
+					who: user.profile.username
 				}
 			}, (err, res) => {
 				if (err) {
@@ -184,7 +235,22 @@ export default function TextProcessor(props) {
 				}
 				props.alert.current.setAlert('Éxito', res._message);
 			});
-		};
+			return () => {
+				Meteor.call('template.changeEditing', {
+					_id: props.location.state.idTemplate,
+					editing: {
+						status: false,
+						who: null
+					}
+				}, (err, res) => {
+					if (err) {
+						props.alert.current.setAlert('Error', err.reason, 'error');
+						return;
+					}
+					props.alert.current.setAlert('Éxito', res._message);
+				});
+			};
+		}
 	}, []);
 
 	const save = (doc) => {
